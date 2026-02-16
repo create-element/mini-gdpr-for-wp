@@ -26,12 +26,11 @@
 - No data migration required for end users
 
 **Milestone Sequencing Rationale:**
-- Milestones 1-3: Set up tooling, establish standards, then clean house (remove pp-core)
-- Milestone 4: Modernize JavaScript *before* writing new feature JS (M5/M6)
-- Milestones 5-6: Build new features on a modern foundation
-- Milestones 7-8: Verify security and fill testing gaps across all new code
+- Milestones 1-2: Set up tooling, establish PHPCS standards
+- Milestones 3-6: Core refactoring & feature development (use PHPCS/phpcbf throughout)
+- Milestones 7-8: PHPStan analysis, security audit, and manual testing (after bulk of code is stable)
 - Milestones 9-10: Document and ship
-- Security and testing are baked into every milestone; M7/M8 are verification passes
+- PHPCS is used throughout all milestones; PHPStan is saved until the plugin is essentially working in its new form
 
 ---
 
@@ -40,12 +39,12 @@
 ### In Progress (Milestone 2)
 - [x] Create phpcs.xml configuration file
 - [x] Create .editorconfig for consistent coding style
-- [x] Create composer.json with dev dependencies
+- [x] Create composer.json with dev dependencies (PHPCS only, no PHPUnit)
 - [x] Run initial PHPCS scan and create baseline (exclude pp-core.php) ✅
-- [x] Set up PHPUnit test infrastructure
+- [x] Create shell scripts for code quality checks (check.sh, fix.sh)
+- [x] Remove PHPUnit from project
 
 ### Next Up (Milestone 2)
-- [ ] Create simple shell scripts for code quality checks (optional)
 - [ ] Document development workflow
 
 ---
@@ -86,27 +85,25 @@
 
 ---
 
-### Milestone 2: Code Standards & Quality Tools
+### Milestone 2: Code Standards & Quality Tools (PHPCS)
 **Target:** Week 2 (Feb 24 - Mar 2, 2026)  
-**Status:** 🟡 In Progress (85% complete)  
+**Status:** 🟡 In Progress (90% complete)  
 **Priority:** High
 
 #### Objectives
 - [x] ~~Install PHP_CodeSniffer globally with WordPress Coding Standards~~ (Already installed)
-- [x] ~~Configure PHPStan globally~~ (Already installed)
 - [x] Create phpcs.xml configuration file
 - [x] Create .editorconfig for consistent coding style
 - [x] Run initial PHPCS scan and create baseline (**exclude pp-core.php** — it's being removed in M3)
-- [x] Create simple shell scripts for code quality checks (check.sh, fix.sh, test.sh)
-- [ ] Run PHPStan scan and establish baseline
+- [x] Create simple shell scripts for code quality checks (check.sh, fix.sh)
+- [x] Remove PHPUnit from composer.json (not needed for this plugin)
 - [ ] Document development workflow
 
 #### Deliverables
 - [x] phpcs.xml configured and tested
 - [x] .editorconfig file
 - [x] Initial code quality baseline report (excluding pp-core.php)
-- [x] Shell scripts for code quality checks (check.sh, fix.sh, test.sh)
-- [ ] phpstan.neon configuration file
+- [x] Shell scripts for code quality checks (check.sh, fix.sh)
 - [ ] Updated dev-notes/workflows/code-standards.md
 
 #### Tasks
@@ -115,18 +112,17 @@
 3. ✅ Run initial PHPCS scan and document violations
 4. ✅ Create .editorconfig for IDE consistency
 5. ✅ Create simple shell scripts for checking/fixing code
-6. Run PHPStan scan and establish baseline
+6. ✅ Remove PHPUnit dependency (PHPCS + manual testing is sufficient)
 7. Document workflow in dev-notes/
 
 #### Notes
 - PHPCS baseline **excludes pp-core.php and pp-assets/** since they're being removed in M3
-- **No PHPUnit/Composer**: Plugin is simple enough that PHPCS + PHPStan + manual testing is sufficient
-- Focus on WordPress Coding Standards compliance and static analysis
+- Use `phpcs` and `phpcbf` throughout all refactoring milestones (M3-M6)
+- PHPStan deferred to M8 — run it once the plugin is essentially working in its new form
 - Manual testing performed on westfield.local dev site
 
 #### Success Criteria
 - All existing code (excluding pp-core) passes PHPCS (or documented exceptions)
-- PHPStan runs without critical errors
 - Shell scripts work for checking/fixing code
 - Development workflow documented and tested
 - No external dependencies in production code
@@ -443,14 +439,16 @@
 
 ---
 
-### Milestone 8: Manual Testing & Quality Assurance
+### Milestone 8: PHPStan Analysis, Manual Testing & Quality Assurance
 **Target:** Week 11-12 (Apr 28 - May 11, 2026)  
 **Status:** Not Started  
 **Priority:** High
 
-> **Note:** This plugin uses PHPCS + PHPStan for code quality. Testing focuses on manual functional testing, browser compatibility, and performance verification.
+> **Note:** PHPStan is run here — after the bulk of refactoring (M3-M6) is complete and the plugin is essentially working. This avoids chasing PHPStan errors on code that's still being rewritten. PHPCS/phpcbf are used throughout earlier milestones.
 
 #### Objectives
+- [ ] Configure PHPStan (phpstan.neon) and run initial scan
+- [ ] Establish PHPStan baseline and fix critical issues
 - [ ] Manual functional testing of all features
 - [ ] WooCommerce integration testing
 - [ ] Contact Form 7 integration testing
@@ -459,6 +457,14 @@
 - [ ] Accessibility testing
 
 #### Sub-Tasks
+
+##### Phase 8.0: PHPStan Static Analysis
+- [ ] Create phpstan.neon configuration file
+- [ ] Run initial PHPStan scan at level 5
+- [ ] Establish baseline for existing issues
+- [ ] Fix critical errors (undefined methods, type mismatches)
+- [ ] Progressively increase level if feasible
+- [ ] Document any accepted baselines with rationale
 
 ##### Phase 8.1: Functional Testing (Manual)
 - [ ] Test settings page (save/load all options)
@@ -495,17 +501,20 @@
 - [ ] Compare v1.4.3 vs v2.0.0 performance
 
 #### Deliverables
+- [ ] phpstan.neon configuration file
+- [ ] PHPStan baseline report
 - [ ] Manual testing checklist (completed)
 - [ ] Browser compatibility report
 - [ ] Performance benchmarks
 - [ ] Test documentation (known issues, edge cases)
 
 #### Success Criteria
+- PHPStan passes at level 5+ with no critical errors
 - All features work as expected in manual testing
 - Works in all major browsers
 - No performance degradation vs v1.4.3
 - Accessibility standards met (keyboard nav, screen readers)
-- PHPCS and PHPStan pass with 0 errors
+- PHPCS passes with 0 errors
 
 ---
 
@@ -719,13 +728,13 @@
 | Milestone | Target Completion | Status | Progress |
 |-----------|------------------|--------|----------|
 | 1. Foundation & Planning | Feb 23, 2026 | 🟡 In Progress | 20% |
-| 2. Code Standards, Quality & Test Infra | Mar 2, 2026 | 🟡 In Progress | 71% |
+| 2. Code Standards & Quality Tools (PHPCS) | Mar 2, 2026 | 🟡 In Progress | 90% |
 | 3. Remove pp-core.php | Mar 16, 2026 | ⚪ Not Started | 0% |
 | 4. JavaScript Modernization | Mar 23, 2026 | ⚪ Not Started | 0% |
 | 5. Enhanced Consent Management | Apr 6, 2026 | ⚪ Not Started | 0% |
 | 6. Advanced Tracker Delay-Loading | Apr 20, 2026 | ⚪ Not Started | 0% |
 | 7. Security Audit & Best Practices | Apr 27, 2026 | ⚪ Not Started | 0% |
-| 8. Testing & QA | May 11, 2026 | ⚪ Not Started | 0% |
+| 8. PHPStan, Testing & QA | May 11, 2026 | ⚪ Not Started | 0% |
 | 9. Documentation | May 18, 2026 | ⚪ Not Started | 0% |
 | 10. Release Preparation | May 25, 2026 | ⚪ Not Started | 0% |
 
@@ -746,6 +755,9 @@
 | 2026-02-16 | M2 expanded to include PHPUnit test infrastructure setup | Testing infra should be available from M3 onwards so tests are written alongside code, not bolted on at the end. |
 | 2026-02-16 | M2 PHPCS baseline now explicitly excludes pp-core.php | No point baselining 2305 lines of code that's being removed in M3. |
 | 2026-02-16 | M8 refocused as coverage gap-filling and integration/browser testing | With test infra in M2 and tests written per-milestone, M8 becomes verification rather than "write all the tests." |
+| 2026-02-16 | Removed PHPUnit from composer.json and vendor | Plugin too simple for unit tests — PHPCS + PHPStan + manual testing is sufficient |
+| 2026-02-16 | PHPStan deferred from M2 to M8 | Run PHPStan after bulk refactoring (M3-M6) is complete; no point chasing static analysis errors on code being rewritten. PHPCS used throughout. |
+| 2026-02-16 | M2 renamed "Code Standards & Quality Tools (PHPCS)" | Reflects PHPCS-only focus; PHPStan moved to M8 |
 
 ---
 
