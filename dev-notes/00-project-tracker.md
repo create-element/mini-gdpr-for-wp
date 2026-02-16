@@ -25,6 +25,14 @@
 - Settings from v1.4.3 should work seamlessly in v2.0.0
 - No data migration required for end users
 
+**Milestone Sequencing Rationale:**
+- Milestones 1-3: Set up tooling, establish standards, then clean house (remove pp-core)
+- Milestone 4: Modernize JavaScript *before* writing new feature JS (M5/M6)
+- Milestones 5-6: Build new features on a modern foundation
+- Milestones 7-8: Verify security and fill testing gaps across all new code
+- Milestones 9-10: Document and ship
+- Security and testing are baked into every milestone; M7/M8 are verification passes
+
 ---
 
 ## Active TODO Items
@@ -77,7 +85,7 @@
 
 ---
 
-### Milestone 2: Code Standards & Quality Setup
+### Milestone 2: Code Standards, Quality & Test Infrastructure
 **Target:** Week 2 (Feb 24 - Mar 2, 2026)  
 **Status:** Not Started  
 **Priority:** High
@@ -87,7 +95,9 @@
 - [x] ~~Configure PHPStan globally~~ (Already installed)
 - [ ] Create phpcs.xml configuration file
 - [ ] Create .editorconfig for consistent coding style
-- [ ] Run initial PHPCS scan and create baseline
+- [ ] Run initial PHPCS scan and create baseline (**exclude pp-core.php** — it's being removed in M3)
+- [ ] Set up PHPUnit test infrastructure (bootstrap, test database, example test)
+- [ ] Create composer.json with dev dependencies (phpunit, phpcs)
 - [ ] Create simple shell scripts for code quality checks (optional)
 - [ ] Document development workflow
 
@@ -95,25 +105,34 @@
 - [ ] phpcs.xml configured and tested
 - [ ] phpstan.neon configuration file
 - [ ] .editorconfig file
-- [ ] Initial code quality baseline report
+- [ ] Initial code quality baseline report (excluding pp-core.php)
+- [ ] PHPUnit bootstrap and test configuration
+- [ ] composer.json with development dependencies
 - [ ] Shell scripts for code quality checks (check.sh, fix.sh) - optional
 - [ ] Updated dev-notes/workflows/code-standards.md
 
 #### Tasks
 1. ✅ ~~Install PHPCS and WPCS globally~~ (Already available)
-2. Create phpcs.xml configuration file
+2. Create phpcs.xml configuration file (exclude pp-core.php from scans)
 3. Run initial PHPCS scan and document violations
 4. Run PHPStan scan and establish baseline
 5. Create .editorconfig for IDE consistency
-6. Create simple shell scripts for checking/fixing code (optional)
-7. Document workflow in dev-notes/
+6. Set up PHPUnit with WordPress test library
+7. Create composer.json with dev dependencies
+8. Create simple shell scripts for checking/fixing code (optional)
+9. Document workflow in dev-notes/
+
+#### Notes
+- PHPCS baseline should **exclude pp-core.php and pp-assets/** since they're being removed in M3. Focus on code that's staying.
+- PHPUnit setup here means subsequent milestones can write tests alongside new code rather than bolting them on at the end.
 
 #### Success Criteria
-- All existing code passes PHPCS (or documented exceptions)
+- All existing code (excluding pp-core) passes PHPCS (or documented exceptions)
 - PHPStan runs without critical errors
-- Simple shell scripts work for checking/fixing code
+- PHPUnit runs with at least one example test passing
 - Development workflow documented and tested
 - No external dependencies in production code
+
 ---
 
 ### Milestone 3: Remove pp-core.php Dependency
@@ -177,8 +196,71 @@
 
 ---
 
-### Milestone 4: Enhanced Consent Management
-**Target:** Week 5-6 (Mar 17-30, 2026)  
+### Milestone 4: JavaScript Modernization
+**Target:** Week 5 (Mar 17-23, 2026)  
+**Status:** Not Started  
+**Priority:** High
+
+> **Why now?** Milestones 5 and 6 involve writing significant new JavaScript (consent popup logic, tracker queuing, delay-loading). Modernizing JS *before* those milestones means all new feature code is written in ES6+ from the start, avoiding a rewrite later.
+
+#### Objectives
+- [ ] Refactor JavaScript to ES6+ standards
+- [ ] Remove jQuery dependencies where possible
+- [ ] Implement modern event handling
+- [ ] Add proper error handling
+- [ ] Optimize asset loading
+- [ ] Improve accessibility
+- [ ] Add JavaScript documentation
+
+#### Sub-Tasks
+
+##### Phase 4.1: ES6+ Refactoring
+- [ ] Convert to ES6 syntax (const/let, arrow functions)
+- [ ] Use modern DOM API instead of jQuery
+- [ ] Implement Promise-based AJAX calls
+- [ ] Add proper scope management
+- [ ] Use template literals for string building
+- [ ] Implement modules if beneficial
+
+##### Phase 4.2: Event Handling Improvements
+- [ ] Use addEventListener consistently
+- [ ] Implement event delegation where appropriate
+- [ ] Add proper event cleanup
+- [ ] Handle edge cases gracefully
+- [ ] Add debouncing/throttling where needed
+
+##### Phase 4.3: Accessibility Enhancements
+- [ ] Add ARIA labels to interactive elements
+- [ ] Implement keyboard navigation
+- [ ] Ensure focus management
+- [ ] Add screen reader support
+- [ ] Test with accessibility tools
+
+##### Phase 4.4: Build & Optimization
+- [ ] Set up build process (if needed)
+- [ ] Minify and bundle JavaScript
+- [ ] Create source maps
+- [ ] Optimize asset loading strategy
+- [ ] Test performance improvements
+
+#### Deliverables
+- [ ] Modernized JavaScript codebase
+- [ ] Reduced/eliminated jQuery dependency
+- [ ] Improved accessibility
+- [ ] Build process documentation
+- [ ] Performance benchmarks
+
+#### Success Criteria
+- JavaScript follows modern best practices
+- No jQuery dependency (or minimal)
+- Accessible to keyboard and screen reader users
+- Performance improved or maintained
+- Code is maintainable and documented
+
+---
+
+### Milestone 5: Enhanced Consent Management
+**Target:** Week 6-7 (Mar 24 - Apr 6, 2026)  
 **Status:** Not Started  
 **Priority:** Critical
 
@@ -193,28 +275,28 @@
 
 #### Sub-Tasks
 
-##### Phase 4.1: Popup UI Enhancement
+##### Phase 5.1: Popup UI Enhancement
 - [ ] Design new popup layout with 3 buttons: Reject, Info, Accept
 - [ ] Update mini-gdpr-cookie-popup.css for new layout
 - [ ] Ensure responsive design on all screen sizes
 - [ ] Add accessibility improvements (ARIA labels, keyboard navigation)
 - [ ] Create option for customizable button text
 
-##### Phase 4.2: Rejection Logic Implementation
+##### Phase 5.2: Rejection Logic Implementation
 - [ ] Create `mgwRejectScripts()` JavaScript function
 - [ ] Store rejection status in localStorage/cookie
 - [ ] Prevent blocked scripts from loading on rejection
 - [ ] Add "change preferences" mechanism for rejected users
 - [ ] Update consent duration to apply to rejections too
 
-##### Phase 4.3: Consent API Integration Research
+##### Phase 5.3: Consent API Integration Research
 - [ ] Research browser Consent API compatibility
 - [ ] Evaluate feasibility for Facebook Pixel, GA, etc.
 - [ ] Create proof-of-concept implementation
 - [ ] Document findings and recommendations
 - [ ] Implement if beneficial, document limitations if not
 
-##### Phase 4.4: Backend Consent Tracking
+##### Phase 5.4: Backend Consent Tracking
 - [ ] Update database schema for rejection tracking (if needed)
 - [ ] Store rejection consent in user meta (for logged-in users)
 - [ ] Add admin UI to view consent/rejection statistics
@@ -238,8 +320,8 @@
 
 ---
 
-### Milestone 5: Advanced Tracker Delay-Loading
-**Target:** Week 7-8 (Mar 31 - Apr 13, 2026)  
+### Milestone 6: Advanced Tracker Delay-Loading
+**Target:** Week 8-9 (Apr 7-20, 2026)  
 **Status:** Not Started  
 **Priority:** High
 
@@ -254,7 +336,7 @@
 
 #### Sub-Tasks
 
-##### Phase 5.1: Facebook Pixel Enhancement
+##### Phase 6.1: Facebook Pixel Enhancement
 - [ ] Research Facebook Pixel delayed initialization methods
 - [ ] Implement queue system for FB events before consent
 - [ ] Load FB Pixel script only after consent
@@ -262,7 +344,7 @@
 - [ ] Test pixel functionality with delayed loading
 - [ ] Document Facebook Pixel delay-loading approach
 
-##### Phase 5.2: Google Analytics Enhancement
+##### Phase 6.2: Google Analytics Enhancement
 - [ ] Review current GA implementation
 - [ ] Implement gtag.js delay-loading
 - [ ] Queue analytics events before consent
@@ -270,13 +352,13 @@
 - [ ] Test with GA4 and Universal Analytics
 - [ ] Ensure accurate event tracking
 
-##### Phase 5.3: Microsoft Clarity Enhancement
+##### Phase 6.3: Microsoft Clarity Enhancement
 - [ ] Implement delayed Clarity injection
 - [ ] Test session recording with delayed load
 - [ ] Ensure heatmap data accuracy
 - [ ] Document Clarity-specific considerations
 
-##### Phase 5.4: Generic Tracker Framework
+##### Phase 6.4: Generic Tracker Framework
 - [ ] Create abstraction layer for tracker management
 - [ ] Implement queue system for all trackers
 - [ ] Add support for custom third-party trackers
@@ -301,13 +383,15 @@
 
 ---
 
-### Milestone 6: Security & Best Practices
-**Target:** Week 9 (Apr 14-20, 2026)  
+### Milestone 7: Security Audit & Best Practices
+**Target:** Week 10 (Apr 21-27, 2026)  
 **Status:** Not Started  
 **Priority:** High
 
+> **Note:** Security best practices should be followed throughout all milestones. This milestone is a dedicated verification pass over all new and existing code to catch anything that was missed.
+
 #### Objectives
-- [ ] Comprehensive security audit
+- [ ] Comprehensive security audit of all code (including M3-M6 changes)
 - [ ] Strengthen nonce verification
 - [ ] Review all sanitization and escaping
 - [ ] Implement capability checks consistently
@@ -317,28 +401,28 @@
 
 #### Sub-Tasks
 
-##### Phase 6.1: Input Sanitization Audit
+##### Phase 7.1: Input Sanitization Audit
 - [ ] Review all $_POST, $_GET, $_REQUEST usage
 - [ ] Ensure proper sanitization functions used
 - [ ] Verify wp_unslash() where needed
 - [ ] Check file upload handling (if any)
 - [ ] Test with malicious input
 
-##### Phase 6.2: Output Escaping Audit
+##### Phase 7.2: Output Escaping Audit
 - [ ] Review all echo/print statements
 - [ ] Ensure proper escaping (esc_html, esc_attr, esc_url)
 - [ ] Check template files for proper escaping
 - [ ] Verify JavaScript variable output
 - [ ] Test for XSS vulnerabilities
 
-##### Phase 6.3: AJAX & Nonce Security
+##### Phase 7.3: AJAX & Nonce Security
 - [ ] Review all AJAX handlers
 - [ ] Verify nonce creation and verification
 - [ ] Check capability requirements
 - [ ] Implement rate limiting for sensitive actions
 - [ ] Test CSRF prevention
 
-##### Phase 6.4: Database Security
+##### Phase 7.4: Database Security
 - [ ] Review all database queries
 - [ ] Verify $wpdb->prepare() usage
 - [ ] Check for SQL injection vulnerabilities
@@ -361,75 +445,15 @@
 
 ---
 
-### Milestone 7: JavaScript Modernization
-**Target:** Week 10 (Apr 21-27, 2026)  
-**Status:** Not Started  
-**Priority:** Medium
-
-#### Objectives
-- [ ] Refactor JavaScript to ES6+ standards
-- [ ] Remove jQuery dependencies where possible
-- [ ] Implement modern event handling
-- [ ] Add proper error handling
-- [ ] Optimize asset loading
-- [ ] Improve accessibility
-- [ ] Add JavaScript documentation
-
-#### Sub-Tasks
-
-##### Phase 7.1: ES6+ Refactoring
-- [ ] Convert to ES6 syntax (const/let, arrow functions)
-- [ ] Use modern DOM API instead of jQuery
-- [ ] Implement Promise-based AJAX calls
-- [ ] Add proper scope management
-- [ ] Use template literals for string building
-- [ ] Implement modules if beneficial
-
-##### Phase 7.2: Event Handling Improvements
-- [ ] Use addEventListener consistently
-- [ ] Implement event delegation where appropriate
-- [ ] Add proper event cleanup
-- [ ] Handle edge cases gracefully
-- [ ] Add debouncing/throttling where needed
-
-##### Phase 7.3: Accessibility Enhancements
-- [ ] Add ARIA labels to interactive elements
-- [ ] Implement keyboard navigation
-- [ ] Ensure focus management
-- [ ] Add screen reader support
-- [ ] Test with accessibility tools
-
-##### Phase 7.4: Build & Optimization
-- [ ] Set up build process (if needed)
-- [ ] Minify and bundle JavaScript
-- [ ] Create source maps
-- [ ] Optimize asset loading strategy
-- [ ] Test performance improvements
-
-#### Deliverables
-- [ ] Modernized JavaScript codebase
-- [ ] Reduced/eliminated jQuery dependency
-- [ ] Improved accessibility
-- [ ] Build process documentation
-- [ ] Performance benchmarks
-
-#### Success Criteria
-- JavaScript follows modern best practices
-- No jQuery dependency (or minimal)
-- Accessible to keyboard and screen reader users
-- Performance improved or maintained
-- Code is maintainable and documented
-
----
-
 ### Milestone 8: Testing & Quality Assurance
 **Target:** Week 11-12 (Apr 28 - May 11, 2026)  
 **Status:** Not Started  
 **Priority:** High
 
+> **Note:** PHPUnit infrastructure is set up in M2, and tests should be written alongside code in each milestone. This milestone focuses on filling coverage gaps, adding integration tests, and browser/device testing.
+
 #### Objectives
-- [ ] Set up PHPUnit for unit testing
-- [ ] Create test suite for core functionality
+- [ ] Fill unit test coverage gaps across all modules
 - [ ] Integration testing with WordPress
 - [ ] WooCommerce integration testing
 - [ ] Contact Form 7 integration testing
@@ -439,14 +463,8 @@
 
 #### Sub-Tasks
 
-##### Phase 8.1: PHPUnit Setup
-- [ ] Install PHPUnit via Composer
-- [ ] Configure WordPress test environment
-- [ ] Create test bootstrap file
-- [ ] Set up test database
-- [ ] Create example test cases
-
-##### Phase 8.2: Unit Tests
+##### Phase 8.1: Unit Test Coverage
+- [ ] Audit current test coverage and identify gaps
 - [ ] Test Settings class methods
 - [ ] Test User_Controller methods
 - [ ] Test Script_Blocker logic
@@ -454,7 +472,7 @@
 - [ ] Test tracker injection
 - [ ] Achieve >70% code coverage
 
-##### Phase 8.3: Integration Tests
+##### Phase 8.2: Integration Tests
 - [ ] Test WordPress hooks integration
 - [ ] Test WooCommerce checkout flow
 - [ ] Test WooCommerce MyAccount integration
@@ -462,14 +480,14 @@
 - [ ] Test AJAX endpoints
 - [ ] Test settings save/load
 
-##### Phase 8.4: Browser & Device Testing
+##### Phase 8.3: Browser & Device Testing
 - [ ] Test on Chrome, Firefox, Safari, Edge
 - [ ] Test on mobile devices (iOS, Android)
 - [ ] Test consent popup on various screen sizes
 - [ ] Test with JavaScript disabled
 - [ ] Test with different privacy settings
 
-##### Phase 8.5: Performance Testing
+##### Phase 8.4: Performance Testing
 - [ ] Measure page load impact
 - [ ] Test with multiple tracking scripts
 - [ ] Benchmark AJAX request times
@@ -477,7 +495,7 @@
 - [ ] Compare v1.4.3 vs v2.0.0 performance
 
 #### Deliverables
-- [ ] PHPUnit test suite
+- [ ] Complete unit test suite (>70% coverage)
 - [ ] Integration test suite
 - [ ] Browser compatibility report
 - [ ] Performance benchmarks
@@ -702,12 +720,12 @@
 | Milestone | Target Completion | Status | Progress |
 |-----------|------------------|--------|----------|
 | 1. Foundation & Planning | Feb 23, 2026 | 🟡 In Progress | 20% |
-| 2. Code Standards Setup | Mar 2, 2026 | ⚪ Not Started | 0% |
-| 3. Remove pp-core | Mar 16, 2026 | ⚪ Not Started | 0% |
-| 4. Consent Management | Mar 30, 2026 | ⚪ Not Started | 0% |
-| 5. Tracker Delay-Loading | Apr 13, 2026 | ⚪ Not Started | 0% |
-| 6. Security & Best Practices | Apr 20, 2026 | ⚪ Not Started | 0% |
-| 7. JavaScript Modernization | Apr 27, 2026 | ⚪ Not Started | 0% |
+| 2. Code Standards, Quality & Test Infra | Mar 2, 2026 | ⚪ Not Started | 0% |
+| 3. Remove pp-core.php | Mar 16, 2026 | ⚪ Not Started | 0% |
+| 4. JavaScript Modernization | Mar 23, 2026 | ⚪ Not Started | 0% |
+| 5. Enhanced Consent Management | Apr 6, 2026 | ⚪ Not Started | 0% |
+| 6. Advanced Tracker Delay-Loading | Apr 20, 2026 | ⚪ Not Started | 0% |
+| 7. Security Audit & Best Practices | Apr 27, 2026 | ⚪ Not Started | 0% |
 | 8. Testing & QA | May 11, 2026 | ⚪ Not Started | 0% |
 | 9. Documentation | May 18, 2026 | ⚪ Not Started | 0% |
 | 10. Release Preparation | May 25, 2026 | ⚪ Not Started | 0% |
@@ -720,6 +738,17 @@
 
 ---
 
+## Changelog
+
+| Date | Change | Reason |
+|------|--------|--------|
+| 2026-02-16 | Initial project tracker created | — |
+| 2026-02-16 | Reordered milestones: JS Modernization moved from M7→M4; Consent Management M4→M5; Tracker Delay-Loading M5→M6; Security M6→M7 | JS modernization must happen before feature milestones that write significant new JS. Avoids writing ES5/jQuery code then immediately rewriting it. |
+| 2026-02-16 | M2 expanded to include PHPUnit test infrastructure setup | Testing infra should be available from M3 onwards so tests are written alongside code, not bolted on at the end. |
+| 2026-02-16 | M2 PHPCS baseline now explicitly excludes pp-core.php | No point baselining 2305 lines of code that's being removed in M3. |
+| 2026-02-16 | M8 refocused as coverage gap-filling and integration/browser testing | With test infra in M2 and tests written per-milestone, M8 becomes verification rather than "write all the tests." |
+
+---
+
 **Last Updated:** 16 February 2026  
 **Next Review:** 23 February 2026
-
