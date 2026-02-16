@@ -75,8 +75,10 @@ Thumbs.db
 phpcs.xml.cache
 composer.phar
 .phpunit.result.cache
+phpunit.xml
 /build/
 /tests/_output/
+/tests/coverage/
 
 # WordPress Debug
 debug.log
