@@ -1,0 +1,100 @@
+# WordPress Core Files
+wp-config.php
+wp-content/uploads/
+wp-content/blogs.dir/
+wp-content/upgrade/
+wp-content/backup-db/
+wp-content/advanced-cache.php
+wp-content/wp-cache-config.php
+wp-content/cache/
+wp-content/cache/*
+
+# WordPress Specific
+.htaccess
+sitemap.xml
+sitemap.xml.gz
+
+# Package Managers (not used in this project - keeping plugin self-contained)
+# node_modules/
+# vendor/
+# bower_components/
+
+# Build Tools & Dependencies
+package-lock.json
+yarn.lock
+composer.lock
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE & Editor Files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.project
+.settings/
+.buildpath
+
+# System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary Files
+*.tmp
+*.temp
+*.bak
+*.backup
+*~
+
+# Compiled Files
+*.min.js.map
+*.min.css.map
+*.zip
+*.tar.gz
+
+# Environment Files
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# PHP
+phpcs.xml.cache
+composer.phar
+.phpunit.result.cache
+/build/
+/tests/_output/
+
+# WordPress Debug
+debug.log
+error_log
+wp-content/debug.log
+
+# Deployment
+/releases/
+/deploy/
+*.sql
+*.sql.gz
+
+# Archives (for distribution)
+# Note: Exclude built plugin archives but keep source
+mini-wp-gdpr-*.zip
+
+# Development Notes (optional - uncomment if you want to keep dev-notes private)
+# /dev-notes/
+
+# Specific to Mini WP GDPR
+# Add any plugin-specific files to ignore here

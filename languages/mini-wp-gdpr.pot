@@ -1,0 +1,300 @@
+# Copyright (C) 2023 Power Plugins
+# This file is distributed under the GPLv2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Mini WP GDPR 1.2.11\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/mini-wp-gdpr\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2023-07-29T17:37:13+01:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.8.1\n"
+"X-Domain: mini-wp-gdpr\n"
+
+#. Plugin Name of the plugin
+#: includes/class-settings.php:16
+#: includes/class-settings.php:17
+msgid "Mini WP GDPR"
+msgstr ""
+
+#. Plugin URI of the plugin
+msgid "https://power-plugins.com/plugin/mini-wp-gdpr/"
+msgstr ""
+
+#. Description of the plugin
+msgid "Mini GDPR compliance plugin with cookie and tracking-script consent popup."
+msgstr ""
+
+#. Author of the plugin
+msgid "Power Plugins"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://power-plugins.com/"
+msgstr ""
+
+#: admin-templates/contact-form-7-settings.php:9
+msgid "Contact Form 7 Integration"
+msgstr ""
+
+#: admin-templates/contact-form-7-settings.php:15
+msgid "Install Now"
+msgstr ""
+
+#: admin-templates/contact-form-7-settings.php:35
+msgid "Form"
+msgstr ""
+
+#: admin-templates/contact-form-7-settings.php:36
+msgid "Privacy Consent Installed?"
+msgstr ""
+
+#: admin-templates/cookie-consent-settings.php:9
+msgid "Cookie Consent"
+msgstr ""
+
+#: admin-templates/cookie-consent-settings.php:20
+msgid "Enable the cookie consent popup for new visitors (recommended)"
+msgstr ""
+
+#: admin-templates/cookie-consent-settings.php:34
+msgid "Popup tracker/cookie consent message"
+msgstr ""
+
+#: admin-templates/cookie-consent-settings.php:35
+msgid "Some HTML tags allowed, like <strong> and <em>"
+msgstr ""
+
+#: admin-templates/cookie-consent-settings.php:58
+msgid "Show consent popup even if no tracking scripts are found"
+msgstr ""
+
+#: admin-templates/cookie-consent-settings.php:71
+msgid "How many days is user-consent valid for?"
+msgstr ""
+
+#: admin-templates/cookie-consent-settings.php:72
+msgid "Cookie acceptance is stored in the clients' browser using local storage."
+msgstr ""
+
+#: admin-templates/cookie-consent-settings.php:84
+msgid "Position of the consent box"
+msgstr ""
+
+#: admin-templates/cookie-consent-settings.php:85
+msgid "Put the box in a corner, or directly in the centre of the page."
+msgstr ""
+
+#: admin-templates/trackers-settings-facebook.php:9
+#: trackers/tracker-facebook-pixel.php:17
+msgid "Facebook Pixel"
+msgstr ""
+
+#: admin-templates/trackers-settings-facebook.php:20
+msgid "Add Facebook Pixel"
+msgstr ""
+
+#: admin-templates/trackers-settings-facebook.php:34
+msgid "Facebook Pixel ID"
+msgstr ""
+
+#: admin-templates/trackers-settings-facebook.php:35
+msgid "e.g. \"999999999999999\""
+msgstr ""
+
+#: admin-templates/trackers-settings-google.php:9
+#: trackers/tracker-google-analytics.php:17
+msgid "Google Analytics"
+msgstr ""
+
+#: admin-templates/trackers-settings-google.php:16
+msgid "Using a third party plugin to inject Google tracker into the HTML."
+msgstr ""
+
+#: admin-templates/trackers-settings-google.php:33
+msgid "Add Google Analytics tracker"
+msgstr ""
+
+#: admin-templates/trackers-settings-google.php:53
+msgid "Google Analytics Tracking Code"
+msgstr ""
+
+#: admin-templates/trackers-settings-google.php:54
+msgid "e.g. \"G-XXXXX\" or \"UA-XXXXX-X\""
+msgstr ""
+
+#: admin-templates/trackers-settings-msft-clarity.php:9
+#: trackers/tracker-microsoft-clarity.php:17
+msgid "Microsoft Clarity"
+msgstr ""
+
+#: admin-templates/trackers-settings-msft-clarity.php:15
+msgid "Add Microsoft Clarity"
+msgstr ""
+
+#: admin-templates/trackers-settings-msft-clarity.php:33
+msgid "Microsfot Clarity Project Code"
+msgstr ""
+
+#: admin-templates/trackers-settings-msft-clarity.php:34
+msgid "e.g. \"abcdefg123\""
+msgstr ""
+
+#: admin-templates/trackers-settings.php:9
+msgid "Tracking Scripts"
+msgstr ""
+
+#: admin-templates/trackers-settings.php:20
+msgid "Block tracking scripts until the user consents (if possible)?"
+msgstr ""
+
+#: admin-templates/trackers-settings.php:25
+msgid "Enabling this is more respectful of users' privacy, but it will usually lead to your tracker(s) under-reporting site traffic."
+msgstr ""
+
+#: admin-templates/trackers-settings.php:36
+msgid "Allow tracking scripts to run even when logged-in as administrator?"
+msgstr ""
+
+#: admin-templates/woocommerce-settings.php:9
+msgid "WooCommerce Integration"
+msgstr ""
+
+#: admin-templates/woocommerce-settings.php:20
+msgid "Accept user consent when a new order is created and the Ts & Cs have been accepted. You probably want this."
+msgstr ""
+
+#: admin-templates/woocommerce-settings.php:32
+msgid "Inject GDPR checkbox into My Account area, if a user has not accepted the Privacy Policy."
+msgstr ""
+
+#: admin-templates/woocommerce-settings.php:46
+msgid "Which tab?"
+msgstr ""
+
+#: admin-templates/woocommerce-settings.php:47
+msgid "Choose a tab from the users' My Account area."
+msgstr ""
+
+#: functions-private.php:93
+msgid "Please accept the GDPR terms before proceeding."
+msgstr ""
+
+#: functions-private.php:114
+msgid "Thanks. That's the official GDPR stuff sorted."
+msgstr ""
+
+#: functions-private.php:140
+msgid "I agree to the handling of my personal data by %s, as per the <a href=\"%s\">Privacy Policy</a>"
+msgstr ""
+
+#: functions-private.php:201
+msgid "Bottom Left"
+msgstr ""
+
+#: functions-private.php:202
+msgid "Bottom Centre"
+msgstr ""
+
+#: functions-private.php:203
+msgid "Bottom Right"
+msgstr ""
+
+#: functions-private.php:204
+msgid "Middle Left"
+msgstr ""
+
+#: functions-private.php:205
+msgid "Middle Centre"
+msgstr ""
+
+#: functions-private.php:206
+msgid "Middle Right"
+msgstr ""
+
+#: functions-private.php:207
+msgid "Top Left"
+msgstr ""
+
+#: functions-private.php:208
+msgid "Top Centre"
+msgstr ""
+
+#: functions-private.php:209
+msgid "Top Right"
+msgstr ""
+
+#: includes/class-admin-hooks.php:50
+msgid "Privacy Consent"
+msgstr ""
+
+#: includes/class-cf7-helper.php:82
+msgid "I agree to the storage and handling of my data by this website, as specified in the privacy policy"
+msgstr ""
+
+#: includes/class-cf7-helper.php:134
+msgid "Untitled Form"
+msgstr ""
+
+#: includes/class-plugin.php:121
+msgid "Privacy Policy not accepted for GDPR"
+msgstr ""
+
+#: includes/class-plugin.php:271
+msgid "All user consents have been reset"
+msgstr ""
+
+#: includes/class-script-blocker.php:157
+msgid "Tracking scripts are blocked because you're logged-in as an administrator"
+msgstr ""
+
+#: includes/class-script-blocker.php:177
+msgid "Accept"
+msgstr ""
+
+#: includes/class-script-blocker.php:178
+msgid "info..."
+msgstr ""
+
+#: includes/class-script-blocker.php:179
+msgid "Along with some cookies, we use these scripts"
+msgstr ""
+
+#: includes/class-script-blocker.php:180
+msgid "We don't use any tracking scripts, but we do use some cookies."
+msgstr ""
+
+#: includes/class-settings.php:28
+msgid "Not authorized"
+msgstr ""
+
+#: includes/class-settings.php:33
+msgid "You need to create a Privacy Policy page first."
+msgstr ""
+
+#: includes/class-settings.php:35
+msgid "Create a Privacy Policy"
+msgstr ""
+
+#: includes/class-settings.php:66
+msgid "Save Changes"
+msgstr ""
+
+#: includes/class-settings.php:76
+msgid "This will reset all consent given by all the registered users of the site."
+msgstr ""
+
+#: includes/class-settings.php:90
+msgid "Really reset all user consents now?"
+msgstr ""
+
+#: includes/class-settings.php:99
+msgid "Reset Now"
+msgstr ""
+
+#: includes/class-settings.php:164
+msgid "%s uses cookies and analytics to create a better user experience. Are you OK with this?"
+msgstr ""
