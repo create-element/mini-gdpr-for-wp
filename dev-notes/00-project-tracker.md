@@ -42,7 +42,7 @@
 - [x] Create .editorconfig for consistent coding style
 - [x] Create composer.json with dev dependencies
 - [x] Run initial PHPCS scan and create baseline (exclude pp-core.php) ✅
-- [ ] Set up PHPUnit test infrastructure
+- [x] Set up PHPUnit test infrastructure
 
 ### Next Up (Milestone 2)
 - [ ] Create simple shell scripts for code quality checks (optional)
@@ -88,7 +88,7 @@
 
 ### Milestone 2: Code Standards, Quality & Test Infrastructure
 **Target:** Week 2 (Feb 24 - Mar 2, 2026)  
-**Status:** 🟡 In Progress  
+**Status:** 🟡 In Progress (71% complete)  
 **Priority:** High
 
 #### Objectives
@@ -96,8 +96,8 @@
 - [x] ~~Configure PHPStan globally~~ (Already installed)
 - [x] Create phpcs.xml configuration file
 - [x] Create .editorconfig for consistent coding style
-- [ ] Run initial PHPCS scan and create baseline (**exclude pp-core.php** — it's being removed in M3)
-- [ ] Set up PHPUnit test infrastructure (bootstrap, test database, example test)
+- [x] Run initial PHPCS scan and create baseline (**exclude pp-core.php** — it's being removed in M3)
+- [x] Set up PHPUnit test infrastructure (bootstrap, test database, example test)
 - [x] Create composer.json with dev dependencies (phpunit, phpcs)
 - [ ] Create simple shell scripts for code quality checks (optional)
 - [ ] Document development workflow
@@ -721,7 +721,7 @@
 | Milestone | Target Completion | Status | Progress |
 |-----------|------------------|--------|----------|
 | 1. Foundation & Planning | Feb 23, 2026 | 🟡 In Progress | 20% |
-| 2. Code Standards, Quality & Test Infra | Mar 2, 2026 | 🟡 In Progress | 40% |
+| 2. Code Standards, Quality & Test Infra | Mar 2, 2026 | 🟡 In Progress | 71% |
 | 3. Remove pp-core.php | Mar 16, 2026 | ⚪ Not Started | 0% |
 | 4. JavaScript Modernization | Mar 23, 2026 | ⚪ Not Started | 0% |
 | 5. Enhanced Consent Management | Apr 6, 2026 | ⚪ Not Started | 0% |
