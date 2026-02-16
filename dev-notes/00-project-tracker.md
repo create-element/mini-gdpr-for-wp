@@ -37,15 +37,16 @@
 
 ## Active TODO Items
 
-### In Progress
-- [ ] Review and document current pp-core.php functionality
-- [ ] Create development roadmap with detailed specifications
-- [ ] Set up development/testing environment
+### In Progress (Milestone 2)
+- [x] Create phpcs.xml configuration file
+- [x] Create .editorconfig for consistent coding style
+- [x] Create composer.json with dev dependencies
+- [ ] Run initial PHPCS scan and create baseline (exclude pp-core.php)
+- [ ] Set up PHPUnit test infrastructure
 
-### Next Up
-- [ ] Archive pp-core.php to dev-notes/archive/
-- [ ] Extract reusable components from pp-core.php
-- [ ] Design new Settings API implementation
+### Next Up (Milestone 2)
+- [ ] Create simple shell scripts for code quality checks (optional)
+- [ ] Document development workflow
 
 ---
 
@@ -87,17 +88,17 @@
 
 ### Milestone 2: Code Standards, Quality & Test Infrastructure
 **Target:** Week 2 (Feb 24 - Mar 2, 2026)  
-**Status:** Not Started  
+**Status:** 🟡 In Progress  
 **Priority:** High
 
 #### Objectives
 - [x] ~~Install PHP_CodeSniffer globally with WordPress Coding Standards~~ (Already installed)
 - [x] ~~Configure PHPStan globally~~ (Already installed)
-- [ ] Create phpcs.xml configuration file
-- [ ] Create .editorconfig for consistent coding style
+- [x] Create phpcs.xml configuration file
+- [x] Create .editorconfig for consistent coding style
 - [ ] Run initial PHPCS scan and create baseline (**exclude pp-core.php** — it's being removed in M3)
 - [ ] Set up PHPUnit test infrastructure (bootstrap, test database, example test)
-- [ ] Create composer.json with dev dependencies (phpunit, phpcs)
+- [x] Create composer.json with dev dependencies (phpunit, phpcs)
 - [ ] Create simple shell scripts for code quality checks (optional)
 - [ ] Document development workflow
 
@@ -720,7 +721,7 @@
 | Milestone | Target Completion | Status | Progress |
 |-----------|------------------|--------|----------|
 | 1. Foundation & Planning | Feb 23, 2026 | 🟡 In Progress | 20% |
-| 2. Code Standards, Quality & Test Infra | Mar 2, 2026 | ⚪ Not Started | 0% |
+| 2. Code Standards, Quality & Test Infra | Mar 2, 2026 | 🟡 In Progress | 40% |
 | 3. Remove pp-core.php | Mar 16, 2026 | ⚪ Not Started | 0% |
 | 4. JavaScript Modernization | Mar 23, 2026 | ⚪ Not Started | 0% |
 | 5. Enhanced Consent Management | Apr 6, 2026 | ⚪ Not Started | 0% |
