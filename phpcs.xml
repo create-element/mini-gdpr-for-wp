@@ -37,8 +37,10 @@
 	</rule>
 
 	<!-- Check for PHP cross-version compatibility -->
-	<config name="testVersion" value="7.4-"/>
-	<rule ref="PHPCompatibilityWP"/>
+	<!-- Note: PHPCompatibilityWP requires installation via Composer -->
+	<!-- TODO: Install via composer (dev dependency) phpcompatibility/phpcompatibility-wp -->
+	<!-- <config name="testVersion" value="7.4-"/> -->
+	<!-- <rule ref="PHPCompatibilityWP"/> -->
 
 	<!-- Verify WordPress version compatibility -->
 	<config name="minimum_wp_version" value="5.0"/>
