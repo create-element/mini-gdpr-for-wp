@@ -86,9 +86,9 @@
 
 ---
 
-### Milestone 2: Code Standards, Quality & Test Infrastructure
+### Milestone 2: Code Standards & Quality Tools
 **Target:** Week 2 (Feb 24 - Mar 2, 2026)  
-**Status:** 🟡 In Progress (71% complete)  
+**Status:** 🟡 In Progress (85% complete)  
 **Priority:** High
 
 #### Objectives
@@ -97,40 +97,37 @@
 - [x] Create phpcs.xml configuration file
 - [x] Create .editorconfig for consistent coding style
 - [x] Run initial PHPCS scan and create baseline (**exclude pp-core.php** — it's being removed in M3)
-- [x] Set up PHPUnit test infrastructure (bootstrap, test database, example test)
-- [x] Create composer.json with dev dependencies (phpunit, phpcs)
-- [ ] Create simple shell scripts for code quality checks (optional)
+- [x] Create simple shell scripts for code quality checks (check.sh, fix.sh, test.sh)
+- [ ] Run PHPStan scan and establish baseline
 - [ ] Document development workflow
 
 #### Deliverables
-- [ ] phpcs.xml configured and tested
+- [x] phpcs.xml configured and tested
+- [x] .editorconfig file
+- [x] Initial code quality baseline report (excluding pp-core.php)
+- [x] Shell scripts for code quality checks (check.sh, fix.sh, test.sh)
 - [ ] phpstan.neon configuration file
-- [ ] .editorconfig file
-- [ ] Initial code quality baseline report (excluding pp-core.php)
-- [ ] PHPUnit bootstrap and test configuration
-- [ ] composer.json with development dependencies
-- [ ] Shell scripts for code quality checks (check.sh, fix.sh) - optional
 - [ ] Updated dev-notes/workflows/code-standards.md
 
 #### Tasks
 1. ✅ ~~Install PHPCS and WPCS globally~~ (Already available)
-2. Create phpcs.xml configuration file (exclude pp-core.php from scans)
-3. Run initial PHPCS scan and document violations
-4. Run PHPStan scan and establish baseline
-5. Create .editorconfig for IDE consistency
-6. Set up PHPUnit with WordPress test library
-7. Create composer.json with dev dependencies
-8. Create simple shell scripts for checking/fixing code (optional)
-9. Document workflow in dev-notes/
+2. ✅ Create phpcs.xml configuration file (exclude pp-core.php from scans)
+3. ✅ Run initial PHPCS scan and document violations
+4. ✅ Create .editorconfig for IDE consistency
+5. ✅ Create simple shell scripts for checking/fixing code
+6. Run PHPStan scan and establish baseline
+7. Document workflow in dev-notes/
 
 #### Notes
-- PHPCS baseline should **exclude pp-core.php and pp-assets/** since they're being removed in M3. Focus on code that's staying.
-- PHPUnit setup here means subsequent milestones can write tests alongside new code rather than bolting them on at the end.
+- PHPCS baseline **excludes pp-core.php and pp-assets/** since they're being removed in M3
+- **No PHPUnit/Composer**: Plugin is simple enough that PHPCS + PHPStan + manual testing is sufficient
+- Focus on WordPress Coding Standards compliance and static analysis
+- Manual testing performed on westfield.local dev site
 
 #### Success Criteria
 - All existing code (excluding pp-core) passes PHPCS (or documented exceptions)
 - PHPStan runs without critical errors
-- PHPUnit runs with at least one example test passing
+- Shell scripts work for checking/fixing code
 - Development workflow documented and tested
 - No external dependencies in production code
 
@@ -446,16 +443,15 @@
 
 ---
 
-### Milestone 8: Testing & Quality Assurance
+### Milestone 8: Manual Testing & Quality Assurance
 **Target:** Week 11-12 (Apr 28 - May 11, 2026)  
 **Status:** Not Started  
 **Priority:** High
 
-> **Note:** PHPUnit infrastructure is set up in M2, and tests should be written alongside code in each milestone. This milestone focuses on filling coverage gaps, adding integration tests, and browser/device testing.
+> **Note:** This plugin uses PHPCS + PHPStan for code quality. Testing focuses on manual functional testing, browser compatibility, and performance verification.
 
 #### Objectives
-- [ ] Fill unit test coverage gaps across all modules
-- [ ] Integration testing with WordPress
+- [ ] Manual functional testing of all features
 - [ ] WooCommerce integration testing
 - [ ] Contact Form 7 integration testing
 - [ ] Browser compatibility testing
@@ -464,50 +460,52 @@
 
 #### Sub-Tasks
 
-##### Phase 8.1: Unit Test Coverage
-- [ ] Audit current test coverage and identify gaps
-- [ ] Test Settings class methods
-- [ ] Test User_Controller methods
-- [ ] Test Script_Blocker logic
-- [ ] Test consent tracking
-- [ ] Test tracker injection
-- [ ] Achieve >70% code coverage
+##### Phase 8.1: Functional Testing (Manual)
+- [ ] Test settings page (save/load all options)
+- [ ] Test consent popup display and behavior
+- [ ] Test "Accept" button functionality
+- [ ] Test "Reject" button functionality
+- [ ] Test "Info" modal
+- [ ] Test script blocking before consent
+- [ ] Test script loading after consent
+- [ ] Test consent persistence (localStorage/cookie)
+- [ ] Test consent duration expiry
 
-##### Phase 8.2: Integration Tests
-- [ ] Test WordPress hooks integration
-- [ ] Test WooCommerce checkout flow
-- [ ] Test WooCommerce MyAccount integration
-- [ ] Test Contact Form 7 consent
-- [ ] Test AJAX endpoints
-- [ ] Test settings save/load
+##### Phase 8.2: Integration Tests (Manual)
+- [ ] Test WooCommerce checkout flow with consent popup
+- [ ] Test WooCommerce MyAccount consent toggle
+- [ ] Test Contact Form 7 consent checkbox
+- [ ] Test with Google Analytics
+- [ ] Test with Facebook Pixel
+- [ ] Test with Microsoft Clarity
+- [ ] Test AJAX endpoints via browser console
 
 ##### Phase 8.3: Browser & Device Testing
 - [ ] Test on Chrome, Firefox, Safari, Edge
 - [ ] Test on mobile devices (iOS, Android)
 - [ ] Test consent popup on various screen sizes
-- [ ] Test with JavaScript disabled
-- [ ] Test with different privacy settings
+- [ ] Test with JavaScript disabled (graceful degradation)
+- [ ] Test with different privacy settings (strict mode, etc.)
 
 ##### Phase 8.4: Performance Testing
-- [ ] Measure page load impact
-- [ ] Test with multiple tracking scripts
+- [ ] Measure page load impact (before/after plugin)
+- [ ] Test with multiple tracking scripts enabled
 - [ ] Benchmark AJAX request times
-- [ ] Test with high-traffic scenarios
+- [ ] Test with high-traffic scenarios (LoadForge/k6)
 - [ ] Compare v1.4.3 vs v2.0.0 performance
 
 #### Deliverables
-- [ ] Complete unit test suite (>70% coverage)
-- [ ] Integration test suite
+- [ ] Manual testing checklist (completed)
 - [ ] Browser compatibility report
 - [ ] Performance benchmarks
-- [ ] Test documentation
+- [ ] Test documentation (known issues, edge cases)
 
 #### Success Criteria
-- >70% unit test coverage
-- All integration tests passing
+- All features work as expected in manual testing
 - Works in all major browsers
-- No performance degradation
-- Accessibility standards met
+- No performance degradation vs v1.4.3
+- Accessibility standards met (keyboard nav, screen readers)
+- PHPCS and PHPStan pass with 0 errors
 
 ---
 
