@@ -177,11 +177,19 @@ class Plugin extends Component {
 	/**
 	 * Fires on the WordPress 'admin_init' action.
 	 *
-	 * Registers admin hooks and saves settings if a form was submitted.
+	 * Registers all plugin options with the WordPress Settings API unconditionally,
+	 * then — when the plugin is fully enabled — instantiates admin hooks, registers
+	 * the user-list columns, and saves any submitted settings form.
+	 *
+	 * register_settings() runs on every admin_init so WordPress is always aware of
+	 * which options this plugin owns, regardless of whether a Privacy Policy page
+	 * has been configured yet.
 	 *
 	 * @return void
 	 */
 	public function admin_init() {
+		$this->settings->register_settings();
+
 		if ( is_mini_gdpr_enabled() ) {
 			$this->admin_hooks = new Admin_Hooks( $this->name, $this->version );
 
