@@ -1,6 +1,7 @@
 # Development Workflow
 
-This document outlines the complete development workflow for Mini WP GDPR, from setting up your environment to committing code changes.
+This document outlines the complete development workflow for Mini WP GDPR,
+from setting up your environment to committing and pushing code changes.
 
 ---
 
@@ -21,34 +22,29 @@ This document outlines the complete development workflow for Mini WP GDPR, from 
 ### Prerequisites
 
 - PHP 7.4 or higher
-- Composer installed globally
-- WordPress development environment (local or remote)
+- PHP_CodeSniffer (PHPCS) installed globally with WordPress Coding Standards
+- A local WordPress environment (this project uses `westfield.local`)
 - Git
 
-### One-Time Setup
+### Verify PHPCS Setup
 
-1. **Clone the repository:**
-   ```bash
-   git clone <repository-url>
-   cd mini-gdpr-for-wp
-   ```
+```bash
+phpcs --version
+phpcs -i | grep WordPress
+```
 
-2. **Install dependencies:**
-   ```bash
-   composer install
-   ```
+You should see PHPCS version and "WordPress, WordPress-Core, WordPress-Docs, WordPress-Extra" in the installed standards list.
 
-3. **Set up WordPress test suite** (for PHPUnit):
-   ```bash
-   bash bin/install-wp-tests.sh wordpress_test root '' localhost latest
-   ```
-   
-   Replace `root`, `''`, and `localhost` with your MySQL credentials if different.
+If WPCS is not installed, install it globally:
 
-4. **Verify setup:**
-   ```bash
-   bin/check.sh
-   ```
+```bash
+composer global require squizlabs/php_codesniffer wp-coding-standards/wpcs
+phpcs --config-set installed_paths ~/.composer/vendor/wp-coding-standards/wpcs
+```
+
+### Note: No composer.json in This Plugin
+
+This plugin does not use Composer or a `vendor/` directory. Shell scripts (bin/) were removed as a security risk — they have no place in a WordPress plugin. Use the globally-installed `phpcs` and `phpcbf` commands directly.
 
 ---
 
@@ -56,174 +52,117 @@ This document outlines the complete development workflow for Mini WP GDPR, from 
 
 ### Standard Development Cycle
 
-1. **Create or switch to a feature branch:**
+1. **Check out the correct branch** (main for now; feature branches for larger work):
    ```bash
-   git checkout -b feature/my-feature
+   git branch --show-current
    ```
 
-2. **Make your changes:**
-   - Edit code following WordPress Coding Standards
-   - See [code-standards.md](code-standards.md) for details
+2. **Make your changes**, following the coding standards in `.github/copilot-instructions.md` and the patterns in `dev-notes/patterns/`.
 
-3. **Run code quality checks frequently:**
+3. **Auto-fix PHPCS style issues:**
    ```bash
-   bin/check.sh
+   phpcbf --standard=phpcs.xml .
    ```
 
-4. **Auto-fix style issues:**
+4. **Check for remaining PHPCS issues:**
    ```bash
-   bin/fix.sh
+   phpcs --standard=phpcs.xml .
    ```
+   Fix any remaining issues manually. Do not commit with outstanding errors.
 
-5. **Write or update tests:**
-   - Add PHPUnit tests for new functionality
-   - Update existing tests if behaviour changes
-   - See [Testing](#testing) section below
+5. **Manual testing** — see [Testing](#testing) below.
 
-6. **Run tests:**
-   ```bash
-   bin/test.sh
-   ```
-
-7. **Commit your changes:**
+6. **Commit your changes** using the milestone prefix format:
    ```bash
    git add .
-   git commit -m "[M#] Brief description of changes"
+   git commit -m "[M3] fix: brief description"
    ```
-   
-   See [commit-to-git.md](commit-to-git.md) for commit message conventions.
 
-8. **Push to remote:**
+7. **Push to remote after confirmed-passing testing sprint:**
    ```bash
-   git push origin feature/my-feature
+   git push
    ```
 
 ---
 
 ## Code Quality Tools
 
-Mini WP GDPR uses several tools to maintain code quality:
+Mini WP GDPR uses PHP_CodeSniffer with the WordPress Coding Standards.
 
-### Shell Scripts (Recommended)
-
-Located in `bin/`, these scripts wrap Composer commands for convenience:
-
-- **`bin/check.sh`** - Run all checks (PHPCS + PHPUnit)
-- **`bin/fix.sh`** - Auto-fix code style issues (PHPCBF)
-- **`bin/test.sh`** - Run PHPUnit tests
-- **`bin/test.sh --coverage`** - Run tests with code coverage report
-
-**Example workflow:**
-```bash
-# Make changes
-vim includes/class-settings.php
-
-# Auto-fix style issues
-bin/fix.sh
-
-# Check everything
-bin/check.sh
-
-# If tests fail, fix and re-check
-bin/check.sh
-```
-
-### Composer Scripts (Alternative)
-
-You can also use Composer commands directly:
+### Running PHPCS
 
 ```bash
-# Run PHPCS (check code style)
-composer run-script phpcs
+# Check code style (from plugin root)
+phpcs --standard=phpcs.xml .
 
-# Run PHPCBF (auto-fix code style)
-composer run-script phpcbf
+# Auto-fix fixable style issues
+phpcbf --standard=phpcs.xml .
 
-# Run PHPUnit tests
-composer run-script test
-
-# Shorthand aliases
-composer run format      # Same as phpcbf
-composer run lint        # Same as phpcs
+# Check a specific file
+phpcs --standard=phpcs.xml includes/class-settings.php
 ```
 
-### PHPCS (PHP CodeSniffer)
+The PHPCS configuration lives in `phpcs.xml`. It excludes:
 
-- **What it does:** Checks code against WordPress Coding Standards
-- **Config file:** `phpcs.xml`
-- **Run manually:** `bin/check.sh` or `composer run phpcs`
-- **Auto-fix:** `bin/fix.sh` or `composer run phpcbf`
+- `dev-notes/` (development documentation, not plugin code)
+- `vendor/` (not present in this plugin)
+- `languages/` (translation files)
+- `tests/` (if added)
+- `*.js`, `*.css` (JavaScript and CSS handled separately in M4+)
 
-**PHPCS ignores:**
-- `pp-core.php` (being removed in Milestone 3)
-- `pp-assets/` (being removed in Milestone 3)
-- `dev-notes/`, `vendor/`, `node_modules/`
-- JavaScript and CSS files (covered by separate linters in M4)
+### What PHPCS Checks
 
-### PHPUnit
-
-- **What it does:** Runs automated unit tests
-- **Config file:** `phpunit.xml.dist`
-- **Run manually:** `bin/test.sh` or `composer run test`
-- **Test directory:** `tests/`
+- WordPress Coding Standards (tabs, braces, spacing)
+- Security rules (nonce verification, input sanitisation, output escaping)
+- Text domain consistency (`mini-wp-gdpr`)
+- Global namespace prefix requirements (`pp_mwg_`, `PP_MWG_`, `mwg_`, `Mini_Wp_Gdpr\`)
+- Minimum WordPress version compatibility (5.0+)
 
 ---
 
 ## Testing
 
-### Running Tests
+There are no automated unit tests for this plugin. Testing is manual.
 
-**Quick test run:**
+### Manual Testing Protocol (WordPress Plugin)
+
+After making changes, verify:
+
+1. **Plugin is active** — check the Plugins list at `/wp-admin/plugins.php`
+2. **Admin loads cleanly** — visit `/wp-admin/` and check for PHP errors in the admin bar or page
+3. **Settings page works** — visit `/wp-admin/options-general.php?page=minigdpr`, check the form renders and saves correctly
+4. **Front-end loads cleanly** — visit the site front-end (e.g. `http://westfield.local/`) and verify no visible errors
+5. **Error log is clean** — check the site error log:
+   ```bash
+   tail -20 /var/www/westfield.local/log/error.log
+   ```
+6. **Debug log is clean** — check WordPress debug log:
+   ```bash
+   tail -20 /var/www/westfield.local/web/wp-content/debug.log
+   ```
+
+### Running WP-CLI Checks
+
 ```bash
-bin/test.sh
+# Verify plugin is active
+wp --path=/var/www/westfield.local/web plugin list --name=mini-gdpr-for-wp
+
+# Check for fatal errors via eval
+wp --path=/var/www/westfield.local/web eval 'echo "OK";'
 ```
 
-**With code coverage:**
+### PHPStan (Deferred to Milestone 8)
+
+PHPStan static analysis is scheduled for M8, after the bulk of refactoring in
+M3–M6 is complete. Running PHPStan on code that is still being rewritten creates
+noise without value.
+
+When M8 arrives, set up PHPStan:
+
 ```bash
-bin/test.sh --coverage
+composer global require phpstan/phpstan
+phpstan analyse --configuration phpstan.neon
 ```
-
-This generates an HTML coverage report in `coverage/index.html`.
-
-### Writing Tests
-
-All tests go in the `tests/` directory, mirroring the structure of the main codebase:
-
-```
-tests/
-├── bootstrap.php                    # Test bootstrap (auto-loaded)
-├── test-sample.php                 # Example test (can be deleted)
-├── class-settings-test.php         # Tests for Settings class
-└── class-user-controller-test.php  # Tests for User_Controller class
-```
-
-**Example test:**
-```php
-<?php
-/**
- * Tests for the Settings class.
- *
- * @package Mini_WP_GDPR
- */
-
-class Settings_Test extends WP_UnitTestCase {
-    
-    public function test_settings_registration() {
-        // Arrange
-        $settings = new PP_MWG\Settings();
-        
-        // Act
-        $settings->register();
-        
-        // Assert
-        $this->assertTrue( has_action( 'admin_init', [ $settings, 'register_settings' ] ) );
-    }
-}
-```
-
-### Test Database
-
-PHPUnit uses a separate test database (`wordpress_test` by default) which is created and torn down automatically. Never use your development database for testing.
 
 ---
 
@@ -234,161 +173,152 @@ PHPUnit uses a separate test database (`wordpress_test` by default) which is cre
 Use milestone prefixes for all commits:
 
 ```
-[M1] Brief description of changes
-[M2] Brief description of changes
-[M3] Brief description of changes
+[M3] type: brief description of changes
+
+- Bullet explaining why or what was tricky
+- Additional context if needed
 ```
 
-See [commit-to-git.md](commit-to-git.md) for full details.
+**Types:** `feat:` `fix:` `chore:` `refactor:` `docs:` `style:` `test:`
+
+Full commit guide: [`commit-to-git.md`](commit-to-git.md)
 
 ### What to Commit
 
 **Do commit:**
-- Source code changes
-- Test files
-- Documentation updates
-- Configuration files (phpcs.xml, composer.json, etc.)
+- Source code changes (PHP, JS, CSS)
+- Documentation updates (`dev-notes/`, `README.md`, `CHANGELOG.md`)
+- Configuration files (`phpcs.xml`, `.editorconfig`, `.gitignore`)
 
-**Don't commit:**
-- `vendor/` (managed by Composer)
-- `node_modules/` (managed by npm, when added in M4)
-- Coverage reports (`coverage/`)
-- IDE-specific files (.idea/, .vscode/ unless shared config)
-- Temporary files
+**Do NOT commit:**
+- `vendor/` (not used — no composer.json)
+- `node_modules/` (will be added in M4 if needed)
+- IDE-specific files (`.idea/`, `.vscode/` unless shared config)
+- Temporary files, cache files, coverage reports
 
-The `.gitignore` file handles most of this automatically.
+The `.gitignore` handles most of this automatically.
 
 ---
 
 ## Pre-Commit Checklist
 
-Before committing, **always** run:
+Before committing:
 
-```bash
-bin/check.sh
-```
+1. **Run PHPCBF** to auto-fix style issues:
+   ```bash
+   phpcbf --standard=phpcs.xml .
+   ```
 
-This ensures:
-- ✅ Code follows WordPress Coding Standards
-- ✅ All tests pass
-- ✅ No syntax errors
+2. **Run PHPCS** to check for remaining issues:
+   ```bash
+   phpcs --standard=phpcs.xml .
+   ```
+   → **Must show 0 errors.** Warnings are acceptable if well-justified.
 
-**If checks fail:**
+3. **Manual test** the settings page and front-end (see Testing section).
 
-1. **PHPCS issues:** Run `bin/fix.sh` to auto-fix most style issues
-2. **Remaining PHPCS issues:** Manually fix issues reported by `bin/check.sh`
-3. **Test failures:** Debug and fix failing tests
+4. **Check error logs** are clean.
 
-**Never commit code that fails checks** unless you have a very good reason and document it.
+5. **Commit** using the correct milestone prefix format.
 
 ---
 
 ## Troubleshooting
 
-### "Composer not found"
+### "phpcs: command not found"
 
-Install Composer globally: https://getcomposer.org/download/
+Install PHPCS globally:
 
-### "Vendor directory not found"
-
-Run:
 ```bash
-composer install
+composer global require squizlabs/php_codesniffer wp-coding-standards/wpcs
+phpcs --config-set installed_paths ~/.composer/vendor/wp-coding-standards/wpcs
 ```
 
-### "WordPress test library not found"
+Or check if it's installed elsewhere:
 
-Run:
 ```bash
-bash bin/install-wp-tests.sh wordpress_test root '' localhost latest
+which phpcs
+find / -name phpcs 2>/dev/null
 ```
 
-Adjust MySQL credentials as needed.
+### "WordPress standard not found"
 
-### "PHPCS shows errors in pp-core.php"
-
-This shouldn't happen (it's excluded in phpcs.xml). If you see this:
-
-1. Check that `phpcs.xml` contains:
-   ```xml
-   <exclude-pattern>pp-core.php</exclude-pattern>
-   <exclude-pattern>pp-assets/*</exclude-pattern>
-   ```
-
-2. Clear PHPCS cache:
-   ```bash
-   composer run phpcs -- --cache-clear
-   ```
-
-### "Tests fail with database connection error"
-
-1. Verify MySQL is running
-2. Check credentials in `bin/install-wp-tests.sh`
-3. Re-run the install script with correct credentials
-4. Verify `/tmp/wordpress-tests-lib/` exists and contains WordPress test files
-
-### "bin/check.sh says permission denied"
-
-Make scripts executable:
 ```bash
-chmod +x bin/*.sh
+phpcs --config-set installed_paths /path/to/wpcs
+phpcs -i
 ```
+
+### "Plugin not appearing in WP admin"
+
+Check that the plugin header in `mini-wp-gdpr.php` is valid:
+
+```bash
+wp --path=/var/www/westfield.local/web plugin list
+```
+
+Check the error log for PHP parse errors:
+
+```bash
+tail -50 /var/www/westfield.local/log/error.log
+```
+
+### "PHPCS shows errors in dev-notes/ or vendor/"
+
+These directories are excluded in `phpcs.xml`. If PHPCS scans them anyway:
+
+```bash
+phpcs --standard=phpcs.xml --report=summary .
+```
+
+Check that you are running `phpcs` from the plugin root directory where `phpcs.xml` lives.
 
 ---
 
 ## Development Phases by Milestone
 
-Different milestones have different workflows:
+### Milestone 2 (Complete): Code Standards & Quality Tools (PHPCS)
+- Set up phpcs.xml, .editorconfig, and documented the development workflow.
 
-### Milestone 2 (Current): Code Standards & Testing Setup
-- Focus: Set up tooling and establish baselines
-- Key files: `phpcs.xml`, `composer.json`, `phpunit.xml.dist`, `bin/*.sh`
-- Workflow: Install tools → configure → baseline → document
-
-### Milestone 3: Remove pp-core.php
-- Focus: Major refactoring
-- Workflow: Small commits, frequent testing, preserve backwards compatibility
-- Extra checks: Test settings save/load, verify no breaking changes
+### Milestone 3 (Current): Remove pp-core.php Dependency
+- Major refactoring: replace pp-core.php with native plugin classes.
+- Workflow: Small commits, frequent manual testing, preserve backwards compatibility.
+- Extra checks: Test settings save/load, verify no breaking changes in error log.
 
 ### Milestone 4: JavaScript Modernization
-- Focus: ES6+ refactoring
-- New tools: ESLint, Prettier (to be added)
-- Workflow: Refactor → lint → test in browser
+- Focus: ES6+ refactoring.
+- New tools: ESLint + Prettier (to be added in this milestone).
+- Workflow: Refactor → lint → test in browser.
 
-### Milestone 5-6: New Features
-- Focus: Consent management & tracker delay-loading
-- Workflow: Write tests first (TDD), then implement features
-- Extra checks: Manual browser testing, privacy verification
+### Milestones 5-6: New Features (Consent Management & Tracker Delay-Loading)
+- Focus: Add Reject button, improve delay-loading.
+- Workflow: Code → PHPCS → manual browser testing → privacy verification.
 
 ### Milestone 7: Security Audit
-- Focus: Security hardening
-- Tools: Manual code review, security scanning tools
-- Workflow: Audit → fix → verify → document
+- Focus: Security hardening — comprehensive code review.
+- Workflow: Audit → fix → verify → document.
 
-### Milestone 8: QA
-- Focus: Comprehensive testing
-- Workflow: Write missing tests → integration tests → browser testing
+### Milestone 8: PHPStan, Testing & QA
+- Focus: PHPStan analysis, comprehensive manual testing.
+- Workflow: PHPStan baseline → fix critical issues → browser testing.
 
-### Milestone 9-10: Documentation & Release
-- Focus: Finalize documentation, prepare release
-- Workflow: Document → review → package → release
+### Milestones 9-10: Documentation & Release
+- Focus: Finalise documentation, prepare release package.
+- Workflow: Document → review → package → release.
 
 ---
 
 ## Quick Reference
 
-| Task | Command |
-|------|---------|
-| Install dependencies | `composer install` |
-| Run all checks | `bin/check.sh` |
-| Auto-fix style | `bin/fix.sh` |
-| Run tests | `bin/test.sh` |
-| Coverage report | `bin/test.sh --coverage` |
-| Check PHPCS only | `composer run phpcs` |
-| Fix PHPCS only | `composer run phpcbf` |
-| Run PHPUnit only | `composer run test` |
+| Task                          | Command                                     |
+|-------------------------------|---------------------------------------------|
+| Check code style              | `phpcs --standard=phpcs.xml .`              |
+| Auto-fix style issues         | `phpcbf --standard=phpcs.xml .`             |
+| Check a single file           | `phpcs --standard=phpcs.xml <file.php>`     |
+| View plugin in WP             | `wp --path=... plugin list`                 |
+| Tail error log                | `tail -f /var/www/westfield.local/log/error.log` |
+| Tail debug log                | `tail -f /var/www/.../wp-content/debug.log` |
 
 ---
 
-**Last Updated:** 16 February 2026  
-**Milestone:** M2 (Code Standards & Testing Setup)
+**Last Updated:** 17 February 2026
+**Milestone:** M2 (Complete) / M3 (Current)
