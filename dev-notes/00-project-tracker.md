@@ -62,6 +62,7 @@
 ### In Progress (Milestone 4 — JavaScript Modernisation)
 - [x] Phase 4.1 complete ✅ — ES6+ refactoring of mini-gdpr.js, mini-gdpr-admin.js, mini-gdpr-cookie-popup.js; jQuery removed from deps; MiniGdprPopup class with .init(); ARIA attributes added (2026-02-17)
 - [x] Phase 4.2 complete ✅ — mini-gdpr-admin-cf7.js rewritten as ES6+ MiniGdprCf7 class; jQuery dep removed; event delegation on tbody; fetch API; popup Escape handler + accept in-flight guard (2026-02-17)
+- [x] Phase 4.3 complete ✅ — keyboard Tab traps in consent popup and overlay; focus auto-set to Accept on show; focus returns to more-info on overlay close; aria-describedby on popup; aria-label on close btn (2026-02-17)
 
 ---
 
@@ -239,12 +240,12 @@
 - [x] Handle edge cases gracefully (in-flight accept guard, backdrop click guard)
 - [x] Add debouncing/throttling where needed (not required — no scroll/resize handlers)
 
-##### Phase 4.3: Accessibility Enhancements
+##### Phase 4.3: Accessibility Enhancements ✅ Complete (2026-02-17)
 - [x] Add ARIA labels to interactive elements (role, aria-modal, aria-label, aria-live added in Phase 4.1 popup rewrite)
-- [ ] Implement keyboard navigation
-- [ ] Ensure focus management
-- [ ] Add screen reader support
-- [ ] Test with accessibility tools
+- [x] Implement keyboard navigation (Tab trap in consent popup; Tab trap in overlay panel)
+- [x] Ensure focus management (auto-focus Accept on popup open; focus returns to more-info btn on overlay close)
+- [x] Add screen reader support (aria-describedby on popup, aria-label on close button)
+- [ ] Test with accessibility tools (deferred to M8 QA milestone — dedicated accessibility audit)
 
 ##### Phase 4.4: Build & Optimization
 - [ ] Set up build process (if needed)
@@ -788,9 +789,10 @@
 | 2026-02-17 | M4 Phase 4.1 (continued): mini-gdpr-cookie-popup.js converted to ES6+ | Wrapped in IIFE; global functions → MiniGdprPopup class; var → const/let; fixed DOMContentLoaded-on-button bug (→ click); removed dead createElement('extra') block; added ARIA (role, aria-modal, aria-label, aria-live); added backdrop click guard; removed all console.log; classList.add instead of className +=; hasOwnProperty guards on for...in loops |
 | 2026-02-17 | M4 Phase 4.1 complete — testing sprint passed | Plugin active, error log clean, front-end 200, mgwcsData output correct, .init() call verified; Phase 4.1 all tasks marked complete; ARIA label task in Phase 4.3 also marked done; next sprint: Phase 4.2 (Event Handling Improvements) |
 | 2026-02-17 | M4 Phase 4.2 complete — testing sprint passed | Plugin active, error log clean, front-end/admin 200, no debug.log; MiniGdprCf7 class verified (ES6+, event delegation, fetch API); cookie popup Escape handler and accept in-flight guard verified; jQuery dep dropped from class-admin-hooks.php; Phase 4.2 sub-tasks all marked complete |
+| 2026-02-17 | M4 Phase 4.3 complete — testing sprint passed | Plugin active, error log clean, front-end 200, no debug.log; Tab trap in consent popup (accept↔more-info) and overlay (within panel) verified in code; focus auto-set to Accept on popup show; focus returns to more-info btn on overlay close; aria-describedby on popup, aria-label on close btn |
 
 ---
 
-**Last Updated:** 17 February 2026 (11:30)  
+**Last Updated:** 17 February 2026 (11:52)  
 **Next Review:** 23 February 2026  
-**Next Action:** Coding sprint — M4 Phase 4.3 (Accessibility Enhancements) and/or Phase 4.4 (Build & Optimisation)
+**Next Action:** Coding sprint — M4 Phase 4.4 (Build & Optimisation)
