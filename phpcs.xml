@@ -55,14 +55,15 @@
 
 	<!-- Prefix verification for global namespace -->
 	<!-- pp_mwg / PP_MWG: legacy pp-core prefix (constants, globals) -->
-	<!-- mwg: public API functions in functions.php (mwg_has_user_accepted_privacy_policy, etc.) -->
 	<!-- Mini_Wp_Gdpr: namespaced classes and functions in includes/ -->
+	<!-- NOTE: mwg_ prefix is intentionally omitted here. WPCS rejects prefixes shorter than 4 chars -->
+	<!-- (ShortPrefixPassed). The mwg_ public API functions in functions.php are exempt via -->
+	<!-- phpcs:disable on that file instead. -->
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
 		<properties>
 			<property name="prefixes" type="array">
 				<element value="pp_mwg"/>
 				<element value="PP_MWG"/>
-				<element value="mwg"/>
 				<element value="Mini_Wp_Gdpr"/>
 			</property>
 		</properties>

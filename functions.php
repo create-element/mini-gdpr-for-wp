@@ -12,6 +12,8 @@
 
 defined( 'ABSPATH' ) || die();
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- Public API; mwg_ prefix is intentional and documented. WPCS rejects prefixes shorter than 4 chars so the rule is disabled for this file.
+
 /**
  * Returns whether the given user has accepted the privacy policy.
  *
