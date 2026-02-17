@@ -141,7 +141,7 @@ function enqueue_frontend_assets() {
 	if ( is_null( $pp_mwg_is_mini_gdpr_frontend_enqueued ) ) {
 		wp_enqueue_style( 'mini-wp-gdpr', PP_MWG_ASSETS_URL . 'mini-gdpr.css', array(), PP_MWG_VERSION, 'all' );
 
-		wp_enqueue_script( 'mini-wp-gdpr', PP_MWG_ASSETS_URL . 'mini-gdpr.js', array( 'jquery' ), PP_MWG_VERSION, true );
+		wp_enqueue_script( 'mini-wp-gdpr', PP_MWG_ASSETS_URL . 'mini-gdpr.js', array(), PP_MWG_VERSION, true );
 
 		$params = array(
 			'termsNotAccepted' => __( 'Please accept the GDPR terms before proceeding.', 'mini-wp-gdpr' ),
