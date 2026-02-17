@@ -1,178 +1,242 @@
 /**
  * Mini GDPR Cookie Popup
+ *
+ * Handles cookie consent popup display, consent storage, deferred script
+ * injection, and the "more info" overlay listing blocked trackers.
+ *
+ * @since 2.0.0
  */
-document.addEventListener('DOMContentLoaded', function () {
-  'use strict';
+( function () {
+	'use strict';
 
-  if (typeof mgwcsData != 'undefined') {
-    var hasConsented = false;
+	/**
+	 * Cookie consent popup controller.
+	 *
+	 * @since 2.0.0
+	 */
+	class MiniGdprPopup {
 
-    // console.log(typeof window.localStorage);
-    mgwcsData.blkon = mgwcsData.blkon == '1';
-    mgwcsData.always = mgwcsData.always == '1';
+		/**
+		 * Constructor.
+		 *
+		 * @param {Object} data Localised plugin data (mgwcsData).
+		 * @since 2.0.0
+		 */
+		constructor( data ) {
+			this.data        = data;
+			this.data.blkon  = data.blkon  === '1';
+			this.data.always = data.always === '1';
+		}
 
-    console.log(mgwcsData);
+		/**
+		 * Determine whether the user has previously consented within the allowed window.
+		 *
+		 * Checks localStorage first; falls back to document.cookie.
+		 *
+		 * @since 2.0.0
+		 * @return {boolean} True if consent exists and has not expired.
+		 */
+		hasConsented() {
+			if ( typeof localStorage !== 'undefined' ) {
+				const consentDate = Date.parse( localStorage.getItem( this.data.cn ) );
+				if ( consentDate ) {
+					const now        = new Date();
+					const consentAge = Math.round( ( now - consentDate ) / 1000.0 );
+					const maxAge     = parseInt( this.data.cd, 10 ) * 86400; // 1 day = 86400 s
+					return consentAge < maxAge;
+				}
+				return false;
+			}
 
-    if (typeof localStorage !== 'undefined') {
-      var consentDate = Date.parse(localStorage.getItem(mgwcsData.cn));
-      if (consentDate) {
-        var now = new Date();
-        var consentAge = Math.round((now - consentDate) / 1000.0);
-        var maxAge = parseInt(mgwcsData.cd) * 86400; // 1 day === 86400 secs
+			return document.cookie.split( ';' ).some( ( pair ) => {
+				return pair.split( '=' )[ 0 ].trim().startsWith( this.data.cn );
+			} );
+		}
 
-        // console.log( `Consent age: ${consentAge}`);
+		/**
+		 * Render and append the consent popup to the page.
+		 *
+		 * @since 2.0.0
+		 * @return {void}
+		 */
+		showPopup() {
+			const popup = document.createElement( 'div' );
+			popup.id    = 'mgwcsCntr';
+			popup.setAttribute( 'role', 'dialog' );
+			popup.setAttribute( 'aria-modal', 'true' );
+			popup.setAttribute( 'aria-label', 'Cookie consent' );
+			popup.setAttribute( 'aria-live', 'polite' );
 
-        hasConsented = consentAge < maxAge;
-      }
-    } else {
-      // console.log( 'ccc' );
-      document.cookie.split(';').forEach(function (keyValuePair) {
-        if (keyValuePair.split('=')[0].trim().startsWith(mgwcsData.cn)) {
-          // console.log(`Found: ${keyValuePair}`);
-          hasConsented = true;
-        }
-      });
-    }
+			popup.innerHTML = `<p>${ this.data.msg }</p><div class="btn-box"><button class="accept">${ this.data.ok }</button><button class="more-info">${ this.data.mre }</button></div>`;
 
-    if (hasConsented) {
-      // console.log('User has consented');
-      insertBlockedScripts();
-    } else {
-      // console.log('User has NOT consented');
-      mgwShowPopup();
-    }
-  }
-});
+			popup.querySelector( 'button.accept' ).addEventListener( 'click', () => this.consentToScripts() );
+			popup.querySelector( 'button.more-info' ).addEventListener( 'click', () => this.showBlockedScripts() );
 
-function mgwShowPopup() {
-  var popupContainer = document.createElement('div');
-  // popupContainer.innerHTML = `<p>${mgwcsData.msg}</p><div class="btn-box"><button class="accept" onclick="mgwConsentToScripts()">${mgwcsData.ok}</button><button class="more-info" onclick="mgwShowBlockedScripts()">${mgwcsData.mre}</button></div>`;
-  popupContainer.innerHTML = `<p>${mgwcsData.msg}</p><div class="btn-box"><button class="accept">${mgwcsData.ok}</button><button class="more-info">${mgwcsData.mre}</button></div>`;
-  popupContainer.id = 'mgwcsCntr';
+			if ( Array.isArray( this.data.cls ) ) {
+				popup.className = this.data.cls.join( ' ' );
+			}
 
-  popupContainer.querySelector('button.accept').addEventListener('click', mgwConsentToScripts);
-  popupContainer.querySelector('button.more-info').addEventListener('click', mgwShowBlockedScripts);
+			document.body.appendChild( popup );
+			popup.querySelector( 'button.accept' ).focus();
+		}
 
-  // $(popupContainer).find('button.accept').on('click', mgwConsentToScripts);
-  // $(popupContainer).find('button.more-info').on('click', mgwShowBlockedScripts);
+		/**
+		 * Store the user's consent and inject previously blocked scripts.
+		 *
+		 * @since 2.0.0
+		 * @return {void}
+		 */
+		consentToScripts() {
+			const popup = document.getElementById( 'mgwcsCntr' );
+			if ( ! popup ) {
+				return;
+			}
 
-  if (Array.isArray(mgwcsData.cls)) {
-    popupContainer.className = mgwcsData.cls.join(' ');
-  }
+			if ( typeof localStorage !== 'undefined' ) {
+				localStorage.setItem( this.data.cn, new Date() );
+			} else {
+				const expiresWhen = new Date();
+				expiresWhen.setDate( expiresWhen.getDate() + parseInt( this.data.cd, 10 ) );
+				document.cookie = `${ this.data.cn }=true; expires=${ expiresWhen.toUTCString() }; Secure`;
+			}
 
-  document.body.appendChild(popupContainer);
-}
+			this.insertBlockedScripts();
 
-function mgwConsentToScripts() {
-  var container = document.getElementById('mgwcsCntr');
-  if (container) {
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem(mgwcsData.cn, new Date());
-    } else {
-      var expiresWhen = new Date();
-      // console.log( `Duration: ${mgwcsData.cd}` );
-      expiresWhen.setDate(expiresWhen.getDate() + parseInt(mgwcsData.cd));
-      // console.log( `Expire: ${result.toUTCString()}` );
+			popup.classList.add( 'mgw-fin' );
+			setTimeout( () => popup.remove(), 500 );
+		}
 
-      document.cookie = `${mgwcsData.cn}=true; expires=${expiresWhen.toUTCString()}; Secure`;
-    }
+		/**
+		 * Inject deferred tracker scripts into the document head.
+		 *
+		 * Only runs when script blocking is enabled. Iterates over mgwcsData.meta
+		 * and creates <script> elements for each deferrable tracker.
+		 *
+		 * @since 2.0.0
+		 * @return {void}
+		 */
+		insertBlockedScripts() {
+			if ( ! this.data.blkon ) {
+				return;
+			}
 
-    insertBlockedScripts();
+			for ( const handle in this.data.meta ) {
+				if ( ! Object.prototype.hasOwnProperty.call( this.data.meta, handle ) ) {
+					continue;
+				}
 
-    container.className += ' mgw-fin';
+				const meta = this.data.meta[ handle ];
 
-    setTimeout(function () {
-      document.getElementById('mgwcsCntr').remove();
-    }, 500);
-  }
-}
+				if ( ! meta[ 'can-defer' ] ) {
+					continue;
+				}
 
-function insertBlockedScripts() {
-  // console.log( `mgwcsData.blkon: ${mgwcsData.blkon}` );
+				const scriptEl = document.createElement( 'script' );
+				scriptEl.setAttribute( 'src', meta.src );
+				document.head.appendChild( scriptEl );
 
-  if (mgwcsData.blkon) {
-    console.log('Unblocking scripts');
-    for (const scriptHandle in mgwcsData.meta) {
-      // console.log(mgwcsData.meta[scriptHandle].src);
-      console.log(`Defer ${scriptHandle} : ${mgwcsData.meta[scriptHandle]['can-defer']}`);
+				if ( meta.after ) {
+					const inlineScript = document.createElement( 'script' );
+					inlineScript.appendChild( document.createTextNode( meta.after ) );
+					document.head.appendChild( inlineScript );
+				}
+			}
+		}
 
-      if (mgwcsData.meta[scriptHandle]['can-defer']) {
-        var scriptElement = document.createElement('script');
-        scriptElement.setAttribute('src', mgwcsData.meta[scriptHandle].src);
-        document.head.appendChild(scriptElement);
+		/**
+		 * Show the "more info" overlay listing all blocked trackers.
+		 *
+		 * @since 2.0.0
+		 * @return {void}
+		 */
+		showBlockedScripts() {
+			const overlay = document.createElement( 'div' );
+			overlay.id        = 'mgwcsOvly';
+			overlay.className = 'mgw-ovl';
+			overlay.setAttribute( 'role', 'dialog' );
+			overlay.setAttribute( 'aria-modal', 'true' );
+			overlay.setAttribute( 'aria-label', 'Cookie information' );
 
-        if (mgwcsData.meta[scriptHandle].extra) {
-          scriptElement = document.createElement('extra');
-          scriptElement.appendChild(document.createTextNode(mgwcsData.meta[scriptHandle].after));
-          document.head.appendChild(scriptElement);
-        }
+			// Clicking the backdrop (but not the inner panel) closes the overlay.
+			overlay.addEventListener( 'click', ( e ) => {
+				if ( e.target === overlay ) {
+					this.closeBlockedScripts();
+				}
+			} );
 
-        if (mgwcsData.meta[scriptHandle].after) {
-          scriptElement = document.createElement('script');
-          scriptElement.appendChild(document.createTextNode(mgwcsData.meta[scriptHandle].after));
-          document.head.appendChild(scriptElement);
-        }
-      }
-    }
-  }
-}
+			const panel = document.createElement( 'div' );
+			panel.className = 'mgw-nfo';
+			overlay.appendChild( panel );
 
-function mgwShowBlockedScripts() {
-  var overlayContainer = document.createElement('div');
-  overlayContainer.id = 'mgwcsOvly';
-  overlayContainer.className = 'mgw-ovl';
-  overlayContainer.addEventListener('click', mgwCloseBlockedScripts);
+			if ( Object.keys( this.data.meta ).length ) {
+				const blurb = document.createElement( 'p' );
+				blurb.innerHTML = this.data.nfo1;
+				if ( this.data.nfo3 ) {
+					blurb.innerHTML += `<br />${ this.data.nfo3 }`;
+				}
+				panel.appendChild( blurb );
 
-  var overlayPanel = document.createElement('div');
-  overlayPanel.className = 'mgw-nfo';
-  overlayContainer.appendChild(overlayPanel);
+				const scriptList = document.createElement( 'ul' );
+				for ( const handle in this.data.meta ) {
+					if ( ! Object.prototype.hasOwnProperty.call( this.data.meta, handle ) ) {
+						continue;
+					}
+					const listItem = document.createElement( 'li' );
+					listItem.innerHTML = this.data.meta[ handle ].description;
+					scriptList.appendChild( listItem );
+				}
 
-  // console.log( mgwcsData.meta );
-  // console.log(Object.keys(mgwcsData.meta).length);
+				const wrapper = document.createElement( 'div' );
+				wrapper.className = 'plglst';
+				wrapper.appendChild( scriptList );
+				panel.appendChild( wrapper );
+			} else {
+				const blurb = document.createElement( 'p' );
+				blurb.innerHTML = this.data.nfo2;
+				panel.appendChild( blurb );
+			}
 
-  // if( mgwcsData.meta.length ) {
-  if (Object.keys(mgwcsData.meta).length) {
-    var blurb = document.createElement('p');
-    blurb.innerHTML = mgwcsData.nfo1;
+			const closeBtn = document.createElement( 'button' );
+			closeBtn.innerText = 'Close';
+			closeBtn.addEventListener( 'click', () => this.closeBlockedScripts() );
+			panel.appendChild( closeBtn );
 
-    if (mgwcsData.nfo3) {
-      blurb.innerHTML += `<br />${mgwcsData.nfo3}`;
-    }
+			document.body.appendChild( overlay );
+			closeBtn.focus();
+		}
 
-    overlayPanel.appendChild(blurb);
+		/**
+		 * Remove the blocked-scripts overlay from the DOM.
+		 *
+		 * @since 2.0.0
+		 * @return {void}
+		 */
+		closeBlockedScripts() {
+			const overlay = document.getElementById( 'mgwcsOvly' );
+			if ( overlay ) {
+				overlay.remove();
+			}
+		}
 
-    var scriptList = document.createElement('ul');
+		/**
+		 * Initialise: inject deferred scripts immediately if already consented,
+		 * or show the popup if the user hasn't yet decided.
+		 *
+		 * @since 2.0.0
+		 * @return {void}
+		 */
+		init() {
+			if ( this.hasConsented() ) {
+				this.insertBlockedScripts();
+			} else {
+				this.showPopup();
+			}
+		}
+	}
 
-    // for( var foo = 0; foo < 20; ++foo ) {
-    for (const scriptHandle in mgwcsData.meta) {
-      var listItem = document.createElement('li');
-      listItem.innerHTML = mgwcsData.meta[scriptHandle].description;
-      scriptList.appendChild(listItem);
-    }
-    // }
-
-    var wrapper = document.createElement('div');
-    wrapper.className = 'plglst';
-    wrapper.appendChild(scriptList);
-    overlayPanel.appendChild(wrapper);
-  } else {
-    var blurb = document.createElement('p');
-    blurb.innerHTML = mgwcsData.nfo2;
-    overlayPanel.appendChild(blurb);
-  }
-
-  var closeButton = document.createElement('button');
-  closeButton.innerText = 'Close';
-  closeButton.addEventListener('DOMContentLoaded', mgwCloseBlockedScripts);
-
-  overlayPanel.appendChild(closeButton);
-
-  document.body.appendChild(overlayContainer);
-}
-
-function mgwCloseBlockedScripts() {
-  var overlayContainer = document.getElementById('mgwcsOvly');
-  if (overlayContainer) {
-    overlayContainer.remove();
-  }
-}
+	document.addEventListener( 'DOMContentLoaded', () => {
+		if ( typeof mgwcsData !== 'undefined' ) {
+			new MiniGdprPopup( mgwcsData );
+		}
+	} );
+} )();
