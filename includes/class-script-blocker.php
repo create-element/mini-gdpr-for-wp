@@ -92,10 +92,10 @@ class Script_Blocker extends Component {
 	 */
 	public function get_blockable_scripts() {
 		if ( ! is_array( $this->blockable_scripts ) ) {
-			do_action( 'mwg_init_blockable_scripts' );
+			do_action( 'mwg_init_blockable_scripts' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- mwg_ is the established plugin hook prefix; WPCS rejects it as too short (< 4 chars).
 
 			$this->blockable_script_handles = apply_filters(
-				'mwg_blockable_script_handles',
+				'mwg_blockable_script_handles', // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- mwg_ is the established plugin hook prefix; WPCS rejects it as too short (< 4 chars).
 				[ GA_SCRIPT_HANDLE, FB_PIXEL_SCRIPT_HANDLE ]
 			);
 
@@ -118,7 +118,7 @@ class Script_Blocker extends Component {
 						'can-defer'   => true,
 					];
 
-					$definition = apply_filters( 'mwg_tracker_' . $sanitised_handle, $defaults );
+					$definition = apply_filters( 'mwg_tracker_' . $sanitised_handle, $defaults ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- See mwg_ prefix note above.
 					$definition = wp_parse_args( $definition, $defaults );
 
 					if ( ! empty( $definition['pattern'] ) && ! empty( $definition['description'] ) ) {
@@ -154,7 +154,7 @@ class Script_Blocker extends Component {
 		// Determine whether tracker scripts should be suppressed based on user role.
 		$this->are_trackers_blocked_by_role = false;
 
-		// phpcs:disable Generic.CodeAnalysis.AssignmentInCondition.Found, Squiz.PHP.DisallowMultipleAssignments.FoundInControlStructure -- Intentional SESE guard pattern.
+		// phpcs:disable Generic.CodeAnalysis.AssignmentInCondition.Found, Squiz.PHP.DisallowMultipleAssignments.FoundInControlStructure, Generic.CodeAnalysis.EmptyStatement.DetectedIf, Generic.CodeAnalysis.EmptyStatement.DetectedElseif -- Intentional SESE guard pattern; empty bodies are comments, not missing logic.
 		if ( ! is_user_logged_in() ) {
 			// Guest user — role-based blocking does not apply.
 		} elseif ( $settings->get_bool( OPT_IS_ADMIN_TRACKING_ENABLED ) ) {
@@ -163,18 +163,19 @@ class Script_Blocker extends Component {
 			// Cannot retrieve current user object.
 		} elseif ( empty( ( $current_user_roles = $user->roles ) ) ) {
 			// Current user has no roles assigned.
-		} elseif ( empty( ( $dont_track_roles = array_filter( apply_filters( 'mwg_dont_track_roles', DEFAULT_DONT_TRACK_ADMIN_ROLES ) ) ) ) ) {
+		} elseif ( empty( ( $dont_track_roles = array_filter( apply_filters( 'mwg_dont_track_roles', DEFAULT_DONT_TRACK_ADMIN_ROLES ) ) ) ) ) { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- mwg_ prefix; see note above.
 			// No roles are configured for tracking exclusion.
 		} else {
 			$this->are_trackers_blocked_by_role = array_intersect( $current_user_roles, $dont_track_roles );
 		}
-		// phpcs:enable Generic.CodeAnalysis.AssignmentInCondition.Found, Squiz.PHP.DisallowMultipleAssignments.FoundInControlStructure
+		// phpcs:enable Generic.CodeAnalysis.AssignmentInCondition.Found, Squiz.PHP.DisallowMultipleAssignments.FoundInControlStructure, Generic.CodeAnalysis.EmptyStatement.DetectedIf, Generic.CodeAnalysis.EmptyStatement.DetectedElseif
 
-		$additional_blocked_scripts = apply_filters( 'mwg_additional_blocked_scripts', [] );
+		$additional_blocked_scripts = apply_filters( 'mwg_additional_blocked_scripts', [] ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- mwg_ prefix; see note above.
 
 		$scripts = wp_scripts();
 
 		foreach ( $scripts->registered as $script ) {
+			// phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedIf -- Intentional SESE guard; empty body means skip.
 			if ( empty( $script->handle ) ) {
 				// Handle is empty — skip this entry.
 			} else {
@@ -198,6 +199,7 @@ class Script_Blocker extends Component {
 							break;
 					}
 
+					// phpcs:disable Generic.CodeAnalysis.EmptyStatement.DetectedIf, Generic.CodeAnalysis.EmptyStatement.DetectedElseif -- Intentional SESE guard; empty bodies mean skip.
 					if ( empty( $data ) ) {
 						// No data to match against — skip.
 					} elseif ( empty( $blockable_script['pattern'] ) ) {
@@ -217,6 +219,7 @@ class Script_Blocker extends Component {
 
 						break;
 					}
+					// phpcs:enable Generic.CodeAnalysis.EmptyStatement.DetectedIf, Generic.CodeAnalysis.EmptyStatement.DetectedElseif
 				}
 			}
 		}
@@ -224,7 +227,7 @@ class Script_Blocker extends Component {
 		if ( count( $this->blocked_scripts ) > 0 || $is_always_show_enabled ) {
 			$class_names = [ 'mgw-cnt', 'mgw-box' ];
 			$class_names = array_merge( $class_names, get_consent_box_styles() );
-			$class_names = array_filter( apply_filters( 'mwg_consent_box_classes', $class_names ) );
+			$class_names = array_filter( apply_filters( 'mwg_consent_box_classes', $class_names ) ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- mwg_ prefix; see note above.
 
 			// TODO: Consider incrementing this when the Privacy Policy post is saved/updated.
 			$cookie_sequence = 0;
@@ -272,6 +275,30 @@ class Script_Blocker extends Component {
 				$localize_data['rejectNonce']  = wp_create_nonce( REJECT_GDPR_ACTION );
 			}
 
+			// Facebook Pixel delay-loading: pass pixel ID to JS so the consent popup
+			// can load fbevents.js dynamically after the user accepts. Only included
+			// when FB Pixel is enabled, a pixel ID is configured, and the current
+			// user is not excluded from tracking by their role.
+			if ( $settings->get_bool( OPT_IS_FB_PIXEL_TRACKING_ENABLED ) && ! $this->are_trackers_blocked_by_role ) {
+				$raw_fb_id = $settings->get_string( OPT_FB_PIXEL_ID );
+
+				if ( ! empty( $raw_fb_id ) ) {
+					$localize_data['fbpxId'] = esc_js( sanitize_text_field( $raw_fb_id ) );
+				}
+			}
+
+			// Microsoft Clarity delay-loading: pass Clarity ID to JS so the consent
+			// popup can load clarity.ms/tag/<ID> dynamically after the user accepts.
+			// Only included when Clarity is enabled, an ID is configured, and the
+			// current user is not excluded from tracking by their role.
+			if ( $settings->get_bool( OPT_IS_MS_CLARITY_TRACKING_ENABLED ) && ! $this->are_trackers_blocked_by_role ) {
+				$raw_clarity_id = $settings->get_string( OPT_MS_CLARITY_ID );
+
+				if ( ! empty( $raw_clarity_id ) ) {
+					$localize_data['clarityId'] = esc_js( sanitize_text_field( $raw_clarity_id ) );
+				}
+			}
+
 			wp_localize_script( 'mini-gdpr-cookie-consent', 'mgwcsData', $localize_data );
 
 			wp_enqueue_style( 'mini-gdpr-cookie-consent', PP_MWG_ASSETS_URL . 'mini-gdpr-cookie-popup.css', null, $this->version );
@@ -313,6 +340,7 @@ class Script_Blocker extends Component {
 	 * @return string|null Unchanged tag, or null to suppress output.
 	 */
 	public function script_loader_tag( $tag, $handle, $src ) {
+		// phpcs:disable Generic.CodeAnalysis.EmptyStatement.DetectedIf, Generic.CodeAnalysis.EmptyStatement.DetectedElseif -- Intentional SESE guard; empty bodies mean pass through unchanged.
 		if ( ! $this->is_block_until_consent_enabled && ! $this->are_trackers_blocked_by_role ) {
 			// Blocking is not active — pass through unchanged.
 		} elseif ( empty( $handle ) ) {
@@ -324,6 +352,7 @@ class Script_Blocker extends Component {
 		} else {
 			$tag = null;
 		}
+		// phpcs:enable Generic.CodeAnalysis.EmptyStatement.DetectedIf, Generic.CodeAnalysis.EmptyStatement.DetectedElseif
 
 		return $tag;
 	}

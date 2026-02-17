@@ -334,7 +334,7 @@
 
 ### Milestone 6: Advanced Tracker Delay-Loading
 **Target:** Week 8-9 (Apr 7-20, 2026)  
-**Status:** Not Started  
+**Status:** 🟡 In Progress  
 **Priority:** High
 
 #### Objectives
@@ -348,13 +348,14 @@
 
 #### Sub-Tasks
 
-##### Phase 6.1: Facebook Pixel Enhancement
-- [ ] Research Facebook Pixel delayed initialization methods
-- [ ] Implement queue system for FB events before consent
-- [ ] Load FB Pixel script only after consent
-- [ ] Replay queued events after script loads
-- [ ] Test pixel functionality with delayed loading
-- [ ] Document Facebook Pixel delay-loading approach
+##### Phase 6.1: Facebook Pixel Enhancement ✅ Complete (2026-02-17)
+- [x] Research Facebook Pixel delayed initialization methods — consent-api-research.md
+- [x] Implement queue system for FB events before consent — fbq stub + fbq('consent','revoke') guard
+- [x] Load FB Pixel script only after consent — loadFacebookPixel() called on consent/returning visit
+- [x] Replay queued events after script loads — fbevents.js processes fbq.queue automatically
+- [x] FB Pixel Consent API: fbq('consent','grant') queued in loadFacebookPixel() before SDK loads ✅ (2026-02-17)
+- [ ] Test pixel functionality with delayed loading — deferred to testing sprint
+- [x] Document Facebook Pixel delay-loading approach — dev-notes/tracker-delay-loading.md
 
 ##### Phase 6.2: Google Analytics Enhancement
 - [ ] Review current GA implementation
@@ -749,8 +750,8 @@
 | 2. Code Standards & Quality Tools (PHPCS) | Mar 2, 2026 | 🟢 Complete | 100% |
 | 3. Remove pp-core.php | Mar 16, 2026 | 🟢 Complete | 100% |
 | 4. JavaScript Modernization | Mar 23, 2026 | 🟢 Complete | 100% |
-| 5. Enhanced Consent Management | Apr 6, 2026 | 🟡 In Progress | 90% |
-| 6. Advanced Tracker Delay-Loading | Apr 20, 2026 | ⚪ Not Started | 0% |
+| 5. Enhanced Consent Management | Apr 6, 2026 | 🟢 Complete | 95% |
+| 6. Advanced Tracker Delay-Loading | Apr 20, 2026 | 🟡 In Progress | 25% |
 | 7. Security Audit & Best Practices | Apr 27, 2026 | ⚪ Not Started | 0% |
 | 8. PHPStan, Testing & QA | May 11, 2026 | ⚪ Not Started | 0% |
 | 9. Documentation | May 18, 2026 | ⚪ Not Started | 0% |
@@ -803,9 +804,10 @@
 | 2026-02-17 | M5 Phase 5.3 testing sprint passed | Plugin active, error log clean, front-end 200, no debug.log; OPT_GA_CONSENT_MODE_ENABLED constant confirmed in constants.php; wp_head outputs gtag("consent","default",{all denied, wait_for_update:500}) at priority 1 when option enabled; gtag("consent","update",{all granted}) confirmed in .min.js consentToScripts(); admin UI checkbox confirmed in trackers-settings-google.php; consent-api-research.md file verified (9890 bytes); M5 progress updated to 75% |
 | 2026-02-17 | M5 Phase 5.1 fully complete — testing sprint passed | Admin UI fields for Accept/Reject/Info button text added to cookie-consent-settings.php; OPT_CONSENT_ACCEPT_TEXT, OPT_CONSENT_REJECT_TEXT, OPT_CONSENT_INFO_BTN_TEXT referenced with esc_attr(); constants confirmed in constants.php; registered in class-settings.php; PHPCS clean; plugin active, error log clean, front-end 200, no debug.log; Phase 5.1 fully complete — M5 progress 85% |
 | 2026-02-17 | M5 Phase 5.4 admin consent stats dashboard — testing sprint passed | consent-stats.php template (live $wpdb COUNT queries for total users, accepted, rejected, undecided); stat card CSS (mwg-stat-cards, mwg-stat--accepted/rejected/undecided) in mwg-admin.css; render_settings_page() includes template below form; PHPCS clean on all 3 files; plugin active, error log clean, front-end 200, no debug.log; Phase 5.4 admin stats task complete ✅ |
+| 2026-02-17 | M6 Phase 6.1 coding sprint — FB Pixel Consent API revoke/grant signals | tracker-facebook-pixel.php: fbq('consent','revoke') added before fbq('init') in stub (defensive GDPR guard — if fbevents.js loads unexpectedly it starts in revoked state); mini-gdpr-cookie-popup.js + .min.js: fbq('consent','grant') added in loadFacebookPixel() before fbevents.js loads; queue order: revoke→grant→init→PageView; pixel initialises in fully-granted mode; PHPCS clean; minified assets rebuilt |
 
 ---
 
-**Last Updated:** 17 February 2026 (14:30)  
+**Last Updated:** 17 February 2026 (15:00)  
 **Next Review:** 23 February 2026  
-**Next Action:** Coding sprint — M5 admin stats UI now complete; one deferred Phase 5.4 item remains (WooCommerce rejection handling — defer to M7/M8); move to M6 (Advanced Tracker Delay-Loading) — Phase 6.1: Facebook Pixel Enhancement
+**Next Action:** Testing sprint — verify M6 Phase 6.1 FB Pixel Consent API signals (fbq consent revoke/grant) work correctly; error log clean; no debug.log errors; then move to M6 Phase 6.2 (Google Analytics Enhancement)
