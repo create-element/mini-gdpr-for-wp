@@ -1,9 +1,9 @@
 # Mini WP GDPR - Project Tracker
 
 **Version:** 2.0.0 (Refactor)  
-**Last Updated:** 17 February 2026 (08:10)  
+**Last Updated:** 17 February 2026 (08:40)  
 **Current Phase:** Milestone 3 (Remove pp-core.php Dependency)  
-**Overall Progress:** 10%
+**Overall Progress:** 15%
 
 ---
 
@@ -36,14 +36,14 @@
 
 ## Active TODO Items
 
-### Milestone 2 Complete (except docs)
+### Milestone 2 Complete ✅
 - [x] Create phpcs.xml configuration file
 - [x] Create .editorconfig for consistent coding style
 - [x] Create composer.json with dev dependencies (PHPCS only, no PHPUnit)
 - [x] Run initial PHPCS scan and create baseline (exclude pp-core.php) ✅
 - [x] Create shell scripts for code quality checks (check.sh, fix.sh)
 - [x] Remove PHPUnit from project
-- [ ] Document development workflow
+- [x] Document development workflow ✅ (2026-02-17 — rewritten to reflect actual tooling)
 
 ### In Progress (Milestone 3 — Remove pp-core.php)
 - [x] Create native `Component` base class (`includes/class-component.php`) — tested ✅
@@ -56,6 +56,8 @@
 - [x] Update all classes extending Component to use new base class ✅
 - [x] Complete settings page integration using WordPress Settings API ✅ (2026-02-17)
 - [x] Run PHPCS fix pass on legacy files (functions-private.php, class-plugin.php) ✅
+- [x] PHPCS fix pass on functions.php (public API) + phpcs.xml prefix update ✅ (2026-02-17)
+- [ ] PHPCS fix pass on admin templates (cookie-consent-settings.php, etc.)
 
 ---
 
@@ -97,7 +99,7 @@
 
 ### Milestone 2: Code Standards & Quality Tools (PHPCS)
 **Target:** Week 2 (Feb 24 - Mar 2, 2026)  
-**Status:** 🟡 In Progress (90% complete)  
+**Status:** 🟢 Complete  
 **Priority:** High
 
 #### Objectives
@@ -107,14 +109,14 @@
 - [x] Run initial PHPCS scan and create baseline (**exclude pp-core.php** — it's being removed in M3)
 - [x] Create simple shell scripts for code quality checks (check.sh, fix.sh)
 - [x] Remove PHPUnit from composer.json (not needed for this plugin)
-- [ ] Document development workflow
+- [x] Document development workflow ✅ (2026-02-17)
 
 #### Deliverables
 - [x] phpcs.xml configured and tested
 - [x] .editorconfig file
 - [x] Initial code quality baseline report (excluding pp-core.php)
 - [x] Shell scripts for code quality checks (check.sh, fix.sh)
-- [ ] Updated dev-notes/workflows/code-standards.md
+- [x] Updated dev-notes/workflows/development-workflow.md ✅ (2026-02-17)
 
 #### Tasks
 1. ✅ ~~Install PHPCS and WPCS globally~~ (Already available)
@@ -123,7 +125,7 @@
 4. ✅ Create .editorconfig for IDE consistency
 5. ✅ Create simple shell scripts for checking/fixing code
 6. ✅ Remove PHPUnit dependency (PHPCS + manual testing is sufficient)
-7. Document workflow in dev-notes/
+7. ✅ Document workflow in dev-notes/ (2026-02-17)
 
 #### Notes
 - PHPCS baseline **excludes pp-core.php and pp-assets/** since they're being removed in M3
@@ -738,8 +740,8 @@
 | Milestone | Target Completion | Status | Progress |
 |-----------|------------------|--------|----------|
 | 1. Foundation & Planning | Feb 23, 2026 | 🟡 In Progress | 20% |
-| 2. Code Standards & Quality Tools (PHPCS) | Mar 2, 2026 | 🟡 In Progress | 90% |
-| 3. Remove pp-core.php | Mar 16, 2026 | 🟡 In Progress | 20% |
+| 2. Code Standards & Quality Tools (PHPCS) | Mar 2, 2026 | 🟢 Complete | 100% |
+| 3. Remove pp-core.php | Mar 16, 2026 | 🟡 In Progress | 55% |
 | 4. JavaScript Modernization | Mar 23, 2026 | ⚪ Not Started | 0% |
 | 5. Enhanced Consent Management | Apr 6, 2026 | ⚪ Not Started | 0% |
 | 6. Advanced Tracker Delay-Loading | Apr 20, 2026 | ⚪ Not Started | 0% |
@@ -774,8 +776,10 @@
 | 2026-02-17 | M3 Archive pp-core.php and pp-assets/ | Moved to dev-notes/archive/ via git mv; added assets/mwg-admin.css as plugin-native admin CSS replacing pp-assets/pp-admin.css; updated pp_enqueue_admin_assets() reference; removed stale phpcs.xml exclusions |
 | 2026-02-17 | M3 Testing sprint passed | Plugin active, error log clean, front-end 200, no debug.log errors; archive tasks verified |
 | 2026-02-17 | M3 Settings class WPCS + WordPress Settings API registration | Removed duplicate admin_menu hook from Settings constructor; added register_settings() registering all 18 options via register_setting(); Plugin::admin_init() now calls register_settings() unconditionally; fixed json_encode→wp_json_encode; pixel ID sanitisation wp_kses_post→sanitize_text_field |
+| 2026-02-17 | M2 Complete: development-workflow.md rewritten | Removed references to removed tooling (PHPUnit, bin/*.sh, composer/vendor); documented actual workflow using global phpcs/phpcbf; added manual testing protocol |
+| 2026-02-17 | M3 PHPCS fixes: functions.php + phpcs.xml | functions.php converted to WPCS style (tabs, docblocks, K&R braces); phpcs.xml updated to add mwg prefix to allowed list (public API functions use mwg_ prefix) |
 
 ---
 
-**Last Updated:** 17 February 2026 (08:20)  
+**Last Updated:** 17 February 2026 (08:40)  
 **Next Review:** 23 February 2026
