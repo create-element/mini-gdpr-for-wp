@@ -309,11 +309,11 @@
 - [ ] Implement if beneficial, document limitations if not
 
 ##### Phase 5.4: Backend Consent Tracking
-- [ ] Update database schema for rejection tracking (if needed)
-- [ ] Store rejection consent in user meta (for logged-in users)
-- [ ] Add admin UI to view consent/rejection statistics
-- [ ] Create filters for consent/rejection events
-- [ ] Update WooCommerce integration for rejection handling
+- [x] Update database schema for rejection tracking — user meta sufficient, no custom table needed ✅ (2026-02-17)
+- [x] Store rejection consent in user meta (for logged-in users) — reject_via_ajax() + META_REJECTED_GDPR_WHEN ✅ (2026-02-17)
+- [ ] Add admin UI to view consent/rejection statistics (deferred — bigger task, own sprint)
+- [x] Create filters for consent/rejection events — mwg_consent_accepted + mwg_consent_rejected action hooks ✅ (2026-02-17)
+- [ ] Update WooCommerce integration for rejection handling (deferred)
 
 #### Deliverables
 - [ ] Updated popup with Reject/Info/Accept buttons
@@ -797,9 +797,10 @@
 | 2026-02-17 | M5 Phase 5.1 testing sprint passed | Plugin active, error log clean, front-end 200, mgwcsData contains rcn + rjt + mre, all 3 JS methods verified, responsive CSS confirmed; Phase 5.1 complete — moving to Phase 5.2 (Rejection Logic) |
 | 2026-02-17 | M5 Phase 5.2 coding sprint — rejection logic + manage-preferences mechanism | rejectConsent() stores rejection in localStorage/cookie (with cd duration), no scripts injected; showManagePreferencesLink() renders floating 🍪 button; changePreferences() clears both decisions, resets accept guard, re-shows popup; init() shows manage btn for returning users (consented or rejected); public API: window.mgwRejectScripts() + window.mgwShowCookiePreferences(); CSS for #mgwMngBtn; minified assets rebuilt |
 | 2026-02-17 | M5 Phase 5.2 testing sprint passed | Plugin active, error log clean, front-end 200, no debug.log; mgwcsData contains rcn; all Phase 5.2 symbols in min.js; #mgwMngBtn CSS in served stylesheet; Phase 5.2 fully complete |
+| 2026-02-17 | M5 Phase 5.4 coding sprint (partial) — server-side rejection tracking | META_REJECTED_GDPR_WHEN + REJECT_GDPR_ACTION constants; User_Controller: reject_gdpr_terms_now(), has_user_rejected_gdpr(), when_did_user_reject_gdpr(); clear_gdpr_accepted_status() now clears rejection meta too; reject_via_ajax() AJAX handler (wp_ajax_rejectgdpr); mwg_consent_accepted + mwg_consent_rejected developer action hooks; Script_Blocker adds ajaxUrl/rejectAction/rejectNonce to mgwcsData for logged-in users; rejectConsent() fires fire-and-forget AJAX for logged-in users; minified assets rebuilt |
 
 ---
 
-**Last Updated:** 17 February 2026 (12:55)  
+**Last Updated:** 17 February 2026 (13:10)  
 **Next Review:** 23 February 2026  
-**Next Action:** Coding sprint — M5 Phase 5.3 (Consent API Integration Research) or Phase 5.4 (Backend Consent Tracking: DB schema for rejection, user meta for logged-in users, admin UI for consent stats, filters, WooCommerce integration)
+**Next Action:** Testing sprint — verify plugin active, error log clean, no debug.log errors, mgwcsData includes rejectAction/rejectNonce for logged-in users, new rejection meta stored on AJAX call
