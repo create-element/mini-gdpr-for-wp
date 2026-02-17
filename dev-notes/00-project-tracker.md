@@ -798,9 +798,10 @@
 | 2026-02-17 | M5 Phase 5.2 coding sprint — rejection logic + manage-preferences mechanism | rejectConsent() stores rejection in localStorage/cookie (with cd duration), no scripts injected; showManagePreferencesLink() renders floating 🍪 button; changePreferences() clears both decisions, resets accept guard, re-shows popup; init() shows manage btn for returning users (consented or rejected); public API: window.mgwRejectScripts() + window.mgwShowCookiePreferences(); CSS for #mgwMngBtn; minified assets rebuilt |
 | 2026-02-17 | M5 Phase 5.2 testing sprint passed | Plugin active, error log clean, front-end 200, no debug.log; mgwcsData contains rcn; all Phase 5.2 symbols in min.js; #mgwMngBtn CSS in served stylesheet; Phase 5.2 fully complete |
 | 2026-02-17 | M5 Phase 5.4 coding sprint (partial) — server-side rejection tracking | META_REJECTED_GDPR_WHEN + REJECT_GDPR_ACTION constants; User_Controller: reject_gdpr_terms_now(), has_user_rejected_gdpr(), when_did_user_reject_gdpr(); clear_gdpr_accepted_status() now clears rejection meta too; reject_via_ajax() AJAX handler (wp_ajax_rejectgdpr); mwg_consent_accepted + mwg_consent_rejected developer action hooks; Script_Blocker adds ajaxUrl/rejectAction/rejectNonce to mgwcsData for logged-in users; rejectConsent() fires fire-and-forget AJAX for logged-in users; minified assets rebuilt |
+| 2026-02-17 | M5 Phase 5.4 testing sprint passed | Plugin active, error log clean, front-end 200, no debug.log; REJECT_GDPR_ACTION=rejectgdpr constant confirmed; wp_ajax_rejectgdpr hook registered → Plugin::reject_via_ajax; META_REJECTED_GDPR_WHEN=_pwg_rejected_gdpr_when confirmed; Script_Blocker logged-in guard verified in source; JS rejectConsent() fire-and-forget confirmed; Phase 5.4 (partial) complete — deferred: admin stats UI, WooCommerce integration |
 
 ---
 
-**Last Updated:** 17 February 2026 (13:10)  
+**Last Updated:** 17 February 2026 (13:15)  
 **Next Review:** 23 February 2026  
-**Next Action:** Testing sprint — verify plugin active, error log clean, no debug.log errors, mgwcsData includes rejectAction/rejectNonce for logged-in users, new rejection meta stored on AJAX call
+**Next Action:** Coding sprint — M5 Phase 5.3: Consent API Integration Research (research browser Consent API compatibility, evaluate feasibility for FB Pixel/GA/Clarity, document findings)
