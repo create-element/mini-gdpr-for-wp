@@ -1,9 +1,9 @@
 # Mini WP GDPR - Project Tracker
 
 **Version:** 2.0.0 (Refactor)  
-**Last Updated:** 17 February 2026 (08:40)  
+**Last Updated:** 17 February 2026 (09:10)  
 **Current Phase:** Milestone 3 (Remove pp-core.php Dependency)  
-**Overall Progress:** 15%
+**Overall Progress:** 17%
 
 ---
 
@@ -741,7 +741,7 @@
 |-----------|------------------|--------|----------|
 | 1. Foundation & Planning | Feb 23, 2026 | 🟡 In Progress | 20% |
 | 2. Code Standards & Quality Tools (PHPCS) | Mar 2, 2026 | 🟢 Complete | 100% |
-| 3. Remove pp-core.php | Mar 16, 2026 | 🟡 In Progress | 55% |
+| 3. Remove pp-core.php | Mar 16, 2026 | 🟡 In Progress | 80% |
 | 4. JavaScript Modernization | Mar 23, 2026 | ⚪ Not Started | 0% |
 | 5. Enhanced Consent Management | Apr 6, 2026 | ⚪ Not Started | 0% |
 | 6. Advanced Tracker Delay-Loading | Apr 20, 2026 | ⚪ Not Started | 0% |
@@ -778,8 +778,10 @@
 | 2026-02-17 | M3 Settings class WPCS + WordPress Settings API registration | Removed duplicate admin_menu hook from Settings constructor; added register_settings() registering all 18 options via register_setting(); Plugin::admin_init() now calls register_settings() unconditionally; fixed json_encode→wp_json_encode; pixel ID sanitisation wp_kses_post→sanitize_text_field |
 | 2026-02-17 | M2 Complete: development-workflow.md rewritten | Removed references to removed tooling (PHPUnit, bin/*.sh, composer/vendor); documented actual workflow using global phpcs/phpcbf; added manual testing protocol |
 | 2026-02-17 | M3 PHPCS fixes: functions.php + phpcs.xml | functions.php converted to WPCS style (tabs, docblocks, K&R braces); phpcs.xml updated to add mwg prefix to allowed list (public API functions use mwg_ prefix) |
+| 2026-02-17 | M3 Testing sprint passed (functions.php PHPCS fix) | Plugin active, error log clean, front-end 200, PHPCS clean on functions.php; 1 task remaining in M3: PHPCS fix pass on admin templates |
 
 ---
 
-**Last Updated:** 17 February 2026 (08:40)  
-**Next Review:** 23 February 2026
+**Last Updated:** 17 February 2026 (09:10)  
+**Next Review:** 23 February 2026  
+**Next Action:** PHPCS fix pass on admin templates (cookie-consent-settings.php, etc.)
