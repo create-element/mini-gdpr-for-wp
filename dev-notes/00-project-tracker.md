@@ -287,7 +287,7 @@
 
 #### Sub-Tasks
 
-##### Phase 5.1: Popup UI Enhancement ✅ Coded (2026-02-17) — pending testing sprint
+##### Phase 5.1: Popup UI Enhancement ✅ Complete (2026-02-17)
 - [x] Design new popup layout with 3 buttons: Reject, Info, Accept
 - [x] Update mini-gdpr-cookie-popup.css for new layout (responsive flex-wrap at 18em)
 - [x] Ensure responsive design on all screen sizes
@@ -794,9 +794,10 @@
 | 2026-02-17 | M4 Phase 4.4 coding sprint: build process + minification + asset loading | Added package.json (terser dev dep) + bin/build.js; minified all 4 JS assets (52-67% reduction); SCRIPT_DEBUG conditional enqueue; admin scripts moved to footer; development-workflow.md updated with build docs |
 | 2026-02-17 | M4 Phase 4.4 testing sprint passed — M4 Complete | Plugin active, error log clean, all 4 .min.js serve HTTP 200, front-end HTML confirmed loading .min.js, no debug.log errors; Milestone 4 (JavaScript Modernisation) fully complete |
 | 2026-02-17 | M5 Phase 5.1 coding sprint — Reject button added to consent popup | [Reject] [info...] [Accept] 3-button layout; rejectConsent() + hasRejected() + hasStoredDecision() in JS; rejection cookie name (rcn) added to mgwcsData; OPT_CONSENT_ACCEPT/REJECT/INFO_BTN_TEXT constants + register_settings(); responsive CSS; minified assets rebuilt |
+| 2026-02-17 | M5 Phase 5.1 testing sprint passed | Plugin active, error log clean, front-end 200, mgwcsData contains rcn + rjt + mre, all 3 JS methods verified, responsive CSS confirmed; Phase 5.1 complete — moving to Phase 5.2 (Rejection Logic) |
 
 ---
 
-**Last Updated:** 17 February 2026 (12:25)  
+**Last Updated:** 17 February 2026 (12:30)  
 **Next Review:** 23 February 2026  
-**Next Action:** Testing sprint — M5 Phase 5.1 (verify plugin active, error log clean, Reject button visible on front-end, rejection stored in localStorage)
+**Next Action:** Coding sprint — M5 Phase 5.2 (Rejection Logic Implementation: mgwRejectScripts(), localStorage/cookie rejection storage, prevent blocked scripts on rejection, change-preferences mechanism)
