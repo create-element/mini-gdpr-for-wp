@@ -27,7 +27,8 @@
 			this.data.blkon      = data.blkon  === '1';
 			this.data.always     = data.always === '1';
 			this._accepting      = false;       // In-flight guard: prevents accept double-fire.
-			this._overlayKeydown = null;        // Stored Escape key handler for the overlay.
+			this._overlayKeydown = null;        // Stored keyboard handler for the overlay.
+			this._popupKeydown   = null;        // Stored Tab-trap handler for the consent popup.
 		}
 
 		/**
@@ -68,8 +69,9 @@
 			popup.setAttribute( 'aria-modal', 'true' );
 			popup.setAttribute( 'aria-label', 'Cookie consent' );
 			popup.setAttribute( 'aria-live', 'polite' );
+			popup.setAttribute( 'aria-describedby', 'mgwcs-msg' );
 
-			popup.innerHTML = `<p>${ this.data.msg }</p><div class="btn-box"><button class="accept">${ this.data.ok }</button><button class="more-info">${ this.data.mre }</button></div>`;
+			popup.innerHTML = `<p id="mgwcs-msg">${ this.data.msg }</p><div class="btn-box"><button class="accept">${ this.data.ok }</button><button class="more-info">${ this.data.mre }</button></div>`;
 
 			popup.querySelector( 'button.accept' ).addEventListener( 'click', () => this.consentToScripts() );
 			popup.querySelector( 'button.more-info' ).addEventListener( 'click', () => this.showBlockedScripts() );
@@ -79,6 +81,31 @@
 			}
 
 			document.body.appendChild( popup );
+
+			// Focus trap: cycle Tab/Shift+Tab within the popup's buttons.
+			this._popupKeydown = ( e ) => {
+				if ( e.key !== 'Tab' ) {
+					return;
+				}
+
+				const buttons  = Array.from( popup.querySelectorAll( 'button' ) );
+				const firstBtn = buttons[ 0 ];
+				const lastBtn  = buttons[ buttons.length - 1 ];
+
+				if ( e.shiftKey ) {
+					if ( document.activeElement === firstBtn ) {
+						e.preventDefault();
+						lastBtn.focus();
+					}
+				} else {
+					if ( document.activeElement === lastBtn ) {
+						e.preventDefault();
+						firstBtn.focus();
+					}
+				}
+			};
+			document.addEventListener( 'keydown', this._popupKeydown );
+
 			popup.querySelector( 'button.accept' ).focus();
 		}
 
@@ -102,6 +129,12 @@
 			}
 
 			this._accepting = true;
+
+			// Remove focus trap before the popup is removed from the DOM.
+			if ( this._popupKeydown ) {
+				document.removeEventListener( 'keydown', this._popupKeydown );
+				this._popupKeydown = null;
+			}
 
 			if ( typeof localStorage !== 'undefined' ) {
 				localStorage.setItem( this.data.cn, new Date() );
@@ -157,8 +190,9 @@
 		/**
 		 * Show the "more info" overlay listing all blocked trackers.
 		 *
-		 * Binds a document-level Escape key listener that is stored on the instance
-		 * so it can be precisely removed when the overlay is closed.
+		 * Binds a document-level keyboard listener (Escape to close, Tab to trap
+		 * focus within the panel) that is stored on the instance so it can be
+		 * precisely removed when the overlay is closed.
 		 *
 		 * @since 2.0.0
 		 * @return {void}
@@ -178,16 +212,9 @@
 				}
 			} );
 
-			// Escape key closes the overlay; listener is cleaned up on close.
-			this._overlayKeydown = ( e ) => {
-				if ( e.key === 'Escape' ) {
-					this.closeBlockedScripts();
-				}
-			};
-			document.addEventListener( 'keydown', this._overlayKeydown );
-
 			const panel = document.createElement( 'div' );
-			panel.className = 'mgw-nfo';
+			panel.className  = 'mgw-nfo';
+			panel.setAttribute( 'tabindex', '-1' );
 			overlay.appendChild( panel );
 
 			if ( Object.keys( this.data.meta ).length ) {
@@ -220,8 +247,44 @@
 
 			const closeBtn = document.createElement( 'button' );
 			closeBtn.innerText = 'Close';
+			closeBtn.setAttribute( 'aria-label', 'Close cookie information' );
 			closeBtn.addEventListener( 'click', () => this.closeBlockedScripts() );
 			panel.appendChild( closeBtn );
+
+			// Keyboard handler: Escape closes; Tab traps focus within the panel.
+			this._overlayKeydown = ( e ) => {
+				if ( e.key === 'Escape' ) {
+					this.closeBlockedScripts();
+					return;
+				}
+
+				if ( e.key === 'Tab' ) {
+					const focusable = Array.from(
+						panel.querySelectorAll( 'button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])' )
+					);
+
+					if ( 0 === focusable.length ) {
+						e.preventDefault();
+						return;
+					}
+
+					const firstEl = focusable[ 0 ];
+					const lastEl  = focusable[ focusable.length - 1 ];
+
+					if ( e.shiftKey ) {
+						if ( document.activeElement === firstEl ) {
+							e.preventDefault();
+							lastEl.focus();
+						}
+					} else {
+						if ( document.activeElement === lastEl ) {
+							e.preventDefault();
+							firstEl.focus();
+						}
+					}
+				}
+			};
+			document.addEventListener( 'keydown', this._overlayKeydown );
 
 			document.body.appendChild( overlay );
 			closeBtn.focus();
@@ -230,8 +293,10 @@
 		/**
 		 * Remove the blocked-scripts overlay from the DOM.
 		 *
-		 * Also removes the document-level Escape key listener registered in
+		 * Removes the document-level keyboard listener registered in
 		 * showBlockedScripts() to prevent memory leaks and ghost handlers.
+		 * Returns focus to the "More info" button in the consent popup so
+		 * keyboard users can continue navigating.
 		 *
 		 * @since 2.0.0
 		 * @return {void}
@@ -245,6 +310,12 @@
 			const overlay = document.getElementById( 'mgwcsOvly' );
 			if ( overlay ) {
 				overlay.remove();
+			}
+
+			// Return focus to the popup so keyboard users can proceed.
+			const moreInfoBtn = document.querySelector( '#mgwcsCntr button.more-info' );
+			if ( moreInfoBtn ) {
+				moreInfoBtn.focus();
 			}
 		}
 
