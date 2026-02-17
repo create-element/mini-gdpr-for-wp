@@ -72,13 +72,13 @@ function is_cf7_installed() {
  * @return \DateTime
  */
 function get_date_time_now() {
-	global $mini_gdrp_now;
+	global $pp_mwg_gdrp_now;
 
-	if ( is_null( $mini_gdrp_now ) ) {
-		$mini_gdrp_now = new \DateTime( 'now', wp_timezone() );
+	if ( is_null( $pp_mwg_gdrp_now ) ) {
+		$pp_mwg_gdrp_now = new \DateTime( 'now', wp_timezone() );
 	}
 
-	return $mini_gdrp_now;
+	return $pp_mwg_gdrp_now;
 }
 
 /**
@@ -89,17 +89,19 @@ function get_date_time_now() {
  * @return string|null Formatted date string, or null if get_date_time_now() fails.
  */
 function get_date_time_now_h() {
-	global $mini_gdrp_now_h;
+	global $pp_mwg_gdrp_now_h;
 
-	if ( ! is_null( $mini_gdrp_now_h ) ) {
+	// phpcs:disable Generic.CodeAnalysis.EmptyStatement, Generic.CodeAnalysis.AssignmentInCondition, Squiz.PHP.DisallowMultipleAssignments -- Intentional SESE guard pattern.
+	if ( ! is_null( $pp_mwg_gdrp_now_h ) ) {
 		// Already cached — return early.
 	} elseif ( empty( ( $now = get_date_time_now() ) ) ) {
 		// Could not retrieve current DateTime.
 	} else {
-		$mini_gdrp_now_h = $now->format( 'Y-m-d H:i:s T' );
+		$pp_mwg_gdrp_now_h = $now->format( 'Y-m-d H:i:s T' );
 	}
+	// phpcs:enable Generic.CodeAnalysis.EmptyStatement, Generic.CodeAnalysis.AssignmentInCondition, Squiz.PHP.DisallowMultipleAssignments
 
-	return $mini_gdrp_now_h;
+	return $pp_mwg_gdrp_now_h;
 }
 
 /**
@@ -111,19 +113,21 @@ function get_date_time_now_h() {
  * @return bool
  */
 function is_mini_gdpr_enabled() {
-	global $is_mini_gdpr_enabled;
+	global $pp_mwg_is_mini_gdpr_enabled;
 
-	if ( is_null( $is_mini_gdpr_enabled ) ) {
-		$is_mini_gdpr_enabled = false;
+	if ( is_null( $pp_mwg_is_mini_gdpr_enabled ) ) {
+		$pp_mwg_is_mini_gdpr_enabled = false;
 	}
 
+	// phpcs:disable Generic.CodeAnalysis.EmptyStatement -- Intentional SESE guard pattern.
 	if ( empty( get_privacy_policy_url() ) ) {
 		// No privacy policy URL — plugin remains disabled.
 	} else {
-		$is_mini_gdpr_enabled = true;
+		$pp_mwg_is_mini_gdpr_enabled = true;
 	}
+	// phpcs:enable Generic.CodeAnalysis.EmptyStatement
 
-	return $is_mini_gdpr_enabled;
+	return $pp_mwg_is_mini_gdpr_enabled;
 }
 
 /**
@@ -132,9 +136,9 @@ function is_mini_gdpr_enabled() {
  * @return void
  */
 function enqueue_frontend_assets() {
-	global $is_mini_gdpr_frontend_enqueued;
+	global $pp_mwg_is_mini_gdpr_frontend_enqueued;
 
-	if ( is_null( $is_mini_gdpr_frontend_enqueued ) ) {
+	if ( is_null( $pp_mwg_is_mini_gdpr_frontend_enqueued ) ) {
 		wp_enqueue_style( 'mini-wp-gdpr', PP_MWG_ASSETS_URL . 'mini-gdpr.css', array(), PP_MWG_VERSION, 'all' );
 
 		wp_enqueue_script( 'mini-wp-gdpr', PP_MWG_ASSETS_URL . 'mini-gdpr.js', array( 'jquery' ), PP_MWG_VERSION, true );
@@ -152,7 +156,7 @@ function enqueue_frontend_assets() {
 
 		wp_localize_script( 'mini-wp-gdpr', 'miniWpGdpr', $params );
 
-		$is_mini_gdpr_frontend_enqueued = true;
+		$pp_mwg_is_mini_gdpr_frontend_enqueued = true;
 	}
 }
 
@@ -218,9 +222,9 @@ function is_gdpr_accepted_in_post_data() {
 
 	$is_gdpr_accepted = false;
 
-	// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified by callers.
+	// phpcs:disable WordPress.Security.NonceVerification.Missing, Generic.CodeAnalysis.EmptyStatement -- Nonce verified by callers; SESE guard pattern.
 	foreach ( $control_names as $control_name ) {
-		if ( array_key_exists( $control_name, $_POST ) && filter_var( $_POST[ $control_name ], FILTER_VALIDATE_BOOLEAN ) ) {
+		if ( array_key_exists( $control_name, $_POST ) && filter_var( wp_unslash( $_POST[ $control_name ] ), FILTER_VALIDATE_BOOLEAN ) ) {
 			$is_gdpr_accepted = true;
 			break;
 		}
@@ -236,7 +240,7 @@ function is_gdpr_accepted_in_post_data() {
 	} else {
 		$is_gdpr_accepted = ( 1 === count( $_POST[ CF7_CONSENT_TAG_NAME ] ) );
 	}
-	// phpcs:enable WordPress.Security.NonceVerification.Missing
+	// phpcs:enable WordPress.Security.NonceVerification.Missing, Generic.CodeAnalysis.EmptyStatement
 
 	return $is_gdpr_accepted;
 }
@@ -273,6 +277,7 @@ function is_script_blocker_enabled() {
 
 	$settings = get_settings_controller();
 
+	// phpcs:disable Generic.CodeAnalysis.EmptyStatement -- Intentional SESE guard pattern.
 	if ( empty( get_script_block_lists_blacklist() ) && empty( get_script_block_lists_whitelist() ) ) {
 		// No domains configured — script blocker has nothing to block.
 	} elseif ( ! $settings->get_bool( OPT_IS_COOKIE_CONSENT_POPUP_ENABLED ) ) {
@@ -280,6 +285,7 @@ function is_script_blocker_enabled() {
 	} else {
 		$is_enabled = true;
 	}
+	// phpcs:enable Generic.CodeAnalysis.EmptyStatement
 
 	return $is_enabled;
 }

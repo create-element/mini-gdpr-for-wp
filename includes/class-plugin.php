@@ -79,7 +79,7 @@ class Plugin extends Component {
 	 * @param string $name    Plugin slug / text domain.
 	 * @param string $version Plugin version string.
 	 */
-	public function __construct( string $name, string $version ) {
+	public function __construct( string $name, string $version ) { // phpcs:ignore Generic.CodeAnalysis.UselessOverridingMethod.Found -- Kept for future extension and docblock clarity.
 		parent::__construct( $name, $version );
 	}
 
@@ -151,6 +151,7 @@ class Plugin extends Component {
 			add_action( 'wp_ajax_' . INSTALL_CF7_CONSENT_ACTION, array( $this, 'install_cf7_form' ) );
 			add_action( 'wp_ajax_' . RESET_PRIVACY_POLICY_CONSENTS, array( $this, 'reset_all_privacy_consents' ) );
 
+			// phpcs:disable Generic.CodeAnalysis.EmptyStatement, Generic.CodeAnalysis.AssignmentInCondition, Squiz.PHP.DisallowMultipleAssignments -- Intentional SESE guard pattern.
 			if ( is_admin() || wp_doing_ajax() ) {
 				// No front-end WooCommerce My Account injection needed.
 			} elseif ( ! $this->settings->get_bool( OPT_IS_WC_MYACCOUNT_INJECT_ENABLED ) ) {
@@ -160,7 +161,7 @@ class Plugin extends Component {
 			} elseif ( mwg_has_user_accepted_privacy_policy() ) {
 				// User already accepted — no need to show the form again.
 			} else {
-				$priority = intval( apply_filters( 'mwg_myaccount_priority', DEFAULT_MYACCOUNT_INJECT_PRIORITY ) );
+				$priority = intval( apply_filters( 'pp_mwg_myaccount_priority', DEFAULT_MYACCOUNT_INJECT_PRIORITY ) );
 				if ( 'dashboard' === $endpoint ) {
 					$action = 'woocommerce_account_' . $endpoint;
 				} else {
@@ -169,6 +170,7 @@ class Plugin extends Component {
 
 				add_action( $action, array( $this->public_hooks, 'inject_into_wc_myaccount_endpoint' ), $priority );
 			}
+			// phpcs:enable Generic.CodeAnalysis.EmptyStatement, Generic.CodeAnalysis.AssignmentInCondition, Squiz.PHP.DisallowMultipleAssignments
 		}
 	}
 
@@ -263,7 +265,7 @@ class Plugin extends Component {
 			$tcs_and_cs_post_id                 = wc_terms_and_conditions_page_id();
 			$is_registration_validation_enabled = $tcs_and_cs_post_id > 0;
 		}
-		$is_registration_validation_enabled = (bool) apply_filters( 'enable_gdpr_registration_validation', $is_registration_validation_enabled );
+		$is_registration_validation_enabled = (bool) apply_filters( 'pp_mwg_enable_gdpr_registration_validation', $is_registration_validation_enabled );
 
 		if ( $is_registration_validation_enabled && ! is_gdpr_accepted_in_post_data() ) {
 			$validation_errors->add( 'accept_gdpr_error', __( 'Privacy Policy not accepted for GDPR', 'mini-wp-gdpr' ) );
@@ -277,6 +279,7 @@ class Plugin extends Component {
 	 * @return void
 	 */
 	public function save_new_customer_gdpr_status( $customer_id ) {
+		// phpcs:disable Generic.CodeAnalysis.AssignmentInCondition, Squiz.PHP.DisallowMultipleAssignments -- Intentional SESE guard pattern.
 		if ( ! is_gdpr_accepted_in_post_data() ) {
 			error_log( __FUNCTION__ . ' : GDPR not accepted' ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 		} elseif ( empty( $customer_id ) ) {
@@ -288,6 +291,7 @@ class Plugin extends Component {
 		} else {
 			$user_controller->accept_gdpr_terms_now( $customer_id );
 		}
+		// phpcs:enable Generic.CodeAnalysis.AssignmentInCondition, Squiz.PHP.DisallowMultipleAssignments
 	}
 
 	/**
@@ -300,6 +304,7 @@ class Plugin extends Component {
 	public function woocommerce_new_order( $order_id, $order ) {
 		$settings = $this->get_settings_controller();
 
+		// phpcs:disable Generic.CodeAnalysis.EmptyStatement, Generic.CodeAnalysis.AssignmentInCondition, Squiz.PHP.DisallowMultipleAssignments -- Intentional SESE guard pattern.
 		if ( ! $settings->get_bool( OPT_IS_NEW_ORDER_TCSANDCS_CONSENT_ENABLED ) ) {
 			// Feature disabled in settings.
 		} elseif ( empty( ( $user = $order->get_user() ) ) ) {
@@ -309,6 +314,7 @@ class Plugin extends Component {
 		} else {
 			$user_controller->accept_gdpr_terms_now( $user->ID );
 		}
+		// phpcs:enable Generic.CodeAnalysis.EmptyStatement, Generic.CodeAnalysis.AssignmentInCondition, Squiz.PHP.DisallowMultipleAssignments
 	}
 
 	// -----------------------------------------------------------------------
@@ -322,17 +328,17 @@ class Plugin extends Component {
 	 * @return void
 	 */
 	public function wpcf7_mail_sent( $contact_form ) {
-		$cf7_tag_name = apply_filters( 'mwg_your_email_tag_name', CF7_YOUR_EMAIL_TAG_NAME );
+		$cf7_tag_name = apply_filters( 'pp_mwg_your_email_tag_name', CF7_YOUR_EMAIL_TAG_NAME );
 
 		// CF7 nonce verification is handled by CF7 itself before this hook fires.
-		// phpcs:disable WordPress.Security.NonceVerification.Missing
+		// phpcs:disable WordPress.Security.NonceVerification.Missing, Generic.CodeAnalysis.EmptyStatement, Generic.CodeAnalysis.AssignmentInCondition, Squiz.PHP.DisallowMultipleAssignments -- Nonce is CF7-verified; SESE guard pattern.
 		if ( ! is_gdpr_accepted_in_post_data() ) {
 			// GDPR not accepted — nothing to record.
 		} elseif ( empty( $cf7_tag_name ) ) {
 			// No email tag configured.
 		} elseif ( ! array_key_exists( $cf7_tag_name, $_POST ) ) {
 			// Email tag not present in POST data.
-		} elseif ( empty( ( $user_email = sanitize_email( $_POST[ $cf7_tag_name ] ) ) ) ) {
+		} elseif ( empty( ( $user_email = sanitize_email( wp_unslash( $_POST[ $cf7_tag_name ] ) ) ) ) ) {
 			// Email address could not be sanitised.
 		} elseif ( empty( ( $user = get_user_by( 'email', $user_email ) ) ) ) {
 			// No WordPress user found for this email.
@@ -341,7 +347,7 @@ class Plugin extends Component {
 		} else {
 			$user_controller->accept_gdpr_terms_now( $user->ID );
 		}
-		// phpcs:enable WordPress.Security.NonceVerification.Missing
+		// phpcs:enable WordPress.Security.NonceVerification.Missing, Generic.CodeAnalysis.EmptyStatement, Generic.CodeAnalysis.AssignmentInCondition, Squiz.PHP.DisallowMultipleAssignments
 	}
 
 	// -----------------------------------------------------------------------
@@ -362,7 +368,7 @@ class Plugin extends Component {
 			die();
 		}
 
-		if ( empty( ( $user_id = get_current_user_id() ) ) ) {
+		if ( empty( ( $user_id = get_current_user_id() ) ) ) { // phpcs:ignore Generic.CodeAnalysis.AssignmentInCondition.Found, Squiz.PHP.DisallowMultipleAssignments.FoundInControlStructure -- Intentional SESE guard.
 			error_log( __FUNCTION__ . ' : user_id is invalid' ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			die();
 		}
@@ -370,6 +376,7 @@ class Plugin extends Component {
 		$response      = null;
 		$response_code = 400;
 
+		// phpcs:disable Generic.CodeAnalysis.EmptyStatement, Generic.CodeAnalysis.AssignmentInCondition, Squiz.PHP.DisallowMultipleAssignments -- Intentional SESE guard pattern.
 		if ( ! is_gdpr_accepted_in_post_data() ) {
 			// GDPR checkbox not ticked.
 		} elseif ( empty( ( $user_controller = $this->get_user_controller() ) ) ) {
@@ -377,12 +384,13 @@ class Plugin extends Component {
 		} else {
 			$user_controller->accept_gdpr_terms_now( $user_id );
 
-			$response = array(
+			$response      = array(
 				'success' => '1',
 				'message' => get_thankyou_text(),
 			);
 			$response_code = 200;
 		}
+		// phpcs:enable Generic.CodeAnalysis.EmptyStatement, Generic.CodeAnalysis.AssignmentInCondition, Squiz.PHP.DisallowMultipleAssignments
 
 		wp_send_json( $response, $response_code );
 	}
@@ -401,12 +409,12 @@ class Plugin extends Component {
 		$cf7_helper = get_cf7_helper();
 
 		// Nonce verified above by pp_die_if_bad_nonce_or_cap().
-		// phpcs:disable WordPress.Security.NonceVerification.Missing
+		// phpcs:disable WordPress.Security.NonceVerification.Missing, Generic.CodeAnalysis.EmptyStatement, Generic.CodeAnalysis.AssignmentInCondition, Squiz.PHP.DisallowMultipleAssignments -- Nonce verified above; SESE guard pattern.
 		if ( ! array_key_exists( 'formId', $_POST ) ) {
 			// formId not supplied.
 		} elseif ( ! $cf7_helper->is_a_cf7_form( $form_id = intval( $_POST['formId'] ) ) ) {
 			// Supplied formId does not correspond to a CF7 form.
-		// phpcs:enable WordPress.Security.NonceVerification.Missing
+		// phpcs:enable WordPress.Security.NonceVerification.Missing, Generic.CodeAnalysis.EmptyStatement, Generic.CodeAnalysis.AssignmentInCondition, Squiz.PHP.DisallowMultipleAssignments
 		} else {
 			try {
 				$cf7_helper->install_consent_box( $form_id );
