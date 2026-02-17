@@ -32,28 +32,51 @@
 		}
 
 		/**
-		 * Determine whether the user has previously consented within the allowed window.
+		 * Determine whether a consent/rejection timestamp stored under the given
+		 * storage key is still within the allowed duration window.
 		 *
-		 * Checks localStorage first; falls back to document.cookie.
+		 * Checks localStorage first; falls back to document.cookie. Shared by
+		 * hasConsented() and hasRejected().
 		 *
 		 * @since 2.0.0
-		 * @return {boolean} True if consent exists and has not expired.
+		 * @param {string} storageKey localStorage / cookie key to check.
+		 * @return {boolean} True if a stored date exists and has not expired.
 		 */
-		hasConsented() {
+		hasStoredDecision( storageKey ) {
 			if ( typeof localStorage !== 'undefined' ) {
-				const consentDate = Date.parse( localStorage.getItem( this.data.cn ) );
-				if ( consentDate ) {
-					const now        = new Date();
-					const consentAge = Math.round( ( now - consentDate ) / 1000.0 );
-					const maxAge     = parseInt( this.data.cd, 10 ) * 86400; // 1 day = 86400 s
-					return consentAge < maxAge;
+				const storedDate = Date.parse( localStorage.getItem( storageKey ) );
+				if ( storedDate ) {
+					const now      = new Date();
+					const age      = Math.round( ( now - storedDate ) / 1000.0 );
+					const maxAge   = parseInt( this.data.cd, 10 ) * 86400; // 1 day = 86400 s
+					return age < maxAge;
 				}
 				return false;
 			}
 
 			return document.cookie.split( ';' ).some( ( pair ) => {
-				return pair.split( '=' )[ 0 ].trim().startsWith( this.data.cn );
+				return pair.split( '=' )[ 0 ].trim().startsWith( storageKey );
 			} );
+		}
+
+		/**
+		 * Determine whether the user has previously consented within the allowed window.
+		 *
+		 * @since 2.0.0
+		 * @return {boolean} True if consent exists and has not expired.
+		 */
+		hasConsented() {
+			return this.hasStoredDecision( this.data.cn );
+		}
+
+		/**
+		 * Determine whether the user has previously rejected within the allowed window.
+		 *
+		 * @since 2.0.0
+		 * @return {boolean} True if a rejection decision exists and has not expired.
+		 */
+		hasRejected() {
+			return this.hasStoredDecision( this.data.rcn );
 		}
 
 		/**
@@ -71,8 +94,9 @@
 			popup.setAttribute( 'aria-live', 'polite' );
 			popup.setAttribute( 'aria-describedby', 'mgwcs-msg' );
 
-			popup.innerHTML = `<p id="mgwcs-msg">${ this.data.msg }</p><div class="btn-box"><button class="accept">${ this.data.ok }</button><button class="more-info">${ this.data.mre }</button></div>`;
+			popup.innerHTML = `<p id="mgwcs-msg">${ this.data.msg }</p><div class="btn-box"><button class="reject" aria-label="Reject cookies">${ this.data.rjt }</button><button class="more-info" aria-label="More information about cookies">${ this.data.mre }</button><button class="accept" aria-label="Accept cookies">${ this.data.ok }</button></div>`;
 
+			popup.querySelector( 'button.reject' ).addEventListener( 'click', () => this.rejectConsent() );
 			popup.querySelector( 'button.accept' ).addEventListener( 'click', () => this.consentToScripts() );
 			popup.querySelector( 'button.more-info' ).addEventListener( 'click', () => this.showBlockedScripts() );
 
@@ -145,6 +169,42 @@
 			}
 
 			this.insertBlockedScripts();
+
+			popup.classList.add( 'mgw-fin' );
+			setTimeout( () => popup.remove(), 500 );
+		}
+
+		/**
+		 * Store the user's rejection and dismiss the consent popup without injecting
+		 * any tracker scripts.
+		 *
+		 * Saves the rejection timestamp under the rejection storage key so the popup
+		 * does not reappear within the configured consent duration window. The
+		 * _popupKeydown focus trap is removed before the popup element is detached
+		 * from the DOM.
+		 *
+		 * @since 2.0.0
+		 * @return {void}
+		 */
+		rejectConsent() {
+			const popup = document.getElementById( 'mgwcsCntr' );
+			if ( ! popup ) {
+				return;
+			}
+
+			// Remove focus trap before the popup is removed from the DOM.
+			if ( this._popupKeydown ) {
+				document.removeEventListener( 'keydown', this._popupKeydown );
+				this._popupKeydown = null;
+			}
+
+			if ( typeof localStorage !== 'undefined' ) {
+				localStorage.setItem( this.data.rcn, new Date() );
+			} else {
+				const expiresWhen = new Date();
+				expiresWhen.setDate( expiresWhen.getDate() + parseInt( this.data.cd, 10 ) );
+				document.cookie = `${ this.data.rcn }=true; expires=${ expiresWhen.toUTCString() }; Secure`;
+			}
 
 			popup.classList.add( 'mgw-fin' );
 			setTimeout( () => popup.remove(), 500 );
@@ -320,8 +380,8 @@
 		}
 
 		/**
-		 * Initialise: inject deferred scripts immediately if already consented,
-		 * or show the popup if the user hasn't yet decided.
+		 * Initialise: inject deferred scripts if already consented, skip entirely
+		 * if already rejected, or show the popup if the user hasn't yet decided.
 		 *
 		 * @since 2.0.0
 		 * @return {void}
@@ -329,7 +389,7 @@
 		init() {
 			if ( this.hasConsented() ) {
 				this.insertBlockedScripts();
-			} else {
+			} else if ( ! this.hasRejected() ) {
 				this.showPopup();
 			}
 		}

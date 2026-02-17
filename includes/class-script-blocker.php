@@ -122,7 +122,7 @@ class Script_Blocker extends Component {
 					$definition = wp_parse_args( $definition, $defaults );
 
 					if ( ! empty( $definition['pattern'] ) && ! empty( $definition['description'] ) ) {
-						$definition['is-captured']                  = false;
+						$definition['is-captured']                    = false;
 						$this->blockable_scripts[ $sanitised_handle ] = $definition;
 					}
 				}
@@ -212,7 +212,7 @@ class Script_Blocker extends Component {
 						$blocked_script['after'] = $scripts->get_inline_script_data( $script->handle, 'after' );
 						$blocked_script['src']   = $script->src;
 
-						$blocked_script['is-captured']              = true;
+						$blocked_script['is-captured']            = true;
 						$this->blocked_scripts[ $script->handle ] = $blocked_script;
 
 						break;
@@ -246,16 +246,20 @@ class Script_Blocker extends Component {
 
 			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 			wp_enqueue_script( 'mini-gdpr-cookie-consent', PP_MWG_ASSETS_URL . "mini-gdpr-cookie-popup$suffix.js", null, $this->version, false );
+			$rejection_cookie_name = sprintf( '%s_rej_%d_', COOKIE_NAME_BASE, $cookie_sequence );
+
 			wp_localize_script(
 				'mini-gdpr-cookie-consent',
 				'mgwcsData',
 				[
 					'cn'     => $cookie_name,
+					'rcn'    => $rejection_cookie_name,
 					'cd'     => $consent_duration,
 					'msg'    => $consent_message,
 					'cls'    => $class_names,
-					'ok'     => __( 'Accept', 'mini-wp-gdpr' ),
-					'mre'    => __( 'info...', 'mini-wp-gdpr' ),
+					'ok'     => $this->get_popup_button_text( OPT_CONSENT_ACCEPT_TEXT, DEF_CONSENT_ACCEPT_TEXT ),
+					'rjt'    => $this->get_popup_button_text( OPT_CONSENT_REJECT_TEXT, DEF_CONSENT_REJECT_TEXT ),
+					'mre'    => $this->get_popup_button_text( OPT_CONSENT_INFO_BTN_TEXT, DEF_CONSENT_INFO_BTN_TEXT ),
 					'nfo1'   => __( 'Along with some cookies, we use these scripts', 'mini-wp-gdpr' ),
 					'nfo2'   => __( "We don't use any tracking scripts, but we do use some cookies.", 'mini-wp-gdpr' ),
 					'nfo3'   => $info_text_3,
@@ -267,6 +271,28 @@ class Script_Blocker extends Component {
 
 			wp_enqueue_style( 'mini-gdpr-cookie-consent', PP_MWG_ASSETS_URL . 'mini-gdpr-cookie-popup.css', null, $this->version );
 		}
+	}
+
+	// -------------------------------------------------------------------------
+	// Private helpers
+	// -------------------------------------------------------------------------
+
+	/**
+	 * Return the localised popup button label for the given option key.
+	 *
+	 * Reads the admin-configured value from settings; if none is stored, falls
+	 * back to the translatable default string.
+	 *
+	 * @param string $option_key  Option key (OPT_CONSENT_*_TEXT constant).
+	 * @param string $default_str Default button label (DEF_CONSENT_* constant).
+	 * @return string Escaped button label ready for JS localisation.
+	 */
+	private function get_popup_button_text( string $option_key, string $default_str ) {
+		$settings = get_settings_controller();
+		$stored   = $settings->get_string( $option_key );
+		$text     = ! empty( $stored ) ? $stored : $default_str;
+
+		return esc_html( $text );
 	}
 
 	/**

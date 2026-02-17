@@ -117,6 +117,25 @@ class Settings extends Settings_Core {
 			)
 		);
 
+		// Consent popup button labels (plain text).
+		$button_text_options = array(
+			OPT_CONSENT_ACCEPT_TEXT,
+			OPT_CONSENT_REJECT_TEXT,
+			OPT_CONSENT_INFO_BTN_TEXT,
+		);
+
+		foreach ( $button_text_options as $option_name ) {
+			register_setting(
+				$option_group,
+				$option_name,
+				array(
+					'type'              => 'string',
+					'sanitize_callback' => 'sanitize_text_field',
+					'default'           => '',
+				)
+			);
+		}
+
 		// Facebook Pixel ID (numeric string).
 		register_setting(
 			$option_group,

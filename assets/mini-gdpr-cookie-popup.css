@@ -71,11 +71,23 @@
   font-weight: bold;
 }
 
+.mgw-cnt .btn-box button.reject {
+  /* Equal visual weight to Accept — GDPR requires rejection to be as easy as acceptance. */
+}
+
 .mgw-cnt .btn-box button.more-info {
   /* background-color: transparent; */
   /* border-color: transparent; */
   /* color: grey; */
   opacity: 0.6;
+}
+
+/* Responsive: stack buttons vertically on very small viewports. */
+@media (max-width: 18em) {
+  .mgw-cnt .btn-box {
+    flex-direction: column;
+    gap: 1px;
+  }
 }
 
 .mgw-cnt.mgw-fin {
