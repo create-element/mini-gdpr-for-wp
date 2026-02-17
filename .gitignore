@@ -14,8 +14,8 @@ wp-content/cache/*
 sitemap.xml
 sitemap.xml.gz
 
-# Package Managers (not used in this project - keeping plugin self-contained)
-# node_modules/
+# Package Managers
+node_modules/
 # vendor/
 # bower_components/
 

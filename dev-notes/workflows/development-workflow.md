@@ -42,6 +42,22 @@ composer global require squizlabs/php_codesniffer wp-coding-standards/wpcs
 phpcs --config-set installed_paths ~/.composer/vendor/wp-coding-standards/wpcs
 ```
 
+### JavaScript Build Tools
+
+The plugin uses a `package.json` (dev-only) for the JavaScript minification pipeline.
+
+```bash
+# Install build tools (once, or after a fresh clone)
+npm install
+
+# Build all minified JS assets
+npm run build
+```
+
+This runs `bin/build.js` which uses Terser to produce `.min.js` files in `assets/`.
+The `.min.js` files are committed to the repository (plugin users do not need Node.js).
+Source maps (`*.min.js.map`) are excluded from git (see `.gitignore`).
+
 ### Note: No composer.json in This Plugin
 
 This plugin does not use Composer or a `vendor/` directory. Shell scripts (bin/) were removed as a security risk — they have no place in a WordPress plugin. Use the globally-installed `phpcs` and `phpcbf` commands directly.
@@ -87,7 +103,27 @@ This plugin does not use Composer or a `vendor/` directory. Shell scripts (bin/)
 
 ## Code Quality Tools
 
-Mini WP GDPR uses PHP_CodeSniffer with the WordPress Coding Standards.
+Mini WP GDPR uses PHP_CodeSniffer with the WordPress Coding Standards, and Terser for JavaScript minification.
+
+### JavaScript Builds
+
+After modifying any `.js` file in `assets/`, rebuild the minified assets:
+
+```bash
+npm run build
+```
+
+Commit both the source `.js` and the minified `.min.js` together. The PHP enqueue
+functions use `SCRIPT_DEBUG` to switch between them:
+
+```php
+$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+wp_enqueue_script( 'handle', ASSETS_URL . "file$suffix.js", ... );
+```
+
+Set `define( 'SCRIPT_DEBUG', true );` in `wp-config.php` for development.
+
+---
 
 ### Running PHPCS
 
@@ -192,7 +228,8 @@ Full commit guide: [`commit-to-git.md`](commit-to-git.md)
 
 **Do NOT commit:**
 - `vendor/` (not used — no composer.json)
-- `node_modules/` (will be added in M4 if needed)
+- `node_modules/` (local build tools — excluded by `.gitignore`)
+- `*.min.js.map` (source maps — excluded by `.gitignore`)
 - IDE-specific files (`.idea/`, `.vscode/` unless shared config)
 - Temporary files, cache files, coverage reports
 
@@ -285,9 +322,9 @@ Check that you are running `phpcs` from the plugin root directory where `phpcs.x
 - Extra checks: Test settings save/load, verify no breaking changes in error log.
 
 ### Milestone 4: JavaScript Modernization
-- Focus: ES6+ refactoring.
-- New tools: ESLint + Prettier (to be added in this milestone).
-- Workflow: Refactor → lint → test in browser.
+- Focus: ES6+ refactoring, build process, minification.
+- Tools: Terser via `npm run build` (Phase 4.4).
+- Workflow: Refactor → `npm run build` (if JS changed) → manual test in browser.
 
 ### Milestones 5-6: New Features (Consent Management & Tracker Delay-Loading)
 - Focus: Add Reject button, improve delay-loading.
@@ -314,6 +351,7 @@ Check that you are running `phpcs` from the plugin root directory where `phpcs.x
 | Check code style              | `phpcs --standard=phpcs.xml .`              |
 | Auto-fix style issues         | `phpcbf --standard=phpcs.xml .`             |
 | Check a single file           | `phpcs --standard=phpcs.xml <file.php>`     |
+| Build minified JS assets      | `npm run build`                             |
 | View plugin in WP             | `wp --path=... plugin list`                 |
 | Tail error log                | `tail -f /var/www/westfield.local/log/error.log` |
 | Tail debug log                | `tail -f /var/www/.../wp-content/debug.log` |
@@ -321,4 +359,4 @@ Check that you are running `phpcs` from the plugin root directory where `phpcs.x
 ---
 
 **Last Updated:** 17 February 2026
-**Milestone:** M2 (Complete) / M3 (Current)
+**Milestone:** M4 (JavaScript Modernisation — Phase 4.4 Complete)

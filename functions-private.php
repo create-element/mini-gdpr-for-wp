@@ -133,15 +133,20 @@ function is_mini_gdpr_enabled() {
 /**
  * Enqueues all front-end CSS and JS assets for the plugin (once per page load).
  *
+ * Loads minified assets in production and source assets when SCRIPT_DEBUG is
+ * enabled, following the standard WordPress plugin convention.
+ *
  * @return void
  */
 function enqueue_frontend_assets() {
 	global $pp_mwg_is_mini_gdpr_frontend_enqueued;
 
+	$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+
 	if ( is_null( $pp_mwg_is_mini_gdpr_frontend_enqueued ) ) {
 		wp_enqueue_style( 'mini-wp-gdpr', PP_MWG_ASSETS_URL . 'mini-gdpr.css', array(), PP_MWG_VERSION, 'all' );
 
-		wp_enqueue_script( 'mini-wp-gdpr', PP_MWG_ASSETS_URL . 'mini-gdpr.js', array(), PP_MWG_VERSION, true );
+		wp_enqueue_script( 'mini-wp-gdpr', PP_MWG_ASSETS_URL . "mini-gdpr$suffix.js", array(), PP_MWG_VERSION, true );
 
 		$params = array(
 			'termsNotAccepted' => __( 'Please accept the GDPR terms before proceeding.', 'mini-wp-gdpr' ),

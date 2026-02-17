@@ -244,7 +244,8 @@ class Script_Blocker extends Component {
 
 			$consent_message = esc_html( $settings->get_string( OPT_COOKIE_AND_TRACKER_CONSENT_MESSAGE ) );
 
-			wp_enqueue_script( 'mini-gdpr-cookie-consent', PP_MWG_ASSETS_URL . 'mini-gdpr-cookie-popup.js', null, $this->version, false );
+			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+			wp_enqueue_script( 'mini-gdpr-cookie-consent', PP_MWG_ASSETS_URL . "mini-gdpr-cookie-popup$suffix.js", null, $this->version, false );
 			wp_localize_script(
 				'mini-gdpr-cookie-consent',
 				'mgwcsData',

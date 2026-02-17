@@ -1,0 +1,14 @@
+{
+	"name": "mini-gdpr-for-wp",
+	"version": "2.0.0",
+	"description": "Build tooling for Mini WP GDPR plugin JavaScript assets.",
+	"private": true,
+	"scripts": {
+		"build": "npm run build:js",
+		"build:js": "node bin/build.js",
+		"build:watch": "node bin/build.js --watch"
+	},
+	"devDependencies": {
+		"terser": "^5.37.0"
+	}
+}
