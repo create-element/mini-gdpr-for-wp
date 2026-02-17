@@ -61,7 +61,7 @@
 
 ### In Progress (Milestone 4 — JavaScript Modernisation)
 - [x] Phase 4.1 complete ✅ — ES6+ refactoring of mini-gdpr.js, mini-gdpr-admin.js, mini-gdpr-cookie-popup.js; jQuery removed from deps; MiniGdprPopup class with .init(); ARIA attributes added (2026-02-17)
-- [ ] Phase 4.2 (coding sprint done, awaiting testing) — mini-gdpr-admin-cf7.js rewritten as ES6+ MiniGdprCf7 class; jQuery dep removed; event delegation on tbody; fetch API; popup Escape handler + accept in-flight guard
+- [x] Phase 4.2 complete ✅ — mini-gdpr-admin-cf7.js rewritten as ES6+ MiniGdprCf7 class; jQuery dep removed; event delegation on tbody; fetch API; popup Escape handler + accept in-flight guard (2026-02-17)
 
 ---
 
@@ -232,12 +232,12 @@
 - [x] Use template literals for string building
 - [x] Implement modules if beneficial — not beneficial for this plugin size; IIFE/class pattern sufficient
 
-##### Phase 4.2: Event Handling Improvements
-- [ ] Use addEventListener consistently
-- [ ] Implement event delegation where appropriate
-- [ ] Add proper event cleanup
-- [ ] Handle edge cases gracefully
-- [ ] Add debouncing/throttling where needed
+##### Phase 4.2: Event Handling Improvements ✅ Complete (2026-02-17)
+- [x] Use addEventListener consistently
+- [x] Implement event delegation where appropriate (tbody delegation in MiniGdprCf7)
+- [x] Add proper event cleanup (overlay Escape keydown listener removed on close)
+- [x] Handle edge cases gracefully (in-flight accept guard, backdrop click guard)
+- [x] Add debouncing/throttling where needed (not required — no scroll/resize handlers)
 
 ##### Phase 4.3: Accessibility Enhancements
 - [x] Add ARIA labels to interactive elements (role, aria-modal, aria-label, aria-live added in Phase 4.1 popup rewrite)
@@ -787,9 +787,10 @@
 | 2026-02-17 | M4 Phase 4.1 (partial) coding sprint: mini-gdpr.js and mini-gdpr-admin.js converted to ES6+ | Replaced jQuery/var with ES6 classes, const/let, arrow functions, async/await, fetch API; removed jQuery from enqueue deps; PHPCS clean on PHP files; testing sprint passed — front-end 200, error log clean, no debug.log |
 | 2026-02-17 | M4 Phase 4.1 (continued): mini-gdpr-cookie-popup.js converted to ES6+ | Wrapped in IIFE; global functions → MiniGdprPopup class; var → const/let; fixed DOMContentLoaded-on-button bug (→ click); removed dead createElement('extra') block; added ARIA (role, aria-modal, aria-label, aria-live); added backdrop click guard; removed all console.log; classList.add instead of className +=; hasOwnProperty guards on for...in loops |
 | 2026-02-17 | M4 Phase 4.1 complete — testing sprint passed | Plugin active, error log clean, front-end 200, mgwcsData output correct, .init() call verified; Phase 4.1 all tasks marked complete; ARIA label task in Phase 4.3 also marked done; next sprint: Phase 4.2 (Event Handling Improvements) |
+| 2026-02-17 | M4 Phase 4.2 complete — testing sprint passed | Plugin active, error log clean, front-end/admin 200, no debug.log; MiniGdprCf7 class verified (ES6+, event delegation, fetch API); cookie popup Escape handler and accept in-flight guard verified; jQuery dep dropped from class-admin-hooks.php; Phase 4.2 sub-tasks all marked complete |
 
 ---
 
-**Last Updated:** 17 February 2026 (11:20)  
+**Last Updated:** 17 February 2026 (11:30)  
 **Next Review:** 23 February 2026  
-**Next Action:** Testing sprint — verify M4 Phase 4.2: plugin active, error log clean, CF7 admin page functional, popup Escape/accept guard working
+**Next Action:** Coding sprint — M4 Phase 4.3 (Accessibility Enhancements) and/or Phase 4.4 (Build & Optimisation)
