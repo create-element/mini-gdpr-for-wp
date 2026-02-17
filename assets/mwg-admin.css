@@ -527,6 +527,47 @@
 }
 
 /**
+ * Consent statistics cards.
+ */
+.mwg-stat-cards {
+  gap: 1em;
+  margin-bottom: 1em;
+}
+
+.mwg-stat-card {
+  min-width: 8em;
+  text-align: center;
+  padding: 1em 1.5em;
+}
+
+.mwg-stat-card .mwg-stat-label {
+  margin: 0 0 0.25em;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.75em;
+  letter-spacing: 0.05em;
+  color: #555;
+}
+
+.mwg-stat-card .mwg-stat-number {
+  margin: 0 0 0.25em;
+  font-size: 2.5em;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--pp-action);
+}
+
+.mwg-stat-card .mwg-stat-pct {
+  margin: 0;
+  font-size: 0.85em;
+  color: #666;
+}
+
+.mwg-stat-card.mwg-stat--accepted .mwg-stat-number { color: #1a7a1a; }
+.mwg-stat-card.mwg-stat--rejected .mwg-stat-number { color: #b00020; }
+.mwg-stat-card.mwg-stat--undecided .mwg-stat-number { color: #888; }
+
+/**
  * Toggle switch.
  */
 input[type='checkbox'].pp-toggle {

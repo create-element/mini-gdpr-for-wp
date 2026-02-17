@@ -234,7 +234,7 @@ class Settings extends Settings_Core {
 			printf(
 				'<h1>%s%s</h1>',
 				esc_html( get_admin_page_title() ),
-				pp_get_header_logo_html( 'https://power-plugins.com/plugin/mini-wp-gdpr/' )
+				pp_get_header_logo_html( 'https://power-plugins.com/plugin/mini-wp-gdpr/' ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- pp_get_header_logo_html() returns pre-escaped HTML.
 			);
 
 			$this->open_form();
@@ -261,7 +261,10 @@ class Settings extends Settings_Core {
 
 			$this->close_form();
 
-			if ( IS_RESET_ALL_CONSENT_ENABLED && current_user_can( 'administrator' ) ) {
+			echo '<hr />';
+			include PP_MWG_ADMIN_TEMPLATES_DIR . 'consent-stats.php';
+
+			if ( IS_RESET_ALL_CONSENT_ENABLED && current_user_can( 'manage_options' ) ) {
 				echo '<hr />';
 
 				printf(
