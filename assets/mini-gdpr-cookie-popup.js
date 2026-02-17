@@ -236,7 +236,7 @@
 
 	document.addEventListener( 'DOMContentLoaded', () => {
 		if ( typeof mgwcsData !== 'undefined' ) {
-			new MiniGdprPopup( mgwcsData );
+			new MiniGdprPopup( mgwcsData ).init();
 		}
 	} );
 } )();
