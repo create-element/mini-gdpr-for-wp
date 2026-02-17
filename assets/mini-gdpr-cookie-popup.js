@@ -215,6 +215,15 @@
 				document.cookie = `${ this.data.rcn }=true; expires=${ expiresWhen.toUTCString() }; Secure`;
 			}
 
+			// For logged-in users: notify the server so rejection is stored in user meta.
+			if ( this.data.ajaxUrl && this.data.rejectAction && this.data.rejectNonce ) {
+				const body = new URLSearchParams( {
+					action: this.data.rejectAction,
+					nonce:  this.data.rejectNonce,
+				} );
+				fetch( this.data.ajaxUrl, { method: 'POST', body } ).catch( () => {} );
+			}
+
 			if ( popup ) {
 				popup.classList.add( 'mgw-fin' );
 				setTimeout( () => {

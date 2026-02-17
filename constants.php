@@ -6,10 +6,12 @@ defined( 'ABSPATH' ) || die();
 
 const META_ACCEPTED_GDPR_WHEN_FIRST  = '_pwg_accepted_gdpr_when_first';
 const META_ACCEPTED_GDPR_WHEN_RECENT = '_pwg_accepted_gdpr_when_recent';
+const META_REJECTED_GDPR_WHEN        = '_pwg_rejected_gdpr_when';
 const ACCEPT_GDPR_FORM_CONTROL_NAME  = 'confirm-accept-gdpr';
 
 const EARLIEST_GDPR_YEAR         = 2017;
 const ACCEPT_GDPR_ACTION         = 'acceptgdpr';
+const REJECT_GDPR_ACTION         = 'rejectgdpr';
 const INSTALL_CF7_CONSENT_ACTION = 'mwginstcf7';
 
 const IS_RESET_ALL_CONSENT_ENABLED  = true; //false; //true;

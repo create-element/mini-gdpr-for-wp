@@ -148,6 +148,7 @@ class Plugin extends Component {
 			add_action( 'woocommerce_new_order', array( $this, 'woocommerce_new_order' ), 10, 2 );
 
 			add_action( 'wp_ajax_' . ACCEPT_GDPR_ACTION, array( $this, 'accept_via_ajax' ) );
+			add_action( 'wp_ajax_' . REJECT_GDPR_ACTION, array( $this, 'reject_via_ajax' ) );
 			add_action( 'wp_ajax_' . INSTALL_CF7_CONSENT_ACTION, array( $this, 'install_cf7_form' ) );
 			add_action( 'wp_ajax_' . RESET_PRIVACY_POLICY_CONSENTS, array( $this, 'reset_all_privacy_consents' ) );
 
@@ -392,10 +393,66 @@ class Plugin extends Component {
 		} else {
 			$user_controller->accept_gdpr_terms_now( $user_id );
 
+			/**
+			 * Fires when a logged-in user accepts GDPR consent via the My Account AJAX form.
+			 *
+			 * @since 2.0.0
+			 * @param int $user_id The WordPress user ID of the consenting user.
+			 */
+			do_action( 'mwg_consent_accepted', $user_id ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- mwg_ is the plugin's public API prefix.
+
 			$response      = array(
 				'success' => '1',
 				'message' => get_thankyou_text(),
 			);
+			$response_code = 200;
+		}
+		// phpcs:enable Generic.CodeAnalysis.EmptyStatement, Generic.CodeAnalysis.AssignmentInCondition, Squiz.PHP.DisallowMultipleAssignments
+
+		wp_send_json( $response, $response_code );
+	}
+
+	/**
+	 * AJAX handler: record that the current logged-in user rejected cookie consent.
+	 *
+	 * Called by the cookie consent popup's rejectConsent() JS method when the
+	 * user is logged in. Stores the rejection timestamp in user meta so the
+	 * server-side state mirrors the client-side localStorage/cookie storage.
+	 *
+	 * Fires the 'mwg_consent_rejected' action so third-party integrations can
+	 * react to rejection events (e.g. clear WooCommerce tracking, log analytics).
+	 *
+	 * @return void
+	 */
+	public function reject_via_ajax() {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), REJECT_GDPR_ACTION ) ) {
+			die();
+		}
+
+		if ( ! is_user_logged_in() ) {
+			die();
+		}
+
+		$response      = null;
+		$response_code = 400;
+
+		// phpcs:disable Generic.CodeAnalysis.EmptyStatement, Generic.CodeAnalysis.AssignmentInCondition, Squiz.PHP.DisallowMultipleAssignments -- Intentional SESE guard pattern.
+		if ( empty( ( $user_id = get_current_user_id() ) ) ) {
+			error_log( __FUNCTION__ . ' : user_id is invalid' ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+		} elseif ( empty( ( $user_controller = $this->get_user_controller() ) ) ) {
+			error_log( __FUNCTION__ . ' : Failed to create the user controller.' ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+		} else {
+			$user_controller->reject_gdpr_terms_now( $user_id );
+
+			/**
+			 * Fires when a logged-in user rejects cookie consent via the popup.
+			 *
+			 * @since 2.0.0
+			 * @param int $user_id The WordPress user ID of the rejecting user.
+			 */
+			do_action( 'mwg_consent_rejected', $user_id ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- mwg_ is the plugin's public API prefix.
+
+			$response      = array( 'success' => '1' );
 			$response_code = 200;
 		}
 		// phpcs:enable Generic.CodeAnalysis.EmptyStatement, Generic.CodeAnalysis.AssignmentInCondition, Squiz.PHP.DisallowMultipleAssignments

@@ -248,26 +248,31 @@ class Script_Blocker extends Component {
 			wp_enqueue_script( 'mini-gdpr-cookie-consent', PP_MWG_ASSETS_URL . "mini-gdpr-cookie-popup$suffix.js", null, $this->version, false );
 			$rejection_cookie_name = sprintf( '%s_rej_%d_', COOKIE_NAME_BASE, $cookie_sequence );
 
-			wp_localize_script(
-				'mini-gdpr-cookie-consent',
-				'mgwcsData',
-				[
-					'cn'     => $cookie_name,
-					'rcn'    => $rejection_cookie_name,
-					'cd'     => $consent_duration,
-					'msg'    => $consent_message,
-					'cls'    => $class_names,
-					'ok'     => $this->get_popup_button_text( OPT_CONSENT_ACCEPT_TEXT, DEF_CONSENT_ACCEPT_TEXT ),
-					'rjt'    => $this->get_popup_button_text( OPT_CONSENT_REJECT_TEXT, DEF_CONSENT_REJECT_TEXT ),
-					'mre'    => $this->get_popup_button_text( OPT_CONSENT_INFO_BTN_TEXT, DEF_CONSENT_INFO_BTN_TEXT ),
-					'nfo1'   => __( 'Along with some cookies, we use these scripts', 'mini-wp-gdpr' ),
-					'nfo2'   => __( "We don't use any tracking scripts, but we do use some cookies.", 'mini-wp-gdpr' ),
-					'nfo3'   => $info_text_3,
-					'meta'   => $this->blocked_scripts,
-					'always' => $is_always_show_enabled ? 1 : 0,
-					'blkon'  => $this->is_block_until_consent_enabled ? 1 : 0,
-				]
-			);
+			$localize_data = [
+				'cn'     => $cookie_name,
+				'rcn'    => $rejection_cookie_name,
+				'cd'     => $consent_duration,
+				'msg'    => $consent_message,
+				'cls'    => $class_names,
+				'ok'     => $this->get_popup_button_text( OPT_CONSENT_ACCEPT_TEXT, DEF_CONSENT_ACCEPT_TEXT ),
+				'rjt'    => $this->get_popup_button_text( OPT_CONSENT_REJECT_TEXT, DEF_CONSENT_REJECT_TEXT ),
+				'mre'    => $this->get_popup_button_text( OPT_CONSENT_INFO_BTN_TEXT, DEF_CONSENT_INFO_BTN_TEXT ),
+				'nfo1'   => __( 'Along with some cookies, we use these scripts', 'mini-wp-gdpr' ),
+				'nfo2'   => __( "We don't use any tracking scripts, but we do use some cookies.", 'mini-wp-gdpr' ),
+				'nfo3'   => $info_text_3,
+				'meta'   => $this->blocked_scripts,
+				'always' => $is_always_show_enabled ? 1 : 0,
+				'blkon'  => $this->is_block_until_consent_enabled ? 1 : 0,
+			];
+
+			// For logged-in users, pass AJAX credentials so rejections can be recorded server-side.
+			if ( is_user_logged_in() ) {
+				$localize_data['ajaxUrl']      = admin_url( 'admin-ajax.php' );
+				$localize_data['rejectAction'] = REJECT_GDPR_ACTION;
+				$localize_data['rejectNonce']  = wp_create_nonce( REJECT_GDPR_ACTION );
+			}
+
+			wp_localize_script( 'mini-gdpr-cookie-consent', 'mgwcsData', $localize_data );
 
 			wp_enqueue_style( 'mini-gdpr-cookie-consent', PP_MWG_ASSETS_URL . 'mini-gdpr-cookie-popup.css', null, $this->version );
 		}
