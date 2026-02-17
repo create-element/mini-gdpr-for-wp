@@ -1,9 +1,9 @@
 # Mini WP GDPR - Project Tracker
 
 **Version:** 2.0.0 (Refactor)  
-**Last Updated:** 17 February 2026 (09:10)  
-**Current Phase:** Milestone 3 (Remove pp-core.php Dependency)  
-**Overall Progress:** 17%
+**Last Updated:** 17 February 2026 (09:45)  
+**Current Phase:** Milestone 4 (JavaScript Modernisation)  
+**Overall Progress:** 30%
 
 ---
 
@@ -57,7 +57,7 @@
 - [x] Complete settings page integration using WordPress Settings API ✅ (2026-02-17)
 - [x] Run PHPCS fix pass on legacy files (functions-private.php, class-plugin.php) ✅
 - [x] PHPCS fix pass on functions.php (public API) + phpcs.xml prefix update ✅ (2026-02-17)
-- [ ] PHPCS fix pass on admin templates (cookie-consent-settings.php, etc.)
+- [x] PHPCS fix pass on admin templates (cookie-consent-settings.php, etc.) ✅ (2026-02-17)
 
 ---
 
@@ -143,7 +143,7 @@
 
 ### Milestone 3: Remove pp-core.php Dependency
 **Target:** Week 3-4 (Mar 3-16, 2026)  
-**Status:** 🟡 In Progress (20% — base classes created, integration remaining)  
+**Status:** 🟢 Complete  
 **Priority:** Critical
 
 #### Objectives
@@ -741,8 +741,8 @@
 |-----------|------------------|--------|----------|
 | 1. Foundation & Planning | Feb 23, 2026 | 🟡 In Progress | 20% |
 | 2. Code Standards & Quality Tools (PHPCS) | Mar 2, 2026 | 🟢 Complete | 100% |
-| 3. Remove pp-core.php | Mar 16, 2026 | 🟡 In Progress | 80% |
-| 4. JavaScript Modernization | Mar 23, 2026 | ⚪ Not Started | 0% |
+| 3. Remove pp-core.php | Mar 16, 2026 | 🟢 Complete | 100% |
+| 4. JavaScript Modernization | Mar 23, 2026 | 🟡 In Progress | 0% |
 | 5. Enhanced Consent Management | Apr 6, 2026 | ⚪ Not Started | 0% |
 | 6. Advanced Tracker Delay-Loading | Apr 20, 2026 | ⚪ Not Started | 0% |
 | 7. Security Audit & Best Practices | Apr 27, 2026 | ⚪ Not Started | 0% |
@@ -779,9 +779,10 @@
 | 2026-02-17 | M2 Complete: development-workflow.md rewritten | Removed references to removed tooling (PHPUnit, bin/*.sh, composer/vendor); documented actual workflow using global phpcs/phpcbf; added manual testing protocol |
 | 2026-02-17 | M3 PHPCS fixes: functions.php + phpcs.xml | functions.php converted to WPCS style (tabs, docblocks, K&R braces); phpcs.xml updated to add mwg prefix to allowed list (public API functions use mwg_ prefix) |
 | 2026-02-17 | M3 Testing sprint passed (functions.php PHPCS fix) | Plugin active, error log clean, front-end 200, PHPCS clean on functions.php; 1 task remaining in M3: PHPCS fix pass on admin templates |
+| 2026-02-17 | M3 Complete — Testing sprint passed (admin templates PHPCS fix) | Plugin active, settings page renders cleanly, cookie consent popup visible on front-end, error log empty, no debug.log errors; M3 fully complete — moving to M4 (JavaScript Modernisation) |
 
 ---
 
-**Last Updated:** 17 February 2026 (09:10)  
+**Last Updated:** 17 February 2026 (09:45)  
 **Next Review:** 23 February 2026  
-**Next Action:** PHPCS fix pass on admin templates (cookie-consent-settings.php, etc.)
+**Next Action:** Coding sprint — M4 (JavaScript Modernisation): Phase 4.1 ES6+ Refactoring
