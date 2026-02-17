@@ -61,6 +61,7 @@
 
 ### In Progress (Milestone 4 — JavaScript Modernisation)
 - [x] Phase 4.1 complete ✅ — ES6+ refactoring of mini-gdpr.js, mini-gdpr-admin.js, mini-gdpr-cookie-popup.js; jQuery removed from deps; MiniGdprPopup class with .init(); ARIA attributes added (2026-02-17)
+- [ ] Phase 4.2 (coding sprint done, awaiting testing) — mini-gdpr-admin-cf7.js rewritten as ES6+ MiniGdprCf7 class; jQuery dep removed; event delegation on tbody; fetch API; popup Escape handler + accept in-flight guard
 
 ---
 
@@ -789,6 +790,6 @@
 
 ---
 
-**Last Updated:** 17 February 2026 (11:10)  
+**Last Updated:** 17 February 2026 (11:20)  
 **Next Review:** 23 February 2026  
-**Next Action:** Coding sprint — M4 Phase 4.2 (Event Handling Improvements): addEventListener consistency, event delegation, edge case handling
+**Next Action:** Testing sprint — verify M4 Phase 4.2: plugin active, error log clean, CF7 admin page functional, popup Escape/accept guard working
