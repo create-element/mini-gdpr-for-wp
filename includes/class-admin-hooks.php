@@ -1,64 +1,99 @@
 <?php
 
+/**
+ * Admin hooks handler.
+ *
+ * @package Mini_Wp_Gdpr
+ * @since   1.0.0
+ */
+
 namespace Mini_Wp_Gdpr;
 
-defined('ABSPATH') || die();
+defined( 'ABSPATH' ) || die();
 
-class Admin_Hooks extends Component
-{
-    private $admin_hooks;
-    private $public_hooks;
+/**
+ * Handles WordPress admin-side hooks for the plugin.
+ *
+ * Registered by Plugin::admin_init() during the 'admin_init' action.
+ *
+ * @since 1.0.0
+ */
+class Admin_Hooks extends Component {
 
-    public function __construct(string $name, string $version)
-    {
-        parent::__construct($name, $version);
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param string $name    Plugin slug.
+	 * @param string $version Plugin version.
+	 */
+	public function __construct( string $name, string $version ) { // phpcs:ignore Generic.CodeAnalysis.UselessOverridingMethod.Found -- Kept for future extension and docblock clarity.
+		parent::__construct( $name, $version );
+	}
 
-    public function admin_enqueue_scripts($current_page)
-    {
-        $are_assets_required = false;
+	/**
+	 * Enqueue admin scripts and styles for the plugin settings pages.
+	 *
+	 * @param string $current_page The current admin page hook suffix.
+	 * @return void
+	 */
+	public function admin_enqueue_scripts( $current_page ) {
+		$are_assets_required = false;
 
-        $settings = get_settings_controller();
+		$settings = get_settings_controller();
 
-        if (current_user_can($settings->get_settings_cap())) {
-            // $are_assets_required |= ($current_page == 'settings_page_' . SETTINGS_PAGE_NAME);
-            $are_assets_required |= $current_page == 'settings_page_' . $settings->get_settings_page_name();
-            // More checkes.
-        }
+		if ( current_user_can( $settings->get_settings_cap() ) ) {
+			$are_assets_required = ( $current_page === 'settings_page_' . $settings->get_settings_page_name() );
+		}
 
-        if ($are_assets_required) {
-            pp_enqueue_admin_assets();
+		if ( $are_assets_required ) {
+			pp_enqueue_admin_assets();
 
-            wp_enqueue_script($this->name, PP_MWG_ASSETS_URL . 'mini-gdpr-admin.js', ['jquery'], $this->version, false);
+			wp_enqueue_script( $this->name, PP_MWG_ASSETS_URL . 'mini-gdpr-admin.js', [ 'jquery' ], $this->version, false );
 
-            if (is_cf7_installed()) {
-                wp_enqueue_script($this->name . '-cf7', PP_MWG_ASSETS_URL . 'mini-gdpr-admin-cf7.js', ['jquery'], $this->version, false);
-            }
-        }
-    }
+			if ( is_cf7_installed() ) {
+				wp_enqueue_script( $this->name . '-cf7', PP_MWG_ASSETS_URL . 'mini-gdpr-admin-cf7.js', [ 'jquery' ], $this->version, false );
+			}
+		}
+	}
 
-    public function manage_users_columns($columns)
-    {
-        $columns['gdpr-status'] = __('Privacy Consent', 'mini-wp-gdpr');
+	/**
+	 * Add the GDPR consent column to the Users list table.
+	 *
+	 * @param array $columns Existing columns array.
+	 * @return array Modified columns array with GDPR status column appended.
+	 */
+	public function manage_users_columns( $columns ) {
+		$columns['gdpr-status'] = __( 'Privacy Consent', 'mini-wp-gdpr' );
 
-        return $columns;
-    }
+		return $columns;
+	}
 
-    public function manage_users_custom_column($val, $column_name, $user_id)
-    {
-        switch ($column_name) {
-            case 'gdpr-status':
-                $user_controller = get_user_controller();
+	/**
+	 * Render the GDPR consent column value for a given user.
+	 *
+	 * @param string $val         Current column value.
+	 * @param string $column_name Column identifier.
+	 * @param int    $user_id     WordPress user ID.
+	 * @return string HTML output for the column cell.
+	 */
+	public function manage_users_custom_column( $val, $column_name, $user_id ) {
+		$result = $val;
 
-                if (!empty(($when = $user_controller->when_did_user_accept_gdpr($user_id, get_option('date_format', 'Y-m-d H:i:s'))))) {
-                    $val = sprintf('<div class="user-gdpr user-gdpr-when-accepted" title="%s">%s</div>', $user_controller->when_did_user_accept_gdpr($user_id), $when);
-                }
-                break;
+		if ( 'gdpr-status' === $column_name ) {
+			$user_controller = get_user_controller();
+			$date_format     = get_option( 'date_format', 'Y-m-d H:i:s' );
+			$when_display    = $user_controller->when_did_user_accept_gdpr( $user_id, $date_format );
+			$when_title      = $user_controller->when_did_user_accept_gdpr( $user_id );
 
-            default:
-                break;
-        }
+			if ( ! empty( $when_display ) ) {
+				$result = sprintf(
+					'<div class="user-gdpr user-gdpr-when-accepted" title="%s">%s</div>',
+					esc_attr( $when_title ),
+					esc_html( $when_display )
+				);
+			}
+		}
 
-        return $val;
-    }
+		return $result;
+	}
 }

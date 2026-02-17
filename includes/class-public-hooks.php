@@ -1,45 +1,77 @@
 <?php
 
+/**
+ * Public (front-end) hooks handler.
+ *
+ * @package Mini_Wp_Gdpr
+ * @since   1.0.0
+ */
+
 namespace Mini_Wp_Gdpr;
 
-defined('ABSPATH') || die();
+defined( 'ABSPATH' ) || die();
 
-class Public_Hooks extends Component
-{
-    private $admin_hooks;
-    private $public_hooks;
+/**
+ * Handles WordPress front-end hooks for the plugin.
+ *
+ * Registered by Plugin::init() during the 'init' action when the plugin
+ * is enabled and the current request is not an admin request.
+ *
+ * @since 1.0.0
+ */
+class Public_Hooks extends Component {
 
-    public function __construct(string $name, string $version)
-    {
-        parent::__construct($name, $version);
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param string $name    Plugin slug.
+	 * @param string $version Plugin version.
+	 */
+	public function __construct( string $name, string $version ) { // phpcs:ignore Generic.CodeAnalysis.UselessOverridingMethod.Found -- Kept for future extension and docblock clarity.
+		parent::__construct( $name, $version );
+	}
 
-    public function inject_configured_trackers()
-    {
-        $script_blocker = get_script_blocker();
-        $blockable_scripts = $script_blocker->get_blockable_scripts();
+	/**
+	 * Inject all configured and enabled tracker scripts.
+	 *
+	 * Hooked to 'wp_enqueue_scripts'. Fires the mwg_inject_tracker_{handle}
+	 * action for each tracker that passes the mwg_is_tracker_enabled filter.
+	 *
+	 * @return void
+	 */
+	public function inject_configured_trackers() {
+		$script_blocker  = get_script_blocker();
+		$blockable_scripts = $script_blocker->get_blockable_scripts();
 
-        $blockable_scripts = (array) apply_filters('mwg_injectable_tracker_metas', $blockable_scripts);
+		$blockable_scripts = (array) apply_filters( 'mwg_injectable_tracker_metas', $blockable_scripts );
 
-        foreach ($blockable_scripts as $handle => $blockable_script) {
-            $is_enabled = (bool) apply_filters('mwg_is_tracker_enabled', true, $handle);
+		foreach ( $blockable_scripts as $handle => $blockable_script ) {
+			$is_enabled = (bool) apply_filters( 'mwg_is_tracker_enabled', true, $handle );
 
-            if ($is_enabled) {
-                do_action('mwg_inject_tracker_' . $handle);
-            }
-        }
-    }
+			if ( $is_enabled ) {
+				do_action( 'mwg_inject_tracker_' . $handle );
+			}
+		}
+	}
 
-    public function adjust_injected_tracker_tags($tag, $handle, $src)
-    {
-        if ($handle == GA_SCRIPT_HANDLE && !empty($src) && !empty($tag)) {
-            $settings = get_settings_controller();
+	/**
+	 * Rewrite the Google Analytics script tag to inject the gtag.js config inline.
+	 *
+	 * Hooked to 'script_loader_tag' at priority 90. Rewrites the GA placeholder
+	 * script tag into a full gtag.js loader + config block.
+	 *
+	 * @param string $tag    The full <script> tag HTML to be printed.
+	 * @param string $handle The registered script handle.
+	 * @param string $src    The script URL.
+	 * @return string Potentially rewritten script tag HTML.
+	 */
+	public function adjust_injected_tracker_tags( $tag, $handle, $src ) {
+		if ( GA_SCRIPT_HANDLE === $handle && ! empty( $src ) && ! empty( $tag ) ) {
+			$settings     = get_settings_controller();
+			$tracker_code = $settings->get_string( OPT_GA_TRACKING_CODE );
 
-            // The code has already been validated when the placeholder was injected.
-            $tracker_code = $settings->get_string(OPT_GA_TRACKING_CODE);
-
-            $tag = sprintf(
-                '<script src="https://www.googletagmanager.com/gtag/js?id=%s" id="%s-js" async></script>
+			$tag = sprintf(
+				'<script src="https://www.googletagmanager.com/gtag/js?id=%s" id="%s-js" async></script>
 <script id="%s-js-after">
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
@@ -47,30 +79,39 @@ gtag("js", new Date());
 gtag("config", "%s");
 </script>
 ',
-                $tracker_code,
-                $handle,
-                $handle,
-                $tracker_code
-            );
-        }
+				$tracker_code,
+				$handle,
+				$handle,
+				$tracker_code
+			);
+		}
 
-        return $tag;
-    }
+		return $tag;
+	}
 
-    public function add_to_woocommerce_form()
-    {
-        enqueue_frontend_assets();
+	/**
+	 * Output the GDPR consent checkbox inside the WooCommerce registration form.
+	 *
+	 * Hooked to 'woocommerce_register_form' at priority 30.
+	 *
+	 * @return void
+	 */
+	public function add_to_woocommerce_form() {
+		enqueue_frontend_assets();
 
-        $control_name = ACCEPT_GDPR_FORM_CONTROL_NAME;
+		echo '<p class="form-row form-row-mini-gdpr">';
+		echo get_accept_gdpr_checkbox_outer_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted HTML from plugin helper.
+		echo '</p>';
+	}
 
-        echo '<p class="form-row form-row-mini-gdpr">';
-        echo get_accept_gdpr_checkbox_outer_html();
-        echo '</p>';
-    }
-
-    public function inject_into_wc_myaccount_endpoint()
-    {
-        // echo get_accept_gdpr_checkbox_outer_html();
-        echo mwg_get_mini_accept_terms_form_for_current_user();
-    }
+	/**
+	 * Output the GDPR mini-accept form inside the WooCommerce My Account endpoint.
+	 *
+	 * Hooked dynamically to the configured woocommerce_account_*_endpoint action.
+	 *
+	 * @return void
+	 */
+	public function inject_into_wc_myaccount_endpoint() {
+		echo mwg_get_mini_accept_terms_form_for_current_user(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted HTML from plugin helper.
+	}
 }
