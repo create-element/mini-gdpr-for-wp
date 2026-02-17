@@ -36,10 +36,6 @@ These override any general instincts you have about "clean code":
 - **No inline HTML** — all template files (`admin-templates/`, `public-templates/`) must be code-first using `printf()` or `echo`; never mix HTML markup with PHP snippets
 - **No inline JavaScript** — load scripts via `wp_enqueue_script()`
 
-### Protected Directories
-- **`pp-core.php` and `pp-assets/`** — being removed in Milestone 3; do not touch or refactor them
-- **Never run PHPCS on them** — they are excluded in `phpcs.xml`
-
 ---
 
 ## Plugin Structure
@@ -59,8 +55,8 @@ mini-gdpr-for-wp/
 │   └── public/               # Public CSS/JS
 ├── trackers/                 # Tracker integrations (Facebook Pixel, GA, Clarity, etc.)
 ├── languages/                # Translation files
-├── dev-notes/                # Development documentation (see below)
-└── pp-core.php / pp-assets/  # ⛔ Third-party — DO NOT TOUCH
+└── dev-notes/                # Development documentation (see below)
+    └── archive/              # pp-core.php and pp-assets/ archived here in M3
 ```
 
 ---
@@ -131,15 +127,13 @@ PHPCS config is in `phpcs.xml`. It excludes `pp-core.php`, `pp-assets/`, `vendor
 
 - **What it does:** Cookie consent popup + tracker script delay-loading for GDPR compliance
 - **Tracker integrations:** Facebook Pixel, Google Analytics, Microsoft Clarity (in `trackers/`)
-- **Commercial plugin:** Uses Power Plugins licence controller (`pp-core.php`) — sealed, don't touch
-- **Current milestone:** M2 — Code Standards & Testing Setup
+- **Current milestone:** M3 — Remove pp-core.php Dependency (pp-core.php and pp-assets/ archived in M3)
 - **Active dev branch:** See git log; use feature branches for all new work
 
 ---
 
 ## What NOT to Do
 
-- ❌ Modify anything in `pp-core.php` or `pp-assets/`
 - ❌ Use `declare(strict_types=1);`
 - ❌ Use multiple `return` statements in a function
 - ❌ Put magic strings/numbers inline — use `constants.php`

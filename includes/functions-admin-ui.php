@@ -83,13 +83,8 @@ function pp_die_if_bad_nonce_or_cap( string $action, string $required_cap, strin
 /**
  * Enqueue shared admin CSS for the plugin settings pages.
  *
- * During the M3 migration, pp-assets/pp-admin.css is still referenced
- * directly because pp-assets/ has not yet been archived. A dedicated
- * plugin admin stylesheet will replace this in a later milestone once the
- * pp-assets directory is removed.
- *
- * @todo M3: Replace pp-assets/pp-admin.css with a plugin-specific admin CSS
- *           file when pp-assets/ is archived.
+ * Loads the plugin-specific admin stylesheet (assets/mwg-admin.css).
+ * This replaced the pp-assets/pp-admin.css reference removed in M3.
  */
 function pp_enqueue_admin_assets() {
 	global $pp_mwg_admin_assets_enqueued;
@@ -103,7 +98,7 @@ function pp_enqueue_admin_assets() {
 	if ( $should_enqueue ) {
 		wp_enqueue_style(
 			'mwg-admin-base',
-			PP_MWG_URL . 'pp-assets/pp-admin.css',
+			PP_MWG_ASSETS_URL . 'mwg-admin.css',
 			null,
 			PP_MWG_VERSION
 		);
@@ -119,7 +114,7 @@ function pp_enqueue_admin_assets() {
 /**
  * Return a spinner image element.
  *
- * Uses the plugin's own assets/spinner.svg (replacing the pp-assets version).
+ * Uses the plugin's own assets/spinner.svg.
  *
  * @param bool $is_visible Whether the spinner should be visible on load.
  * @return string HTML <img> element.

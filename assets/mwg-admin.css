@@ -1,0 +1,591 @@
+/**
+ * Mini WP GDPR — admin styles.
+ *
+ * Plugin-specific admin CSS. Replaces pp-assets/pp-admin.css removed in M3.
+ *
+ * @package Mini_Wp_Gdpr
+ * @since   2.0.0
+ */
+
+:root {
+  --pp-primary: #aaa;
+  --pp-primary-feint: #cccccc22;
+  --pp-trim: #66666622;
+  --pp-panel-padding: 1em;
+  --pp-ctx-bg: white;
+  --pp-ctx-bg-feint: #ffffff66;
+  --pp-ctx-trim: #00000044;
+  --pp-button-bg: #7209b7;
+  --pp-button-fg: white;
+  --pp-button-trim: #00000044;
+  --pp-action: #7209b7;
+  --pp-action-feint: #7209b788;
+  --pp-action-compl: white;
+  --pp-yes: lightgreen;
+  --pp-feature: #7209b744;
+  --pp-info: #7209b7;
+  --pp-warning: darkorange;
+}
+
+.pp-wrap hr {
+  border: 1px dotted var(--pp-ctx-trim);
+  margin: 2em 0;
+}
+
+.pp-wrap h1 {
+  border-bottom: 2px solid var(--pp-feature);
+  padding-bottom: 1em;
+  margin-bottom: 1em;
+  display: block !important;
+}
+
+.pp-wrap h1 .pp-help-link {
+  display: inline-block;
+  float: right;
+  height: 1.5em;
+}
+
+.pp-help-link img {
+  display: block;
+  height: 100%;
+}
+
+.pp-panel {
+  border: 2px solid var(--pp-trim);
+  background-color: var(--pp-primary-feint);
+  border-radius: 1em;
+  padding: var(--pp-panel-padding);
+}
+
+.pp-panel > h3 {
+  margin-top: 0;
+  text-align: center;
+  border-bottom: 2px solid var(--pp-feature);
+  padding-bottom: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.pp-column {
+  margin-bottom: 2em;
+}
+
+.wp-core-ui .pp-wrap .button-primary {
+  background-color: var(--pp-button-bg);
+  color: var(--pp-button-fg);
+  border-color: var(--pp-button-trim);
+  transition: 0.3s;
+  padding: 0.25em 0.75em;
+}
+
+.wp-core-ui .pp-wrap input[type='submit'] {
+  font-weight: bold;
+}
+
+.wp-core-ui .pp-wrap .button-primary:hover {
+  filter: brightness(1.2);
+}
+
+@media (min-width: 768px) {
+  .pp-columns {
+    display: flex;
+    flex-direction: row;
+    gap: 2em;
+  }
+
+  .pp-inline-flex {
+    display: inline-flex;
+  }
+
+  .pp-columns.pp-inline-flex {
+    flex-wrap: wrap;
+  }
+
+  .pp-columns:not(.pp-inline-flex) .pp-column {
+    flex-grow: 1;
+    flex-basis: 0;
+  }
+}
+
+.h-100 { height: 100%; }
+.w-100 { width: 100%; }
+
+.mt-0 { margin-top: 0; }
+.mr-0 { margin-right: 0; }
+.mb-0 { margin-bottom: 0; }
+.ml-0 { margin-left: 0; }
+.mt-1 { margin-top: 0.5em; }
+.mr-1 { margin-right: 0.5em; }
+.mb-1 { margin-bottom: 0.5em; }
+.ml-1 { margin-left: 0.5em; }
+.mt-2 { margin-top: 1em; }
+.mr-2 { margin-right: 1em; }
+.mb-2 { margin-bottom: 1em; }
+.ml-2 { margin-left: 1em; }
+.mt-3 { margin-top: 1.5em; }
+.mr-3 { margin-right: 1.5em; }
+.mb-3 { margin-bottom: 1.5em; }
+.ml-3 { margin-left: 1.5em; }
+.mt-4 { margin-top: 2em; }
+.mr-4 { margin-right: 2em; }
+.mb-4 { margin-bottom: 2em; }
+.ml-4 { margin-left: 2em; }
+.pt-0 { padding-top: 0; }
+.pr-0 { padding-right: 0; }
+.pb-0 { padding-bottom: 0; }
+.pl-0 { padding-left: 0; }
+.pt-1 { padding-top: 0.5em; }
+.pr-1 { padding-right: 0.5em; }
+.pb-1 { padding-bottom: 0.5em; }
+.pl-1 { padding-left: 0.5em; }
+.pt-2 { padding-top: 1em; }
+.pr-2 { padding-right: 1em; }
+.pb-2 { padding-bottom: 1em; }
+.pl-2 { padding-left: 1em; }
+
+.pp-mono {
+  font-family: 'monospace';
+}
+
+.pp-checkbox {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.pp-form-row label {
+  font-weight: bold;
+}
+
+.pp-form-row:not(.pp-inline-controls) label {
+  display: block;
+}
+
+.pp-form-row .wp-picker-input-wrap label {
+  display: inline;
+}
+
+.pp-form-row input[type='checkbox'] + label {
+  display: unset;
+  margin-left: 0.5em;
+}
+
+.pp-form-row input[type='radio'] + label,
+.pp-checkbox input[type='checkbox'] + label {
+  font-weight: unset;
+}
+
+.pp-form-row.pp-checkbox {
+  margin-bottom: 0;
+}
+
+.pp-form-row label + input,
+.pp-form-row label + select {
+  margin-left: 0.5em;
+}
+
+.pp-help {
+  display: block;
+  font-style: italic;
+}
+
+/**
+ * Text radios.
+ */
+.pp-text-radios {
+  line-height: 1;
+  display: inline-flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 2em;
+  margin-top: 0.5em;
+}
+
+.pp-text-radios input[type='radio'] {
+  display: none;
+}
+
+.pp-text-radios .pp-radio-option {
+  border: 1px solid var(--pp-button-trim);
+  border-radius: 0.25em;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.pp-text-radios .pp-radio-option label {
+  padding: 0.5em 1.5em 0.5em 2.5em;
+  position: relative;
+  transition: 0.3s background-color;
+}
+
+.pp-text-radios .pp-radio-option input + label::before {
+  font-family: 'dashicons';
+  content: '\f12a';
+  position: absolute;
+  font-size: 150%;
+  left: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.25;
+}
+
+.pp-text-radios .pp-radio-option input:checked + label {
+  background-color: var(--pp-button-bg);
+  color: var(--pp-button-fg);
+}
+
+.pp-text-radios .pp-radio-option input:not(:checked) + label {
+  background-color: var(--pp-action-feint);
+  color: var(--pp-button-fg);
+}
+
+.pp-text-radios .pp-radio-option input:not(:checked) + label:hover {
+  background-color: var(--pp-button-bg);
+  color: var(--pp-button-fg);
+}
+
+.pp-text-radios .pp-radio-option input:checked + label::before {
+  color: var(--pp-yes);
+  opacity: 1;
+}
+
+/**
+ * Dash icon helpers.
+ */
+.pp-form-row .dashicons-info {
+  color: var(--pp-info);
+  margin-right: 0.2em;
+}
+
+.pp-wrap .dashicons-warning {
+  color: var(--pp-warning);
+}
+
+/**
+ * Image radios on a checkerboard background.
+ */
+.pp-image-radios {
+  line-height: 1;
+  display: inline-flex;
+  flex-wrap: wrap;
+  border: 1px solid #ccc;
+  border-radius: 0.25em;
+  padding: 1em 2em;
+  gap: 2em;
+  align-items: center;
+
+  background-image: linear-gradient(45deg, #ddd 25%, transparent 25%),
+    linear-gradient(135deg, #ddd 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #ddd 75%),
+    linear-gradient(135deg, transparent 75%, #ddd 75%);
+  background-size: 2em 2em;
+  background-position: 0 0, 1em 0, 1em -1em, 0 1em;
+}
+
+.pp-image-radios input[type='radio'] {
+  display: none;
+}
+
+.pp-image-radios input[type='radio'] + label {
+  background-color: #0002;
+  border-radius: 0.5em;
+  padding: 0.5em;
+  border: 4px solid transparent;
+  transition: 0.3s;
+  display: block;
+}
+
+.pp-image-radios input[type='radio']:checked + label {
+  border-color: black;
+}
+
+.pp-image-radios input[type='radio'] + label img {
+  opacity: 0.8;
+  transition: opacity 0.3s;
+}
+
+.pp-image-radios input[type='radio']:checked + label img,
+.pp-image-radios input[type='radio'] + label:hover img {
+  opacity: 1;
+}
+
+.pp-button-with-spinner {
+  display: inline-flex;
+  position: relative;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.pp-button-with-spinner > img {
+  height: 2em;
+}
+
+.pp-spinner {
+  position: absolute;
+  width: 3em;
+  height: 3em;
+  right: -1.5em;
+  top: -1.5em;
+}
+
+[data-pp-term-chooser] .list-pills,
+[data-pp-post-chooser] .list-pills {
+  background-color: var(--pp-ctx-bg-feint);
+  border: 2px solid var(--pp-trim);
+  border-radius: 0.5em;
+  min-height: 2em;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1em;
+  padding: 0.75em;
+  margin-top: 1em;
+}
+
+[data-pp-term-chooser] .list-pills .list-pill,
+[data-pp-post-chooser] .list-pills .list-pill {
+  border: 1px solid grey;
+  border-radius: 0.25em;
+  display: flex;
+  gap: 1em;
+  white-space: nowrap;
+  align-items: center;
+  padding-left: 1em;
+  background-color: var(--pp-button-bg);
+  color: var(--pp-button-fg);
+  cursor: default;
+}
+
+[data-pp-term-chooser] .list-pills .list-pill button,
+[data-pp-post-chooser] .list-pills .list-pill button {
+  cursor: pointer;
+  padding: 0.25em;
+}
+
+/**
+ * Autocomplete.
+ */
+.ui-autocomplete {
+  position: absolute;
+  z-index: 1000;
+  float: left;
+  display: none;
+  min-width: 8em;
+  list-style: none;
+  background-color: white;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 0.25em rgba(0, 0, 0, 0.2);
+}
+
+.ui-autocomplete .ui-menu-item-wrapper {
+  display: block;
+  padding: 0.5em 1em;
+}
+
+.ui-state-hover,
+.ui-state-active {
+  color: var(--pp-button-fg);
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  background-color: var(--pp-button-bg);
+}
+
+.ui-helper-hidden-accessible {
+  display: none;
+}
+
+/**
+ * Click to copy.
+ */
+[data-click-to-copy] {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  background-color: var(--pp-ctx-bg);
+  border: 1px solid var(--pp-ctx-trim);
+  border-radius: 0.25em;
+  overflow: hidden;
+}
+
+[data-click-to-copy] > .dashicons {
+  padding: 0.5em;
+}
+
+[data-click-to-copy] > span:first-child {
+  padding: 0.5em 1em;
+  flex-grow: 1;
+  text-align: center;
+}
+
+[data-click-to-copy] .dashicons {
+  background-color: var(--pp-action-feint);
+  color: var(--pp-action-compl);
+  transition: 0.3s background-color;
+}
+
+[data-click-to-copy]:hover .dashicons {
+  background-color: var(--pp-action);
+  color: var(--pp-action-compl);
+}
+
+.pp-quick-popup-overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff88;
+}
+
+.pp-quick-popup {
+  background-color: black;
+  color: white;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 0.5em 1em;
+  border-radius: 0.25em;
+}
+
+/**
+ * Ajax tables.
+ */
+.pp-ajax-table {
+  position: relative;
+  display: inline-block;
+}
+
+.pp-ajax-table table {
+  background-color: var(--pp-ctx-bg-feint);
+  border: 1px solid var(--pp-ctx-trim);
+}
+
+.pp-ajax-table table th {
+  border-bottom: 1px dotted var(--pp-ctx-trim);
+  background-color: #ffffff44;
+}
+
+.pp-ajax-table table th,
+.pp-ajax-table table tr td {
+  padding: 0.75em;
+}
+
+.pp-ajax-table table tr:not(:last-child) td {
+  border-bottom: 1px dotted var(--pp-ctx-trim);
+}
+
+.pp-ajax-table table td .actions {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 1em;
+}
+
+.pp-ajax-table table td .actions button {
+  width: 3em;
+  height: 3em;
+  cursor: pointer;
+}
+
+.pp-ajax-table table td .actions button:disabled {
+  color: grey;
+  cursor: not-allowed;
+  opacity: 0.75;
+}
+
+.pp-ajax-table table th.align-left,
+.pp-ajax-table table td.align-left { text-align: left; }
+
+.pp-ajax-table table th.align-centre,
+.pp-ajax-table table td.align-centre { text-align: center; }
+
+.pp-ajax-table table th.align-right,
+.pp-ajax-table table td.align-right { text-align: right; }
+
+.pp-ajax-table button.edit-start { color: darkblue; }
+.pp-ajax-table button.edit-delete { color: darkred; }
+.pp-ajax-table button.edit-save { color: darkgreen; }
+.pp-ajax-table button.edit-cancel { color: #333; }
+
+.pp-pill-box {
+  display: flex;
+  gap: 1em;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.pp-pill-box .pp-pill {
+  border: 1px solid #888;
+  padding: 0.3em 0.7em;
+  border-radius: 0.5rem;
+  background-color: #f0f0f0;
+}
+
+/**
+ * Toggle switch.
+ */
+input[type='checkbox'].pp-toggle {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  width: auto;
+  height: auto;
+  vertical-align: middle;
+  position: relative;
+  border: 0;
+  outline: 0;
+  cursor: pointer;
+  margin: 0;
+  background: none;
+  box-shadow: none;
+  transition: 0.3s opacity;
+}
+
+input[type='checkbox'].pp-toggle:focus {
+  box-shadow: none;
+}
+
+input[type='checkbox'].pp-toggle::after {
+  content: '';
+  color: var(--pp-button-fg);
+  width: 3.2em;
+  height: 1.6em;
+  display: inline-block;
+  background-color: var(--pp-primary);
+  border-radius: 2em;
+  transition: 0.3s background-color;
+}
+
+input[type='checkbox'].pp-toggle::before {
+  content: '';
+  width: 1.2em;
+  height: 1.2em;
+  display: block;
+  position: absolute;
+  top: 0.2em;
+  left: 0.2em;
+  margin: 0;
+  border-radius: 50%;
+  background-color: #ffffff;
+  transition: 0.3s left;
+}
+
+input[type='checkbox'].pp-toggle:checked::after {
+  content: ' ';
+  background-color: var(--pp-action);
+}
+
+input[type='checkbox'].pp-toggle:checked::before {
+  left: 1.8em;
+  margin: 0;
+}
+
+input[type='checkbox'].pp-toggle.busy {
+  opacity: 0.5;
+}
