@@ -1,9 +1,9 @@
 # Mini WP GDPR - Project Tracker
 
 **Version:** 2.0.0 (Refactor)  
-**Last Updated:** 17 February 2026 (12:25)  
+**Last Updated:** 17 February 2026 (13:30)  
 **Current Phase:** Milestone 5 (Enhanced Consent Management)  
-**Overall Progress:** 42%
+**Overall Progress:** 45%
 
 ---
 
@@ -301,12 +301,12 @@
 - [x] Add "change preferences" mechanism for rejected users
 - [x] Update consent duration to apply to rejections too
 
-##### Phase 5.3: Consent API Integration Research
-- [ ] Research browser Consent API compatibility
-- [ ] Evaluate feasibility for Facebook Pixel, GA, etc.
-- [ ] Create proof-of-concept implementation
-- [ ] Document findings and recommendations
-- [ ] Implement if beneficial, document limitations if not
+##### Phase 5.3: Consent API Integration Research ✅ Complete (2026-02-17)
+- [x] Research browser Consent API compatibility
+- [x] Evaluate feasibility for Facebook Pixel, GA, etc.
+- [x] Create proof-of-concept implementation — Google Consent Mode v2 implemented; FB Pixel deferred to M6
+- [x] Document findings and recommendations — dev-notes/consent-api-research.md
+- [x] Implement if beneficial, document limitations if not — Google Consent Mode v2 live; IAB TCF out of scope documented
 
 ##### Phase 5.4: Backend Consent Tracking
 - [x] Update database schema for rejection tracking — user meta sufficient, no custom table needed ✅ (2026-02-17)
@@ -749,7 +749,7 @@
 | 2. Code Standards & Quality Tools (PHPCS) | Mar 2, 2026 | 🟢 Complete | 100% |
 | 3. Remove pp-core.php | Mar 16, 2026 | 🟢 Complete | 100% |
 | 4. JavaScript Modernization | Mar 23, 2026 | 🟢 Complete | 100% |
-| 5. Enhanced Consent Management | Apr 6, 2026 | ⚪ Not Started | 0% |
+| 5. Enhanced Consent Management | Apr 6, 2026 | 🟡 In Progress | 75% |
 | 6. Advanced Tracker Delay-Loading | Apr 20, 2026 | ⚪ Not Started | 0% |
 | 7. Security Audit & Best Practices | Apr 27, 2026 | ⚪ Not Started | 0% |
 | 8. PHPStan, Testing & QA | May 11, 2026 | ⚪ Not Started | 0% |
@@ -799,9 +799,11 @@
 | 2026-02-17 | M5 Phase 5.2 testing sprint passed | Plugin active, error log clean, front-end 200, no debug.log; mgwcsData contains rcn; all Phase 5.2 symbols in min.js; #mgwMngBtn CSS in served stylesheet; Phase 5.2 fully complete |
 | 2026-02-17 | M5 Phase 5.4 coding sprint (partial) — server-side rejection tracking | META_REJECTED_GDPR_WHEN + REJECT_GDPR_ACTION constants; User_Controller: reject_gdpr_terms_now(), has_user_rejected_gdpr(), when_did_user_reject_gdpr(); clear_gdpr_accepted_status() now clears rejection meta too; reject_via_ajax() AJAX handler (wp_ajax_rejectgdpr); mwg_consent_accepted + mwg_consent_rejected developer action hooks; Script_Blocker adds ajaxUrl/rejectAction/rejectNonce to mgwcsData for logged-in users; rejectConsent() fires fire-and-forget AJAX for logged-in users; minified assets rebuilt |
 | 2026-02-17 | M5 Phase 5.4 testing sprint passed | Plugin active, error log clean, front-end 200, no debug.log; REJECT_GDPR_ACTION=rejectgdpr constant confirmed; wp_ajax_rejectgdpr hook registered → Plugin::reject_via_ajax; META_REJECTED_GDPR_WHEN=_pwg_rejected_gdpr_when confirmed; Script_Blocker logged-in guard verified in source; JS rejectConsent() fire-and-forget confirmed; Phase 5.4 (partial) complete — deferred: admin stats UI, WooCommerce integration |
+| 2026-02-17 | M5 Phase 5.3 coding sprint — Google Consent Mode v2 implemented | OPT_GA_CONSENT_MODE_ENABLED constant + settings registration; tracker-google-analytics.php wp_head (priority 1) outputs dataLayer init + gtag stub + consent defaults when enabled; consentToScripts() fires gtag('consent','update',granted) before insertBlockedScripts(); admin UI checkbox in GA settings section; dev-notes/consent-api-research.md documents all evaluated APIs (GA, FB Pixel, Clarity, IAB TCF, native browser APIs) |
+| 2026-02-17 | M5 Phase 5.3 testing sprint passed | Plugin active, error log clean, front-end 200, no debug.log; OPT_GA_CONSENT_MODE_ENABLED constant confirmed in constants.php; wp_head outputs gtag("consent","default",{all denied, wait_for_update:500}) at priority 1 when option enabled; gtag("consent","update",{all granted}) confirmed in .min.js consentToScripts(); admin UI checkbox confirmed in trackers-settings-google.php; consent-api-research.md file verified (9890 bytes); M5 progress updated to 75% |
 
 ---
 
-**Last Updated:** 17 February 2026 (13:15)  
+**Last Updated:** 17 February 2026 (13:30)  
 **Next Review:** 23 February 2026  
-**Next Action:** Coding sprint — M5 Phase 5.3: Consent API Integration Research (research browser Consent API compatibility, evaluate feasibility for FB Pixel/GA/Clarity, document findings)
+**Next Action:** Coding sprint — M5 remaining tasks: admin UI for button text customisation (Phase 5.1 deferred item), then assess admin stats UI + WooCommerce rejection handling scope before moving to M6
