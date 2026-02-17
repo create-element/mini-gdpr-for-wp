@@ -292,7 +292,7 @@
 - [x] Update mini-gdpr-cookie-popup.css for new layout (responsive flex-wrap at 18em)
 - [x] Ensure responsive design on all screen sizes
 - [x] Add accessibility improvements (aria-label on all 3 buttons; shared hasStoredDecision helper)
-- [ ] Create settings UI for customizable button text (constants + register_settings done; admin UI deferred to follow-up sprint)
+- [x] Create settings UI for customizable button text (constants + register_settings done; admin UI added in cookie-consent-settings.php) ✅ (2026-02-17)
 
 ##### Phase 5.2: Rejection Logic Implementation ✅ Complete (2026-02-17)
 - [x] Create `mgwRejectScripts()` JavaScript function
@@ -749,7 +749,7 @@
 | 2. Code Standards & Quality Tools (PHPCS) | Mar 2, 2026 | 🟢 Complete | 100% |
 | 3. Remove pp-core.php | Mar 16, 2026 | 🟢 Complete | 100% |
 | 4. JavaScript Modernization | Mar 23, 2026 | 🟢 Complete | 100% |
-| 5. Enhanced Consent Management | Apr 6, 2026 | 🟡 In Progress | 75% |
+| 5. Enhanced Consent Management | Apr 6, 2026 | 🟡 In Progress | 85% |
 | 6. Advanced Tracker Delay-Loading | Apr 20, 2026 | ⚪ Not Started | 0% |
 | 7. Security Audit & Best Practices | Apr 27, 2026 | ⚪ Not Started | 0% |
 | 8. PHPStan, Testing & QA | May 11, 2026 | ⚪ Not Started | 0% |
@@ -801,9 +801,10 @@
 | 2026-02-17 | M5 Phase 5.4 testing sprint passed | Plugin active, error log clean, front-end 200, no debug.log; REJECT_GDPR_ACTION=rejectgdpr constant confirmed; wp_ajax_rejectgdpr hook registered → Plugin::reject_via_ajax; META_REJECTED_GDPR_WHEN=_pwg_rejected_gdpr_when confirmed; Script_Blocker logged-in guard verified in source; JS rejectConsent() fire-and-forget confirmed; Phase 5.4 (partial) complete — deferred: admin stats UI, WooCommerce integration |
 | 2026-02-17 | M5 Phase 5.3 coding sprint — Google Consent Mode v2 implemented | OPT_GA_CONSENT_MODE_ENABLED constant + settings registration; tracker-google-analytics.php wp_head (priority 1) outputs dataLayer init + gtag stub + consent defaults when enabled; consentToScripts() fires gtag('consent','update',granted) before insertBlockedScripts(); admin UI checkbox in GA settings section; dev-notes/consent-api-research.md documents all evaluated APIs (GA, FB Pixel, Clarity, IAB TCF, native browser APIs) |
 | 2026-02-17 | M5 Phase 5.3 testing sprint passed | Plugin active, error log clean, front-end 200, no debug.log; OPT_GA_CONSENT_MODE_ENABLED constant confirmed in constants.php; wp_head outputs gtag("consent","default",{all denied, wait_for_update:500}) at priority 1 when option enabled; gtag("consent","update",{all granted}) confirmed in .min.js consentToScripts(); admin UI checkbox confirmed in trackers-settings-google.php; consent-api-research.md file verified (9890 bytes); M5 progress updated to 75% |
+| 2026-02-17 | M5 Phase 5.1 fully complete — testing sprint passed | Admin UI fields for Accept/Reject/Info button text added to cookie-consent-settings.php; OPT_CONSENT_ACCEPT_TEXT, OPT_CONSENT_REJECT_TEXT, OPT_CONSENT_INFO_BTN_TEXT referenced with esc_attr(); constants confirmed in constants.php; registered in class-settings.php; PHPCS clean; plugin active, error log clean, front-end 200, no debug.log; Phase 5.1 fully complete — M5 progress 85% |
 
 ---
 
-**Last Updated:** 17 February 2026 (13:30)  
+**Last Updated:** 17 February 2026 (13:50)  
 **Next Review:** 23 February 2026  
-**Next Action:** Coding sprint — M5 remaining tasks: admin UI for button text customisation (Phase 5.1 deferred item), then assess admin stats UI + WooCommerce rejection handling scope before moving to M6
+**Next Action:** Coding sprint — M5 Phase 5.1 fully complete; assess deferred Phase 5.4 items (admin consent/rejection stats UI, WooCommerce rejection integration) — decide scope vs. defer to M7/M8, then move to M6 (Advanced Tracker Delay-Loading)
