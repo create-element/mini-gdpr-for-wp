@@ -294,12 +294,12 @@
 - [x] Add accessibility improvements (aria-label on all 3 buttons; shared hasStoredDecision helper)
 - [ ] Create settings UI for customizable button text (constants + register_settings done; admin UI deferred to follow-up sprint)
 
-##### Phase 5.2: Rejection Logic Implementation
-- [ ] Create `mgwRejectScripts()` JavaScript function
-- [ ] Store rejection status in localStorage/cookie
-- [ ] Prevent blocked scripts from loading on rejection
-- [ ] Add "change preferences" mechanism for rejected users
-- [ ] Update consent duration to apply to rejections too
+##### Phase 5.2: Rejection Logic Implementation ✅ Complete (2026-02-17)
+- [x] Create `mgwRejectScripts()` JavaScript function
+- [x] Store rejection status in localStorage/cookie
+- [x] Prevent blocked scripts from loading on rejection
+- [x] Add "change preferences" mechanism for rejected users
+- [x] Update consent duration to apply to rejections too
 
 ##### Phase 5.3: Consent API Integration Research
 - [ ] Research browser Consent API compatibility
@@ -795,9 +795,11 @@
 | 2026-02-17 | M4 Phase 4.4 testing sprint passed — M4 Complete | Plugin active, error log clean, all 4 .min.js serve HTTP 200, front-end HTML confirmed loading .min.js, no debug.log errors; Milestone 4 (JavaScript Modernisation) fully complete |
 | 2026-02-17 | M5 Phase 5.1 coding sprint — Reject button added to consent popup | [Reject] [info...] [Accept] 3-button layout; rejectConsent() + hasRejected() + hasStoredDecision() in JS; rejection cookie name (rcn) added to mgwcsData; OPT_CONSENT_ACCEPT/REJECT/INFO_BTN_TEXT constants + register_settings(); responsive CSS; minified assets rebuilt |
 | 2026-02-17 | M5 Phase 5.1 testing sprint passed | Plugin active, error log clean, front-end 200, mgwcsData contains rcn + rjt + mre, all 3 JS methods verified, responsive CSS confirmed; Phase 5.1 complete — moving to Phase 5.2 (Rejection Logic) |
+| 2026-02-17 | M5 Phase 5.2 coding sprint — rejection logic + manage-preferences mechanism | rejectConsent() stores rejection in localStorage/cookie (with cd duration), no scripts injected; showManagePreferencesLink() renders floating 🍪 button; changePreferences() clears both decisions, resets accept guard, re-shows popup; init() shows manage btn for returning users (consented or rejected); public API: window.mgwRejectScripts() + window.mgwShowCookiePreferences(); CSS for #mgwMngBtn; minified assets rebuilt |
+| 2026-02-17 | M5 Phase 5.2 testing sprint passed | Plugin active, error log clean, front-end 200, no debug.log; mgwcsData contains rcn; all Phase 5.2 symbols in min.js; #mgwMngBtn CSS in served stylesheet; Phase 5.2 fully complete |
 
 ---
 
-**Last Updated:** 17 February 2026 (12:30)  
+**Last Updated:** 17 February 2026 (12:55)  
 **Next Review:** 23 February 2026  
-**Next Action:** Coding sprint — M5 Phase 5.2 (Rejection Logic Implementation: mgwRejectScripts(), localStorage/cookie rejection storage, prevent blocked scripts on rejection, change-preferences mechanism)
+**Next Action:** Coding sprint — M5 Phase 5.3 (Consent API Integration Research) or Phase 5.4 (Backend Consent Tracking: DB schema for rejection, user meta for logged-in users, admin UI for consent stats, filters, WooCommerce integration)
