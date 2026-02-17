@@ -100,4 +100,49 @@ foreach ( $positions as $key => $label ) {
 echo '</select>';
 echo '</p>';
 
+printf( '<h3>%s</h3>', esc_html__( 'Button Text', 'mini-wp-gdpr' ) );
+
+echo '<p class="pp-help">';
+esc_html_e( 'Customise the text on the consent popup buttons. Leave blank to use the default.', 'mini-wp-gdpr' );
+echo '</p>';
+
+echo '<p class="pp-form-row">';
+$control_id = get_next_control_id();
+printf(
+	'<label for="%s">%s</label><input id="%s" name="%s" type="text" value="%s" placeholder="%s" />',
+	esc_attr( $control_id ),
+	esc_html__( 'Accept button text', 'mini-wp-gdpr' ),
+	esc_attr( $control_id ),
+	esc_attr( OPT_CONSENT_ACCEPT_TEXT ),
+	esc_attr( $settings->get_string( OPT_CONSENT_ACCEPT_TEXT ) ),
+	esc_attr( DEF_CONSENT_ACCEPT_TEXT )
+);
+echo '</p>';
+
+echo '<p class="pp-form-row">';
+$control_id = get_next_control_id();
+printf(
+	'<label for="%s">%s</label><input id="%s" name="%s" type="text" value="%s" placeholder="%s" />',
+	esc_attr( $control_id ),
+	esc_html__( 'Reject button text', 'mini-wp-gdpr' ),
+	esc_attr( $control_id ),
+	esc_attr( OPT_CONSENT_REJECT_TEXT ),
+	esc_attr( $settings->get_string( OPT_CONSENT_REJECT_TEXT ) ),
+	esc_attr( DEF_CONSENT_REJECT_TEXT )
+);
+echo '</p>';
+
+echo '<p class="pp-form-row">';
+$control_id = get_next_control_id();
+printf(
+	'<label for="%s">%s</label><input id="%s" name="%s" type="text" value="%s" placeholder="%s" />',
+	esc_attr( $control_id ),
+	esc_html__( '"More info" button text', 'mini-wp-gdpr' ),
+	esc_attr( $control_id ),
+	esc_attr( OPT_CONSENT_INFO_BTN_TEXT ),
+	esc_attr( $settings->get_string( OPT_CONSENT_INFO_BTN_TEXT ) ),
+	esc_attr( DEF_CONSENT_INFO_BTN_TEXT )
+);
+echo '</p>';
+
 echo '</section>';
