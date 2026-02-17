@@ -1,9 +1,9 @@
 # Mini WP GDPR - Project Tracker
 
 **Version:** 2.0.0 (Refactor)  
-**Last Updated:** 17 February 2026 (12:10)  
+**Last Updated:** 17 February 2026 (12:25)  
 **Current Phase:** Milestone 5 (Enhanced Consent Management)  
-**Overall Progress:** 40%
+**Overall Progress:** 42%
 
 ---
 
@@ -287,12 +287,12 @@
 
 #### Sub-Tasks
 
-##### Phase 5.1: Popup UI Enhancement
-- [ ] Design new popup layout with 3 buttons: Reject, Info, Accept
-- [ ] Update mini-gdpr-cookie-popup.css for new layout
-- [ ] Ensure responsive design on all screen sizes
-- [ ] Add accessibility improvements (ARIA labels, keyboard navigation)
-- [ ] Create option for customizable button text
+##### Phase 5.1: Popup UI Enhancement ✅ Coded (2026-02-17) — pending testing sprint
+- [x] Design new popup layout with 3 buttons: Reject, Info, Accept
+- [x] Update mini-gdpr-cookie-popup.css for new layout (responsive flex-wrap at 18em)
+- [x] Ensure responsive design on all screen sizes
+- [x] Add accessibility improvements (aria-label on all 3 buttons; shared hasStoredDecision helper)
+- [ ] Create settings UI for customizable button text (constants + register_settings done; admin UI deferred to follow-up sprint)
 
 ##### Phase 5.2: Rejection Logic Implementation
 - [ ] Create `mgwRejectScripts()` JavaScript function
@@ -793,9 +793,10 @@
 | 2026-02-17 | M4 Phase 4.3 complete — testing sprint passed | Plugin active, error log clean, front-end 200, no debug.log; Tab trap in consent popup (accept↔more-info) and overlay (within panel) verified in code; focus auto-set to Accept on popup show; focus returns to more-info btn on overlay close; aria-describedby on popup, aria-label on close btn |
 | 2026-02-17 | M4 Phase 4.4 coding sprint: build process + minification + asset loading | Added package.json (terser dev dep) + bin/build.js; minified all 4 JS assets (52-67% reduction); SCRIPT_DEBUG conditional enqueue; admin scripts moved to footer; development-workflow.md updated with build docs |
 | 2026-02-17 | M4 Phase 4.4 testing sprint passed — M4 Complete | Plugin active, error log clean, all 4 .min.js serve HTTP 200, front-end HTML confirmed loading .min.js, no debug.log errors; Milestone 4 (JavaScript Modernisation) fully complete |
+| 2026-02-17 | M5 Phase 5.1 coding sprint — Reject button added to consent popup | [Reject] [info...] [Accept] 3-button layout; rejectConsent() + hasRejected() + hasStoredDecision() in JS; rejection cookie name (rcn) added to mgwcsData; OPT_CONSENT_ACCEPT/REJECT/INFO_BTN_TEXT constants + register_settings(); responsive CSS; minified assets rebuilt |
 
 ---
 
-**Last Updated:** 17 February 2026 (12:10)  
+**Last Updated:** 17 February 2026 (12:25)  
 **Next Review:** 23 February 2026  
-**Next Action:** Coding sprint — M5 Phase 5.1 (Enhanced Consent Management — popup UI with Reject/Info/Accept buttons)
+**Next Action:** Testing sprint — M5 Phase 5.1 (verify plugin active, error log clean, Reject button visible on front-end, rejection stored in localStorage)
