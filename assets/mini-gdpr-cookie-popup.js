@@ -188,6 +188,16 @@
 
 			this.insertBlockedScripts();
 
+			// Facebook Pixel: load fbevents.js after consent. The fbq stub already
+			// has fbq('init') and fbq('track','PageView') queued; the SDK replays
+			// them automatically when fbevents.js loads.
+			this.loadFacebookPixel();
+
+			// Microsoft Clarity: load clarity.ms/tag/<ID> after consent. The
+			// clarity stub already has window.clarity set up as a queue; the
+			// Clarity SDK processes window.clarity.q on load.
+			this.loadMicrosoftClarity();
+
 			popup.classList.add( 'mgw-fin' );
 			setTimeout( () => {
 				popup.remove();
@@ -246,6 +256,75 @@
 			} else {
 				this.showManagePreferencesLink();
 			}
+		}
+
+		/**
+		 * Dynamically load Facebook Pixel (fbevents.js) after the user has consented.
+		 *
+		 * The fbq stub (window.fbq function + queue) and the queued fbq('init') and
+		 * fbq('track', 'PageView') calls are already present on the page (output by
+		 * the PHP tracker stub on every page load). This method:
+		 *
+		 *   1. Calls fbq('consent','grant') to add a grant signal to the queue BEFORE
+		 *      fbevents.js loads. When the SDK processes the queue it sees:
+		 *      consent=revoke → consent=grant → init → PageView — so the pixel
+		 *      initialises in full tracking mode after the user has explicitly accepted.
+		 *   2. Dynamically loads fbevents.js, which replays the queued calls in order.
+		 *
+		 * The fbq stub outputs fbq('consent','revoke') as the very first queued call
+		 * (defensive GDPR guard — prevents tracking if fbevents.js loads unexpectedly).
+		 * The grant call queued here overrides that revoke so the pixel initialises
+		 * with explicit consent.
+		 *
+		 * This method is a no-op when mgwcsData.fbpxId is absent (pixel not configured,
+		 * pixel disabled in settings, or current user excluded by role).
+		 *
+		 * @since 2.0.0
+		 * @return {void}
+		 */
+		loadFacebookPixel() {
+			if ( ! this.data.fbpxId ) {
+				return;
+			}
+
+			// FB Pixel Consent API: queue a consent grant BEFORE fbevents.js loads so
+			// the SDK initialises in fully-granted state when it processes the queue.
+			// Guard: fbq is always defined when fbpxId is set (stub is in <head>), but
+			// the typeof check makes the intent explicit and prevents errors if the stub
+			// was somehow removed by a third-party script manager.
+			if ( typeof fbq === 'function' ) {
+				fbq( 'consent', 'grant' );
+			}
+
+			const script = document.createElement( 'script' );
+			script.src   = 'https://connect.facebook.net/en_US/fbevents.js';
+			script.async = true;
+			document.head.appendChild( script );
+		}
+
+		/**
+		 * Dynamically load Microsoft Clarity (clarity.ms/tag/<ID>) after the user has consented.
+		 *
+		 * The clarity stub (window.clarity queue) is already present on the page (output by
+		 * the PHP tracker stub on every page load). Loading the Clarity script here causes
+		 * the Clarity SDK to process the queued calls (window.clarity.q), completing
+		 * initialisation without losing any events.
+		 *
+		 * This method is a no-op when mgwcsData.clarityId is absent (Clarity not configured,
+		 * Clarity disabled in settings, or current user excluded by role).
+		 *
+		 * @since 2.0.0
+		 * @return {void}
+		 */
+		loadMicrosoftClarity() {
+			if ( ! this.data.clarityId ) {
+				return;
+			}
+
+			const script = document.createElement( 'script' );
+			script.src   = 'https://www.clarity.ms/tag/' + this.data.clarityId;
+			script.async = true;
+			document.head.appendChild( script );
 		}
 
 		/**
@@ -489,6 +568,13 @@
 		init() {
 			if ( this.hasConsented() ) {
 				this.insertBlockedScripts();
+				// Facebook Pixel: load fbevents.js for returning visitors who already
+				// consented. The queued fbq('init') + fbq('track','PageView') events
+				// are replayed automatically when fbevents.js loads.
+				this.loadFacebookPixel();
+				// Microsoft Clarity: load clarity.ms for returning visitors who already
+				// consented. The clarity stub queue is replayed by the Clarity SDK on load.
+				this.loadMicrosoftClarity();
 				this.showManagePreferencesLink();
 			} else if ( this.hasRejected() ) {
 				this.showManagePreferencesLink();
