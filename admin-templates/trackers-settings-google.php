@@ -50,5 +50,18 @@ if ( is_external_ga_injector_plugin_installed() ) {
 	);
 	echo '</p>';
 
+	echo '<p class="pp-form-row pp-checkbox">';
+	$control_id = get_next_control_id();
+	printf(
+		'<input id="%s" name="%s" type="checkbox" %s /><label for="%s">%s</label><span class="pp-help">%s</span>',
+		esc_attr( $control_id ),
+		esc_attr( OPT_GA_CONSENT_MODE_ENABLED ),
+		checked( $settings->get_bool( OPT_GA_CONSENT_MODE_ENABLED ), true, false ),
+		esc_attr( $control_id ),
+		esc_html__( 'Enable Google Consent Mode v2', 'mini-wp-gdpr' ),
+		esc_html__( 'Outputs gtag() consent defaults in <head> and sends a granted update when the user accepts. Recommended for GA4 users in the EU.', 'mini-wp-gdpr' )
+	);
+	echo '</p>';
+
 	echo '</section>';
 }

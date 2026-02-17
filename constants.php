@@ -65,6 +65,8 @@ const CF7_POST_TYPE           = 'wpcf7_contact_form';
 const CF7_CONSENT_TAG_NAME    = 'checkbox-privacy';
 const CF7_YOUR_EMAIL_TAG_NAME = 'your-email';
 
+const OPT_GA_CONSENT_MODE_ENABLED = 'mwg_ga_consent_mode_enabled';
+
 const EXTERNAL_GA_TRACKER_PLUGINS = [ 'woocommerce-google-analytics-integration/woocommerce-google-analytics-integration.php' ];
 
 const MS_CLARITY_SCRIPT_HANDLE           = 'msft-clarity';

@@ -173,6 +173,19 @@
 				document.cookie = `${ this.data.cn }=true; expires=${ expiresWhen.toUTCString() }; Secure`;
 			}
 
+			// Google Consent Mode v2: signal granted consent before deferred tracker
+			// scripts are injected. The gtag() stub is initialised in <head> by the
+			// GA tracker when Consent Mode is enabled; this update is queued in
+			// window.dataLayer so GA picks up the granted state when it loads.
+			if ( typeof gtag === 'function' ) {
+				gtag( 'consent', 'update', {
+					analytics_storage: 'granted',
+					ad_storage: 'granted',
+					ad_user_data: 'granted',
+					ad_personalization: 'granted',
+				} );
+			}
+
 			this.insertBlockedScripts();
 
 			popup.classList.add( 'mgw-fin' );
