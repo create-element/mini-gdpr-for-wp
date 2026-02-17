@@ -1,9 +1,9 @@
 # Mini WP GDPR - Project Tracker
 
 **Version:** 2.0.0 (Refactor)  
-**Last Updated:** 17 February 2026 (09:45)  
+**Last Updated:** 17 February 2026 (10:05)  
 **Current Phase:** Milestone 4 (JavaScript Modernisation)  
-**Overall Progress:** 30%
+**Overall Progress:** 33%
 
 ---
 
@@ -780,9 +780,10 @@
 | 2026-02-17 | M3 PHPCS fixes: functions.php + phpcs.xml | functions.php converted to WPCS style (tabs, docblocks, K&R braces); phpcs.xml updated to add mwg prefix to allowed list (public API functions use mwg_ prefix) |
 | 2026-02-17 | M3 Testing sprint passed (functions.php PHPCS fix) | Plugin active, error log clean, front-end 200, PHPCS clean on functions.php; 1 task remaining in M3: PHPCS fix pass on admin templates |
 | 2026-02-17 | M3 Complete — Testing sprint passed (admin templates PHPCS fix) | Plugin active, settings page renders cleanly, cookie consent popup visible on front-end, error log empty, no debug.log errors; M3 fully complete — moving to M4 (JavaScript Modernisation) |
+| 2026-02-17 | M4 Phase 4.1 (partial) coding sprint: mini-gdpr.js and mini-gdpr-admin.js converted to ES6+ | Replaced jQuery/var with ES6 classes, const/let, arrow functions, async/await, fetch API; removed jQuery from enqueue deps; PHPCS clean on PHP files; testing sprint passed — front-end 200, error log clean, no debug.log |
 
 ---
 
-**Last Updated:** 17 February 2026 (09:45)  
+**Last Updated:** 17 February 2026 (10:05)  
 **Next Review:** 23 February 2026  
-**Next Action:** Coding sprint — M4 (JavaScript Modernisation): Phase 4.1 ES6+ Refactoring
+**Next Action:** Coding sprint — M4 Phase 4.1 (continued): Convert mini-gdpr-cookie-popup.js to ES6+
