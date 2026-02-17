@@ -1,7 +1,7 @@
 # Mini WP GDPR - Project Tracker
 
 **Version:** 2.0.0 (Refactor)  
-**Last Updated:** 17 February 2026 (10:05)  
+**Last Updated:** 17 February 2026 (11:10)  
 **Current Phase:** Milestone 4 (JavaScript Modernisation)  
 **Overall Progress:** 33%
 
@@ -58,6 +58,9 @@
 - [x] Run PHPCS fix pass on legacy files (functions-private.php, class-plugin.php) ✅
 - [x] PHPCS fix pass on functions.php (public API) + phpcs.xml prefix update ✅ (2026-02-17)
 - [x] PHPCS fix pass on admin templates (cookie-consent-settings.php, etc.) ✅ (2026-02-17)
+
+### In Progress (Milestone 4 — JavaScript Modernisation)
+- [x] Phase 4.1 complete ✅ — ES6+ refactoring of mini-gdpr.js, mini-gdpr-admin.js, mini-gdpr-cookie-popup.js; jQuery removed from deps; MiniGdprPopup class with .init(); ARIA attributes added (2026-02-17)
 
 ---
 
@@ -220,13 +223,13 @@
 
 #### Sub-Tasks
 
-##### Phase 4.1: ES6+ Refactoring
-- [ ] Convert to ES6 syntax (const/let, arrow functions)
-- [ ] Use modern DOM API instead of jQuery
-- [ ] Implement Promise-based AJAX calls
-- [ ] Add proper scope management
-- [ ] Use template literals for string building
-- [ ] Implement modules if beneficial
+##### Phase 4.1: ES6+ Refactoring ✅ Complete
+- [x] Convert to ES6 syntax (const/let, arrow functions)
+- [x] Use modern DOM API instead of jQuery
+- [x] Implement Promise-based AJAX calls (fetch API)
+- [x] Add proper scope management (IIFE, classes)
+- [x] Use template literals for string building
+- [x] Implement modules if beneficial — not beneficial for this plugin size; IIFE/class pattern sufficient
 
 ##### Phase 4.2: Event Handling Improvements
 - [ ] Use addEventListener consistently
@@ -236,7 +239,7 @@
 - [ ] Add debouncing/throttling where needed
 
 ##### Phase 4.3: Accessibility Enhancements
-- [ ] Add ARIA labels to interactive elements
+- [x] Add ARIA labels to interactive elements (role, aria-modal, aria-label, aria-live added in Phase 4.1 popup rewrite)
 - [ ] Implement keyboard navigation
 - [ ] Ensure focus management
 - [ ] Add screen reader support
@@ -742,7 +745,7 @@
 | 1. Foundation & Planning | Feb 23, 2026 | 🟡 In Progress | 20% |
 | 2. Code Standards & Quality Tools (PHPCS) | Mar 2, 2026 | 🟢 Complete | 100% |
 | 3. Remove pp-core.php | Mar 16, 2026 | 🟢 Complete | 100% |
-| 4. JavaScript Modernization | Mar 23, 2026 | 🟡 In Progress | 0% |
+| 4. JavaScript Modernization | Mar 23, 2026 | 🟡 In Progress | 25% |
 | 5. Enhanced Consent Management | Apr 6, 2026 | ⚪ Not Started | 0% |
 | 6. Advanced Tracker Delay-Loading | Apr 20, 2026 | ⚪ Not Started | 0% |
 | 7. Security Audit & Best Practices | Apr 27, 2026 | ⚪ Not Started | 0% |
@@ -781,9 +784,11 @@
 | 2026-02-17 | M3 Testing sprint passed (functions.php PHPCS fix) | Plugin active, error log clean, front-end 200, PHPCS clean on functions.php; 1 task remaining in M3: PHPCS fix pass on admin templates |
 | 2026-02-17 | M3 Complete — Testing sprint passed (admin templates PHPCS fix) | Plugin active, settings page renders cleanly, cookie consent popup visible on front-end, error log empty, no debug.log errors; M3 fully complete — moving to M4 (JavaScript Modernisation) |
 | 2026-02-17 | M4 Phase 4.1 (partial) coding sprint: mini-gdpr.js and mini-gdpr-admin.js converted to ES6+ | Replaced jQuery/var with ES6 classes, const/let, arrow functions, async/await, fetch API; removed jQuery from enqueue deps; PHPCS clean on PHP files; testing sprint passed — front-end 200, error log clean, no debug.log |
+| 2026-02-17 | M4 Phase 4.1 (continued): mini-gdpr-cookie-popup.js converted to ES6+ | Wrapped in IIFE; global functions → MiniGdprPopup class; var → const/let; fixed DOMContentLoaded-on-button bug (→ click); removed dead createElement('extra') block; added ARIA (role, aria-modal, aria-label, aria-live); added backdrop click guard; removed all console.log; classList.add instead of className +=; hasOwnProperty guards on for...in loops |
+| 2026-02-17 | M4 Phase 4.1 complete — testing sprint passed | Plugin active, error log clean, front-end 200, mgwcsData output correct, .init() call verified; Phase 4.1 all tasks marked complete; ARIA label task in Phase 4.3 also marked done; next sprint: Phase 4.2 (Event Handling Improvements) |
 
 ---
 
-**Last Updated:** 17 February 2026 (10:05)  
+**Last Updated:** 17 February 2026 (11:10)  
 **Next Review:** 23 February 2026  
-**Next Action:** Coding sprint — M4 Phase 4.1 (continued): Convert mini-gdpr-cookie-popup.js to ES6+
+**Next Action:** Coding sprint — M4 Phase 4.2 (Event Handling Improvements): addEventListener consistency, event delegation, edge case handling
