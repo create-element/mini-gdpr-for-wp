@@ -2,7 +2,12 @@
  * Mini GDPR Cookie Popup
  *
  * Handles cookie consent popup display, consent storage, deferred script
- * injection, and the "more info" overlay listing blocked trackers.
+ * injection, the "more info" overlay listing blocked trackers, and the
+ * manage-preferences button that allows users to revisit their decision.
+ *
+ * Public API (available after DOMContentLoaded):
+ *   window.mgwRejectScripts()          — programmatically reject tracking.
+ *   window.mgwShowCookiePreferences()  — clear stored decision and re-show popup.
  *
  * @since 2.0.0
  */
@@ -171,7 +176,10 @@
 			this.insertBlockedScripts();
 
 			popup.classList.add( 'mgw-fin' );
-			setTimeout( () => popup.remove(), 500 );
+			setTimeout( () => {
+				popup.remove();
+				this.showManagePreferencesLink();
+			}, 500 );
 		}
 
 		/**
@@ -183,17 +191,18 @@
 		 * _popupKeydown focus trap is removed before the popup element is detached
 		 * from the DOM.
 		 *
+		 * When called with no popup visible (e.g. via the mgwRejectScripts() public
+		 * API on a page where the user has already decided), the rejection is stored
+		 * and the manage-preferences button is shown without any popup transition.
+		 *
 		 * @since 2.0.0
 		 * @return {void}
 		 */
 		rejectConsent() {
 			const popup = document.getElementById( 'mgwcsCntr' );
-			if ( ! popup ) {
-				return;
-			}
 
-			// Remove focus trap before the popup is removed from the DOM.
-			if ( this._popupKeydown ) {
+			// Remove focus trap if the popup is currently visible.
+			if ( popup && this._popupKeydown ) {
 				document.removeEventListener( 'keydown', this._popupKeydown );
 				this._popupKeydown = null;
 			}
@@ -206,8 +215,15 @@
 				document.cookie = `${ this.data.rcn }=true; expires=${ expiresWhen.toUTCString() }; Secure`;
 			}
 
-			popup.classList.add( 'mgw-fin' );
-			setTimeout( () => popup.remove(), 500 );
+			if ( popup ) {
+				popup.classList.add( 'mgw-fin' );
+				setTimeout( () => {
+					popup.remove();
+					this.showManagePreferencesLink();
+				}, 500 );
+			} else {
+				this.showManagePreferencesLink();
+			}
 		}
 
 		/**
@@ -380,8 +396,70 @@
 		}
 
 		/**
-		 * Initialise: inject deferred scripts if already consented, skip entirely
-		 * if already rejected, or show the popup if the user hasn't yet decided.
+		 * Render a small persistent button that allows the user to revisit their
+		 * cookie preference at any time after the popup has been dismissed.
+		 *
+		 * The button is rendered only once — calling this method when it already
+		 * exists is a no-op. Clicking it calls changePreferences(), which clears
+		 * the stored decision and re-shows the consent popup.
+		 *
+		 * @since 2.0.0
+		 * @return {void}
+		 */
+		showManagePreferencesLink() {
+			if ( document.getElementById( 'mgwMngBtn' ) ) {
+				return;
+			}
+
+			const btn = document.createElement( 'button' );
+			btn.id        = 'mgwMngBtn';
+			btn.textContent = '\uD83C\uDF6A'; // 🍪 cookie emoji.
+			btn.setAttribute( 'aria-label', 'Manage cookie preferences' );
+			btn.setAttribute( 'title', 'Manage cookie preferences' );
+			btn.addEventListener( 'click', () => this.changePreferences() );
+			document.body.appendChild( btn );
+		}
+
+		/**
+		 * Clear the stored consent/rejection decision and re-show the consent popup.
+		 *
+		 * Removes both the consent and rejection storage entries so the user can
+		 * make a fresh choice. Resets the in-flight accept guard so Accept works
+		 * correctly when the popup is shown again.
+		 *
+		 * Called by the manage-preferences button and exposed publicly as the
+		 * window.mgwShowCookiePreferences() function.
+		 *
+		 * @since 2.0.0
+		 * @return {void}
+		 */
+		changePreferences() {
+			// Remove the manage-preferences button.
+			const manageBtn = document.getElementById( 'mgwMngBtn' );
+			if ( manageBtn ) {
+				manageBtn.remove();
+			}
+
+			// Reset the in-flight guard so Accept works again after preferences reset.
+			this._accepting = false;
+
+			// Clear stored decisions (localStorage or cookie fallback).
+			if ( typeof localStorage !== 'undefined' ) {
+				localStorage.removeItem( this.data.cn );
+				localStorage.removeItem( this.data.rcn );
+			} else {
+				document.cookie = `${ this.data.cn }=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
+				document.cookie = `${ this.data.rcn }=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
+			}
+
+			// Re-show the consent popup.
+			this.showPopup();
+		}
+
+		/**
+		 * Initialise: inject deferred scripts if already consented, show the
+		 * manage-preferences button if already decided, or show the popup if the
+		 * user hasn't yet made a choice.
 		 *
 		 * @since 2.0.0
 		 * @return {void}
@@ -389,7 +467,10 @@
 		init() {
 			if ( this.hasConsented() ) {
 				this.insertBlockedScripts();
-			} else if ( ! this.hasRejected() ) {
+				this.showManagePreferencesLink();
+			} else if ( this.hasRejected() ) {
+				this.showManagePreferencesLink();
+			} else {
 				this.showPopup();
 			}
 		}
@@ -397,7 +478,22 @@
 
 	document.addEventListener( 'DOMContentLoaded', () => {
 		if ( typeof mgwcsData !== 'undefined' ) {
-			new MiniGdprPopup( mgwcsData ).init();
+			const popupInstance = new MiniGdprPopup( mgwcsData );
+			popupInstance.init();
+
+			/**
+			 * Public API — callable by theme and plugin developers.
+			 *
+			 * mgwRejectScripts()         — Store a rejection decision and dismiss the
+			 *                              consent popup if it is currently visible.
+			 *                              Has no effect on scripts already loaded.
+			 *
+			 * mgwShowCookiePreferences() — Clear the stored consent/rejection decision
+			 *                              and re-display the consent popup, allowing
+			 *                              the user to make a fresh choice.
+			 */
+			window.mgwRejectScripts         = () => popupInstance.rejectConsent();
+			window.mgwShowCookiePreferences = () => popupInstance.changePreferences();
 		}
 	} );
 } )();
