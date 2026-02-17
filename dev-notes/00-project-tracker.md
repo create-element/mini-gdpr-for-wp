@@ -55,7 +55,7 @@
 - [ ] Archive pp-core.php and pp-assets/ to dev-notes/archive/
 - [ ] Update all classes extending Component to use new base class
 - [ ] Complete settings page integration using WordPress Settings API
-- [ ] Run PHPCS fix pass on legacy files (functions-private.php, class-plugin.php)
+- [x] Run PHPCS fix pass on legacy files (functions-private.php, class-plugin.php) ✅
 
 ---
 
@@ -769,8 +769,9 @@
 | 2026-02-16 | PHPStan deferred from M2 to M8 | Run PHPStan after bulk refactoring (M3-M6) is complete; no point chasing static analysis errors on code being rewritten. PHPCS used throughout. |
 | 2026-02-16 | M2 renamed "Code Standards & Quality Tools (PHPCS)" | Reflects PHPCS-only focus; PHPStan moved to M8 |
 | 2026-02-17 | M3 In Progress: Component, Settings_Core, functions-admin-ui.php created | Native classes replace pp-core.php foundation; all pass PHPCS; plugin loads cleanly |
+| 2026-02-17 | M3 PHPCS pass on functions-private.php and class-plugin.php | Global var prefixes, hook name prefixes, wp_unslash(), SESE phpcs:disable blocks; plugin active and loads cleanly |
 
 ---
 
-**Last Updated:** 16 February 2026  
+**Last Updated:** 17 February 2026  
 **Next Review:** 23 February 2026
