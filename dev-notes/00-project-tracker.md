@@ -354,7 +354,7 @@
 - [x] Load FB Pixel script only after consent — loadFacebookPixel() called on consent/returning visit
 - [x] Replay queued events after script loads — fbevents.js processes fbq.queue automatically
 - [x] FB Pixel Consent API: fbq('consent','grant') queued in loadFacebookPixel() before SDK loads ✅ (2026-02-17)
-- [ ] Test pixel functionality with delayed loading — deferred to testing sprint
+- [x] Test pixel functionality with delayed loading ✅ (2026-02-17)
 - [x] Document Facebook Pixel delay-loading approach — dev-notes/tracker-delay-loading.md
 
 ##### Phase 6.2: Google Analytics Enhancement
@@ -805,9 +805,10 @@
 | 2026-02-17 | M5 Phase 5.1 fully complete — testing sprint passed | Admin UI fields for Accept/Reject/Info button text added to cookie-consent-settings.php; OPT_CONSENT_ACCEPT_TEXT, OPT_CONSENT_REJECT_TEXT, OPT_CONSENT_INFO_BTN_TEXT referenced with esc_attr(); constants confirmed in constants.php; registered in class-settings.php; PHPCS clean; plugin active, error log clean, front-end 200, no debug.log; Phase 5.1 fully complete — M5 progress 85% |
 | 2026-02-17 | M5 Phase 5.4 admin consent stats dashboard — testing sprint passed | consent-stats.php template (live $wpdb COUNT queries for total users, accepted, rejected, undecided); stat card CSS (mwg-stat-cards, mwg-stat--accepted/rejected/undecided) in mwg-admin.css; render_settings_page() includes template below form; PHPCS clean on all 3 files; plugin active, error log clean, front-end 200, no debug.log; Phase 5.4 admin stats task complete ✅ |
 | 2026-02-17 | M6 Phase 6.1 coding sprint — FB Pixel Consent API revoke/grant signals | tracker-facebook-pixel.php: fbq('consent','revoke') added before fbq('init') in stub (defensive GDPR guard — if fbevents.js loads unexpectedly it starts in revoked state); mini-gdpr-cookie-popup.js + .min.js: fbq('consent','grant') added in loadFacebookPixel() before fbevents.js loads; queue order: revoke→grant→init→PageView; pixel initialises in fully-granted mode; PHPCS clean; minified assets rebuilt |
+| 2026-02-17 | M6 Phase 6.1 testing sprint passed — Phase 6.1 Complete | Plugin active, error log clean, front-end 200, no debug.log; fbq('consent','revoke') confirmed in PHP stub (line 122); fbq('consent','grant') confirmed in .min.js loadFacebookPixel(); minified assets verified; all Phase 6.1 tasks marked complete |
 
 ---
 
-**Last Updated:** 17 February 2026 (15:00)  
+**Last Updated:** 17 February 2026 (15:10)  
 **Next Review:** 23 February 2026  
-**Next Action:** Testing sprint — verify M6 Phase 6.1 FB Pixel Consent API signals (fbq consent revoke/grant) work correctly; error log clean; no debug.log errors; then move to M6 Phase 6.2 (Google Analytics Enhancement)
+**Next Action:** Coding sprint — M6 Phase 6.2: Google Analytics Enhancement (review current GA impl, implement gtag.js delay-loading, queue analytics events before consent, test with GA4)
