@@ -1,139 +1,253 @@
 /**
- * Mini WP GDPR : CF7 Integration
+ * Mini WP GDPR - Admin Contact Form 7 integration handler.
+ *
+ * Populates the CF7 forms table, handles install-consent button clicks,
+ * and refreshes the row status after each AJAX action.
+ *
+ * @since 2.0.0
  */
-(function ($) {
-  'use strict';
-  $(window).on('load', function () {
-    console.log('Mini WP GDPR : CF7 : load');
+( function () {
+	'use strict';
 
-    // if (typeof mwgCF7Data != 'undefined') {
-    // console.log('Mini WP GDPR : CF7 : init');
+	/**
+	 * CF7 integration page controller.
+	 *
+	 * One instance is created per [data-mwg-cf7-forms] container on the page.
+	 *
+	 * @since 2.0.0
+	 */
+	class MiniGdprCf7 {
 
-    var spinnerOffTimeout = null;
-    // var spinner = $('.mwg-cf7-integration .mwg-spinner');
+		/**
+		 * Constructor.
+		 *
+		 * @param {HTMLElement} container The [data-mwg-cf7-forms] wrapper element.
+		 * @since 2.0.0
+		 */
+		constructor( container ) {
+			this.container    = container;
+			this.meta         = JSON.parse( container.getAttribute( 'data-mwg-cf7-forms' ) );
+			this.spinner      = container.querySelector( '.pp-spinner' );
+			this.tbody        = container.querySelector( 'tbody' );
+			this._initTimeout = null;
+		}
 
-    // $('.mwg-cf7-form-list .install-consent').click(function(event) {
-    // 	event.preventDefault();
-    // 	console.log('click');
-    // });
+		/**
+		 * Initialise: populate rows, bind delegated events, refresh status.
+		 *
+		 * @since 2.0.0
+		 * @return {void}
+		 */
+		init() {
+			this.populateRows();
+			this.bindEvents();
+			this.refreshTable( this.meta.forms );
+			this.hideSpinnerDelayed();
+		}
 
-    $('[data-mwg-cf7-forms]').each(function (index, el) {
-      var container = $(this);
-      var meta = container.data('mwg-cf7-forms');
-      var table = $(this).find('table');
-      var tableBody = table.find('tbody');
+		/**
+		 * Build a table row for each form and append it to tbody.
+		 *
+		 * Shows the no-forms notice if the forms map is empty.
+		 *
+		 * @since 2.0.0
+		 * @return {void}
+		 */
+		populateRows() {
+			const { forms, labels } = this.meta;
+			let formCount = 0;
 
-      console.log(meta);
-      var formCount = 0;
+			for ( const key in forms ) {
+				if ( ! Object.prototype.hasOwnProperty.call( forms, key ) ) {
+					continue;
+				}
 
-      for (const key in meta.forms) {
-        console.log(`${key}: ${meta.forms[key]}`);
-        var row = $(`<tr data-form-name="${key}"></tr>`);
-        // <span class="dashicons dashicons-no"></span>
+				const form = forms[ key ];
+				const row  = document.createElement( 'tr' );
+				row.setAttribute( 'data-form-name', key );
 
-        var cell = $(`<td class="align-left">${meta.forms[key].title}</td>`);
-        row.append(cell);
+				// Column 1: form title.
+				const titleCell = document.createElement( 'td' );
+				titleCell.className   = 'align-left';
+				titleCell.textContent = form.title;
+				row.appendChild( titleCell );
 
-        cell = $(
-          `<td class="align-centre"><span class="dashicons dashicons-yes" style="display:none;"></span><span class="dashicons dashicons-no" style="display:none;"></span></td>`,
-        );
-        row.append(cell);
+				// Column 2: consent-installed status icons.
+				const statusCell   = document.createElement( 'td' );
+				statusCell.className = 'align-centre';
+				statusCell.innerHTML = '<span class="dashicons dashicons-yes" style="display:none;"></span><span class="dashicons dashicons-no" style="display:none;"></span>';
+				row.appendChild( statusCell );
 
-        cell = $(`<td></td>`);
-        var button = $(`<button class="button install-consent" disabled data-form-id="${meta.forms[key].formId}">${meta.labels.installConsentButton}</button>`);
-        button.click(function (event) {
-          event.preventDefault();
-          installCF7Consent(parseInt($(this).data('form-id')));
-        });
-        cell.append(button);
+				// Column 3: install button.
+				const actionCell  = document.createElement( 'td' );
+				const installBtn  = document.createElement( 'button' );
+				installBtn.type          = 'button';
+				installBtn.className     = 'button install-consent';
+				installBtn.disabled      = true;
+				installBtn.dataset.formId = String( form.formId );
+				installBtn.textContent   = labels.installConsentButton;
+				actionCell.appendChild( installBtn );
+				row.appendChild( actionCell );
 
-        row.append(cell);
+				this.tbody.appendChild( row );
+				++formCount;
+			}
 
-        tableBody.append(row);
+			if ( formCount === 0 ) {
+				const noForms = this.container.querySelector( '.mwg-cf7-no-forms' );
+				if ( noForms ) {
+					noForms.style.display = '';
+				}
+			}
+		}
 
-        ++formCount;
-      }
+		/**
+		 * Bind a delegated click listener on tbody for all .install-consent buttons.
+		 *
+		 * Event delegation handles any buttons that may be added or re-enabled later
+		 * without requiring re-binding.
+		 *
+		 * @since 2.0.0
+		 * @return {void}
+		 */
+		bindEvents() {
+			this.tbody.addEventListener( 'click', ( e ) => {
+				const btn = e.target.closest( '.install-consent' );
+				if ( ! btn || btn.disabled ) {
+					return;
+				}
+				e.preventDefault();
+				this.installConsent( parseInt( btn.dataset.formId, 10 ) );
+			} );
+		}
 
-      if (formCount == 0) {
-        $('.mwg-cf7-no-forms').slideDown();
-      } else {
-        // container.slideDown();
-        container.fadeIn();
-      }
+		/**
+		 * Update status icons and button states for each form in the map.
+		 *
+		 * @since 2.0.0
+		 * @param {Object} formsData Map of form-name → { isConsentInstalled } from the server.
+		 * @return {void}
+		 */
+		refreshTable( formsData ) {
+			if ( ! formsData ) {
+				return;
+			}
 
-      refreshCF7FormsTable(meta.forms);
+			for ( const key in formsData ) {
+				if ( ! Object.prototype.hasOwnProperty.call( formsData, key ) ) {
+					continue;
+				}
 
-      if (spinnerOffTimeout) {
-        clearTimeout(spinnerOffTimeout);
-      }
+				const row = this.tbody.querySelector( `tr[data-form-name="${ key }"]` );
+				if ( ! row ) {
+					continue;
+				}
 
-      spinnerOffTimeout = setTimeout(function () {
-        $(container).find('.pp-spinner').fadeOut();
-      }, 250);
-    });
+				const iconYes    = row.querySelector( '.dashicons-yes' );
+				const iconNo     = row.querySelector( '.dashicons-no' );
+				const installBtn = row.querySelector( '.install-consent' );
 
-    // function cancelSpinner() {
-    // 	spinner.fadeOut();
-    // 		$('[data-mwg-cf7-forms]').each(function(index, el) {
+				if ( formsData[ key ].isConsentInstalled ) {
+					if ( iconNo )     { iconNo.style.display     = 'none'; }
+					if ( iconYes )    { iconYes.style.display    = ''; }
+					if ( installBtn ) { installBtn.disabled      = true; }
+				} else {
+					if ( iconYes )    { iconYes.style.display    = 'none'; }
+					if ( iconNo )     { iconNo.style.display     = ''; }
+					if ( installBtn ) { installBtn.disabled      = false; }
+				}
+			}
+		}
 
-    // }
+		/**
+		 * Send the install-consent AJAX request for the given form.
+		 *
+		 * Disables the button before the request and re-enables it on failure so the
+		 * user can retry. On success the row's status is refreshed via refreshTable().
+		 *
+		 * @since 2.0.0
+		 * @param {number} formId The CF7 form ID to install consent for.
+		 * @return {void}
+		 */
+		async installConsent( formId ) {
+			const installBtn = this.tbody.querySelector( `button[data-form-id="${ formId }"]` );
 
-    function refreshCF7FormsTable(formsData) {
-      if (formsData) {
-        $('[data-mwg-cf7-forms]').each(function (index, el) {
-          var table = $(this).find('table');
+			if ( installBtn ) {
+				installBtn.disabled = true;
+			}
 
-          for (const key in formsData) {
-            var row = $(table).find(`tr[data-form-name="${key}"]`);
-            console.log(`Update: ${key}`);
-            if (formsData[key].isConsentInstalled) {
-              row.find('.dashicons-no').hide();
-              row.find('.dashicons-yes').fadeIn();
-              row.find(`.install-consent`).prop('disabled', true);
-              // row.find(`.install-consent`).fadeOut();
-            } else {
-              // row.find(`.install-consent`).fadeIn();
-              row.find(`.install-consent`).prop('disabled', false);
-              row.find('.dashicons-yes').hide();
-              row.find('.dashicons-no').fadeIn();
-            }
-          }
-        });
-      }
-    }
+			this.showSpinner();
 
-    function installCF7Consent(formId) {
-      const installButton = $(`button[data-form-id="${formId}"`);
-      const container = installButton.closest('[data-mwg-cf7-forms]');
-      const meta = container.data('mwg-cf7-forms');
-      const spinner = $(container).find('.pp-spinner');
+			const formData = new FormData();
+			formData.append( 'action', this.meta.action );
+			formData.append( 'nonce', this.meta.nonce );
+			formData.append( 'formId', String( formId ) );
 
-      console.log(`Install for form ${formId}`);
+			try {
+				const response = await fetch( ajaxurl, { // eslint-disable-line no-undef
+					method: 'POST',
+					body: formData,
+				} );
 
-      spinner.fadeIn();
+				const data = await response.json();
+				this.refreshTable( data.forms );
+			} catch ( error ) {
+				console.error( 'Mini GDPR: CF7 install consent request failed.', error );
+				if ( installBtn ) {
+					installBtn.disabled = false;
+				}
+			} finally {
+				this.hideSpinner();
+			}
+		}
 
-      var request = {
-        action: meta.action,
-        nonce: meta.nonce,
-        formId: formId,
-      };
+		/**
+		 * Show the container's loading spinner.
+		 *
+		 * @since 2.0.0
+		 * @return {void}
+		 */
+		showSpinner() {
+			if ( this.spinner ) {
+				this.spinner.style.display = '';
+			}
+		}
 
-      console.log('Install');
-      console.log(request);
+		/**
+		 * Hide the container's loading spinner immediately.
+		 *
+		 * @since 2.0.0
+		 * @return {void}
+		 */
+		hideSpinner() {
+			if ( this.spinner ) {
+				this.spinner.style.display = 'none';
+			}
+		}
 
-      installButton.prop('disabled', true);
+		/**
+		 * Hide the initial loading spinner after a 250 ms delay.
+		 *
+		 * Cancels any pending timer before scheduling a new one so multiple
+		 * containers do not interfere with each other.
+		 *
+		 * @since 2.0.0
+		 * @return {void}
+		 */
+		hideSpinnerDelayed() {
+			if ( this._initTimeout !== null ) {
+				clearTimeout( this._initTimeout );
+			}
+			this._initTimeout = setTimeout( () => {
+				this.hideSpinner();
+				this._initTimeout = null;
+			}, 250 );
+		}
+	}
 
-      $.post(ajaxurl, request)
-        .done(function (response) {
-          console.log(response);
-
-          refreshCF7FormsTable(response.forms);
-        })
-        .always(function (response) {
-          console.log('finished');
-          // $(`button[data-form-id="${response.formId}"`).prop('disabled', false);
-          spinner.fadeOut();
-        });
-    }
-  });
-})(jQuery);
+	document.addEventListener( 'DOMContentLoaded', () => {
+		document.querySelectorAll( '[data-mwg-cf7-forms]' ).forEach( ( container ) => {
+			new MiniGdprCf7( container ).init();
+		} );
+	} );
+} )();

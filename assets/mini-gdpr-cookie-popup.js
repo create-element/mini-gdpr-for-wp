@@ -23,9 +23,11 @@
 		 * @since 2.0.0
 		 */
 		constructor( data ) {
-			this.data        = data;
-			this.data.blkon  = data.blkon  === '1';
-			this.data.always = data.always === '1';
+			this.data            = data;
+			this.data.blkon      = data.blkon  === '1';
+			this.data.always     = data.always === '1';
+			this._accepting      = false;       // In-flight guard: prevents accept double-fire.
+			this._overlayKeydown = null;        // Stored Escape key handler for the overlay.
 		}
 
 		/**
@@ -83,14 +85,23 @@
 		/**
 		 * Store the user's consent and inject previously blocked scripts.
 		 *
+		 * Guarded against double-fire: a second call while the first is still running
+		 * (e.g. from rapid button taps) is silently ignored.
+		 *
 		 * @since 2.0.0
 		 * @return {void}
 		 */
 		consentToScripts() {
+			if ( this._accepting ) {
+				return;
+			}
+
 			const popup = document.getElementById( 'mgwcsCntr' );
 			if ( ! popup ) {
 				return;
 			}
+
+			this._accepting = true;
 
 			if ( typeof localStorage !== 'undefined' ) {
 				localStorage.setItem( this.data.cn, new Date() );
@@ -146,6 +157,9 @@
 		/**
 		 * Show the "more info" overlay listing all blocked trackers.
 		 *
+		 * Binds a document-level Escape key listener that is stored on the instance
+		 * so it can be precisely removed when the overlay is closed.
+		 *
 		 * @since 2.0.0
 		 * @return {void}
 		 */
@@ -163,6 +177,14 @@
 					this.closeBlockedScripts();
 				}
 			} );
+
+			// Escape key closes the overlay; listener is cleaned up on close.
+			this._overlayKeydown = ( e ) => {
+				if ( e.key === 'Escape' ) {
+					this.closeBlockedScripts();
+				}
+			};
+			document.addEventListener( 'keydown', this._overlayKeydown );
 
 			const panel = document.createElement( 'div' );
 			panel.className = 'mgw-nfo';
@@ -208,10 +230,18 @@
 		/**
 		 * Remove the blocked-scripts overlay from the DOM.
 		 *
+		 * Also removes the document-level Escape key listener registered in
+		 * showBlockedScripts() to prevent memory leaks and ghost handlers.
+		 *
 		 * @since 2.0.0
 		 * @return {void}
 		 */
 		closeBlockedScripts() {
+			if ( this._overlayKeydown ) {
+				document.removeEventListener( 'keydown', this._overlayKeydown );
+				this._overlayKeydown = null;
+			}
+
 			const overlay = document.getElementById( 'mgwcsOvly' );
 			if ( overlay ) {
 				overlay.remove();

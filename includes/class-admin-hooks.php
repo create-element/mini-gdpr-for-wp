@@ -51,7 +51,7 @@ class Admin_Hooks extends Component {
 			wp_enqueue_script( $this->name, PP_MWG_ASSETS_URL . 'mini-gdpr-admin.js', [], $this->version, false );
 
 			if ( is_cf7_installed() ) {
-				wp_enqueue_script( $this->name . '-cf7', PP_MWG_ASSETS_URL . 'mini-gdpr-admin-cf7.js', [ 'jquery' ], $this->version, false );
+				wp_enqueue_script( $this->name . '-cf7', PP_MWG_ASSETS_URL . 'mini-gdpr-admin-cf7.js', [], $this->version, false );
 			}
 		}
 	}
