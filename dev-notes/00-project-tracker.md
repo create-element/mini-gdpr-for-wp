@@ -1,9 +1,9 @@
 # Mini WP GDPR - Project Tracker
 
 **Version:** 2.0.0 (Refactor)  
-**Last Updated:** 16 February 2026  
-**Current Phase:** Milestone 1 (Foundation & Planning)  
-**Overall Progress:** 5%
+**Last Updated:** 17 February 2026  
+**Current Phase:** Milestone 3 (Remove pp-core.php Dependency)  
+**Overall Progress:** 10%
 
 ---
 
@@ -36,16 +36,26 @@
 
 ## Active TODO Items
 
-### In Progress (Milestone 2)
+### Milestone 2 Complete (except docs)
 - [x] Create phpcs.xml configuration file
 - [x] Create .editorconfig for consistent coding style
 - [x] Create composer.json with dev dependencies (PHPCS only, no PHPUnit)
 - [x] Run initial PHPCS scan and create baseline (exclude pp-core.php) ✅
 - [x] Create shell scripts for code quality checks (check.sh, fix.sh)
 - [x] Remove PHPUnit from project
-
-### Next Up (Milestone 2)
 - [ ] Document development workflow
+
+### In Progress (Milestone 3 — Remove pp-core.php)
+- [x] Create native `Component` base class (`includes/class-component.php`) — tested ✅
+- [x] Create native `Settings_Core` class (`includes/class-settings-core.php`) — loaded ✅
+- [x] Create admin UI helper functions (`includes/functions-admin-ui.php`) — tested ✅
+- [x] Updated `mini-wp-gdpr.php` to load new files in place of pp-core.php
+
+### Next Up (Milestone 3)
+- [ ] Archive pp-core.php and pp-assets/ to dev-notes/archive/
+- [ ] Update all classes extending Component to use new base class
+- [ ] Complete settings page integration using WordPress Settings API
+- [ ] Run PHPCS fix pass on legacy files (functions-private.php, class-plugin.php)
 
 ---
 
@@ -131,7 +141,7 @@
 
 ### Milestone 3: Remove pp-core.php Dependency
 **Target:** Week 3-4 (Mar 3-16, 2026)  
-**Status:** Not Started  
+**Status:** 🟡 In Progress (20% — base classes created, integration remaining)  
 **Priority:** Critical
 
 #### Objectives
@@ -161,15 +171,15 @@
 - [ ] Test settings save/load functionality
 
 ##### Phase 3.3: Base Component Rewrite
-- [ ] Review Component class functionality
-- [ ] Create minimal base class or remove if unnecessary
+- [x] Review Component class functionality
+- [x] Create minimal base class or remove if unnecessary
 - [ ] Update all classes extending Component
 - [ ] Implement lazy loading where beneficial
 - [ ] Test class initialization and dependencies
 
 ##### Phase 3.4: Utility Function Migration
-- [ ] Extract utility functions from pp-core.php
-- [ ] Move to functions-private.php or create new helpers file
+- [x] Extract utility functions from pp-core.php
+- [x] Move to functions-private.php or create new helpers file
 - [ ] Rename functions with plugin prefix
 - [ ] Update all function calls throughout codebase
 - [ ] Test functionality
@@ -729,7 +739,7 @@
 |-----------|------------------|--------|----------|
 | 1. Foundation & Planning | Feb 23, 2026 | 🟡 In Progress | 20% |
 | 2. Code Standards & Quality Tools (PHPCS) | Mar 2, 2026 | 🟡 In Progress | 90% |
-| 3. Remove pp-core.php | Mar 16, 2026 | ⚪ Not Started | 0% |
+| 3. Remove pp-core.php | Mar 16, 2026 | 🟡 In Progress | 20% |
 | 4. JavaScript Modernization | Mar 23, 2026 | ⚪ Not Started | 0% |
 | 5. Enhanced Consent Management | Apr 6, 2026 | ⚪ Not Started | 0% |
 | 6. Advanced Tracker Delay-Loading | Apr 20, 2026 | ⚪ Not Started | 0% |
@@ -758,6 +768,7 @@
 | 2026-02-16 | Removed PHPUnit from composer.json and vendor | Plugin too simple for unit tests — PHPCS + PHPStan + manual testing is sufficient |
 | 2026-02-16 | PHPStan deferred from M2 to M8 | Run PHPStan after bulk refactoring (M3-M6) is complete; no point chasing static analysis errors on code being rewritten. PHPCS used throughout. |
 | 2026-02-16 | M2 renamed "Code Standards & Quality Tools (PHPCS)" | Reflects PHPCS-only focus; PHPStan moved to M8 |
+| 2026-02-17 | M3 In Progress: Component, Settings_Core, functions-admin-ui.php created | Native classes replace pp-core.php foundation; all pass PHPCS; plugin loads cleanly |
 
 ---
 
