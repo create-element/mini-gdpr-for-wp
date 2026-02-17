@@ -52,7 +52,7 @@
 - [x] Updated `mini-wp-gdpr.php` to load new files in place of pp-core.php
 
 ### Next Up (Milestone 3)
-- [ ] Archive pp-core.php and pp-assets/ to dev-notes/archive/
+- [x] Archive pp-core.php and pp-assets/ to dev-notes/archive/ ✅ (2026-02-17)
 - [x] Update all classes extending Component to use new base class ✅
 - [ ] Complete settings page integration using WordPress Settings API
 - [x] Run PHPCS fix pass on legacy files (functions-private.php, class-plugin.php) ✅
@@ -771,8 +771,9 @@
 | 2026-02-17 | M3 In Progress: Component, Settings_Core, functions-admin-ui.php created | Native classes replace pp-core.php foundation; all pass PHPCS; plugin loads cleanly |
 | 2026-02-17 | M3 PHPCS pass on functions-private.php and class-plugin.php | Global var prefixes, hook name prefixes, wp_unslash(), SESE phpcs:disable blocks; plugin active and loads cleanly |
 | 2026-02-17 | M3 PHPCS pass on all Component-extending classes | class-admin-hooks, class-public-hooks, class-user-controller, class-cf7-helper, class-script-blocker converted to WPCS style with full PHPDoc; removed unused properties, proper escaping |
+| 2026-02-17 | M3 Archive pp-core.php and pp-assets/ | Moved to dev-notes/archive/ via git mv; added assets/mwg-admin.css as plugin-native admin CSS replacing pp-assets/pp-admin.css; updated pp_enqueue_admin_assets() reference; removed stale phpcs.xml exclusions |
 
 ---
 
-**Last Updated:** 17 February 2026 (07:52)  
+**Last Updated:** 17 February 2026 (08:00)  
 **Next Review:** 23 February 2026
