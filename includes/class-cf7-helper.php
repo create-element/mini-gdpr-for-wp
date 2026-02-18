@@ -25,6 +25,7 @@ class CF7_Helper extends Component {
 	/**
 	 * Constructor.
 	 *
+	 * @since 1.0.0
 	 * @param string $name    Plugin slug.
 	 * @param string $version Plugin version.
 	 */

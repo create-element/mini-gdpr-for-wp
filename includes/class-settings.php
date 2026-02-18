@@ -34,6 +34,7 @@ class Settings extends Settings_Core {
 	 * hook registration so this class stays testable and free of side effects
 	 * on instantiation.
 	 *
+	 * @since 1.0.0
 	 * @param string $name    Plugin slug.
 	 * @param string $version Plugin version.
 	 */

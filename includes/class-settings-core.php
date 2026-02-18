@@ -57,6 +57,7 @@ abstract class Settings_Core extends Component {
 	 * unique per plugin. Matches the strings used by pp-core.php to
 	 * avoid invalidating any in-flight form sessions during the upgrade.
 	 *
+	 * @since 2.0.0
 	 * @param string $name    Plugin slug.
 	 * @param string $version Plugin version.
 	 */

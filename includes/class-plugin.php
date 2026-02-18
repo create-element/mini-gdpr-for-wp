@@ -76,6 +76,7 @@ class Plugin extends Component {
 	/**
 	 * Constructor.
 	 *
+	 * @since 1.0.0
 	 * @param string $name    Plugin slug / text domain.
 	 * @param string $version Plugin version string.
 	 */

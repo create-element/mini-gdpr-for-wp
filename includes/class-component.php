@@ -38,6 +38,7 @@ class Component {
 	/**
 	 * Constructor.
 	 *
+	 * @since 2.0.0
 	 * @param string $name    Plugin slug.
 	 * @param string $version Plugin version.
 	 */
