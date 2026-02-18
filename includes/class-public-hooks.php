@@ -55,41 +55,6 @@ class Public_Hooks extends Component {
 	}
 
 	/**
-	 * Rewrite the Google Analytics script tag to inject the gtag.js config inline.
-	 *
-	 * Hooked to 'script_loader_tag' at priority 90. Rewrites the GA placeholder
-	 * script tag into a full gtag.js loader + config block.
-	 *
-	 * @param string $tag    The full <script> tag HTML to be printed.
-	 * @param string $handle The registered script handle.
-	 * @param string $src    The script URL.
-	 * @return string Potentially rewritten script tag HTML.
-	 */
-	public function adjust_injected_tracker_tags( $tag, $handle, $src ) {
-		if ( GA_SCRIPT_HANDLE === $handle && ! empty( $src ) && ! empty( $tag ) ) {
-			$settings     = get_settings_controller();
-			$tracker_code = $settings->get_string( OPT_GA_TRACKING_CODE );
-
-			$tag = sprintf(
-				'<script src="https://www.googletagmanager.com/gtag/js?id=%s" id="%s-js" async></script>
-<script id="%s-js-after">
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag("js", new Date());
-gtag("config", "%s");
-</script>
-',
-				$tracker_code,
-				$handle,
-				$handle,
-				$tracker_code
-			);
-		}
-
-		return $tag;
-	}
-
-	/**
 	 * Output the GDPR consent checkbox inside the WooCommerce registration form.
 	 *
 	 * Hooked to 'woocommerce_register_form' at priority 30.

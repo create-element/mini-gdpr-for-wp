@@ -81,15 +81,34 @@ local data structures — no network requests to Meta.
 
 ### Google Analytics
 
-**Status:** ✅ Implemented (Milestone 3/5)
+**Status:** ✅ Implemented (Milestone 6, Phase 6.2)
 
-Google Analytics uses a different pattern because `gtag.js` can be enqueued as a
-standard external script (blockable via the Script_Blocker `src` field pattern). The
-delay-loading is handled by the standard `insertBlockedScripts()` mechanism.
+Google Analytics follows the same **stub + deferred load** pattern as Facebook Pixel
+and Microsoft Clarity, ensuring `gtag.js` never loads before consent regardless of
+whether the "block scripts until consent" option is enabled.
 
-**Google Consent Mode v2:** When enabled, a `gtag('consent', 'default', {...denied})`
-signal is output in `<head>` at priority 1. When the user accepts, the popup calls
-`gtag('consent', 'update', {...granted})` before `insertBlockedScripts()` loads `gtag.js`.
+**Stub (wp_head, priority 1):** Initialises `window.dataLayer` and defines the `gtag()`
+function unconditionally when GA is enabled. When Consent Mode v2 is also enabled,
+adds `gtag('consent', 'default', {...denied})` to the stub.
+
+**Config stub (mwg_inject_tracker_):** An empty-src registered inline script that queues
+`gtag('js', new Date())` and `gtag('config', 'G-XXXX')` in `dataLayer`. These calls
+are stored locally — `gtag.js` is not loaded.
+
+**Deferred loader:** `loadGoogleAnalytics()` dynamically appends:
+```html
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXX"></script>
+```
+When `gtag.js` loads, it processes the full `dataLayer` queue in order and initialises
+GA tracking. With Consent Mode v2 enabled, the consent update signal (fired in
+`consentToScripts()` before `loadGoogleAnalytics()`) ensures tracking starts in the
+fully-granted state.
+
+**Replay:** `gtag.js` processes `window.dataLayer` on load, replaying all queued calls
+including `consent,default`, `js`, `config`, and `consent,update,{granted}`.
+
+**GDPR compliance:** `gtag.js` never loads before consent. The stubs create only local
+`dataLayer` entries — no network requests to Google until the user explicitly accepts.
 
 **See:** `trackers/tracker-google-analytics.php`, `dev-notes/consent-api-research.md`
 
@@ -105,7 +124,14 @@ loaded before consent — a GDPR violation.
 
 **New (v2.0) behaviour:**
 
-**Stub:** Creates `window.clarity` as a queue-backed function:
+**Preconnect hint (wp_head, priority 1):** When Clarity is enabled, a
+`<link rel="preconnect" href="https://www.clarity.ms">` hint is output in `<head>`.
+This pre-establishes the DNS/TCP/TLS connection before the user consents, reducing
+latency when `loadMicrosoftClarity()` fires after the user accepts. The preconnect
+itself transmits no user data to Microsoft.
+
+**Stub (mwg_inject_tracker_):** An empty-src registered inline script that creates
+`window.clarity` as a queue-backed function:
 ```js
 window.clarity = window.clarity || function() {
     (window.clarity.q = window.clarity.q || []).push(arguments);
@@ -117,11 +143,20 @@ window.clarity = window.clarity || function() {
 <script async src="https://www.clarity.ms/tag/<ID>"></script>
 ```
 
-**Replay:** The Clarity SDK discovers `window.clarity.q` on load and processes the
+**Replay:** The Clarity SDK discovers `window.clarity.q` on load and processes any
 queued calls.
 
+**No consent API:** Unlike Google Analytics (Consent Mode v2) and Facebook Pixel
+(`fbq('consent','grant')`), Microsoft Clarity does not have a consent API. The
+GDPR-compliant approach is simply not to load Clarity until consent is given — which
+is exactly what this implementation enforces. No pre-consent signals need to be queued.
+
+**ID validation:** The PHP tracker validates the Clarity project ID format
+(`/^[a-zA-Z0-9_-]{1,32}$/`) and logs errors for missing or malformed IDs, matching
+the validation pattern used by the Google Analytics tracker.
+
 **GDPR compliance:** `clarity.ms` never loads before consent. The stub creates only
-a local queue — no network requests to Microsoft.
+a local queue — no network requests to Microsoft until the user explicitly accepts.
 
 ---
 
@@ -130,7 +165,12 @@ a local queue — no network requests to Microsoft.
 ```
 Page load
   │
-  ├─ PHP outputs tracker stubs (fbq queue, clarity queue) in <head>
+  ├─ PHP outputs preconnect hints + tracker stubs in <head>
+  │   ├─ <link rel="preconnect" href="https://www.googletagmanager.com">
+  │   ├─ <link rel="preconnect" href="https://www.clarity.ms">
+  │   ├─ dataLayer + gtag() stub + consent.default=denied (GA, when Consent Mode enabled)
+  │   ├─ fbq stub + fbq('consent','revoke') + fbq('init') + fbq('track','PageView')
+  │   └─ window.clarity queue stub
   │   └─ No external requests. Queued API calls stored locally.
   │
   ├─ Script_Blocker: detects stub patterns, passes IDs to mgwcsData
@@ -140,8 +180,9 @@ Page load
         ├─ User ACCEPTS
         │   ├─ Store consent timestamp (localStorage / cookie)
         │   ├─ Google Consent Mode update (gtag consent granted)
-        │   ├─ insertBlockedScripts() → loads can-defer scripts (e.g. gtag.js)
-        │   ├─ loadFacebookPixel() → loads fbevents.js (replays fbq.queue)
+        │   ├─ insertBlockedScripts() → loads can-defer scripts
+        │   ├─ loadGoogleAnalytics() → loads gtag.js (replays dataLayer queue)
+        │   ├─ loadFacebookPixel() → fbq('consent','grant') + loads fbevents.js
         │   └─ loadMicrosoftClarity() → loads clarity.ms/tag/<ID> (replays clarity.q)
         │
         └─ User REJECTS

@@ -287,6 +287,18 @@ class Script_Blocker extends Component {
 				}
 			}
 
+			// Google Analytics delay-loading: pass tracking code to JS so the consent
+			// popup can load gtag.js dynamically after the user accepts. Only included
+			// when GA is enabled, a valid tracking code is configured, and the current
+			// user is not excluded from tracking by their role.
+			if ( $settings->get_bool( OPT_IS_GA_TRACKING_ENABLED ) && ! $this->are_trackers_blocked_by_role ) {
+				$raw_ga_code = $settings->get_string( OPT_GA_TRACKING_CODE );
+
+				if ( ! empty( $raw_ga_code ) && preg_match( '/^(G|UA|YT|MO)-[a-zA-Z0-9-]+$/', $raw_ga_code ) ) {
+					$localize_data['gaId'] = esc_js( sanitize_text_field( $raw_ga_code ) );
+				}
+			}
+
 			// Microsoft Clarity delay-loading: pass Clarity ID to JS so the consent
 			// popup can load clarity.ms/tag/<ID> dynamically after the user accepts.
 			// Only included when Clarity is enabled, an ID is configured, and the

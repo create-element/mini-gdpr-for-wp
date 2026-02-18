@@ -27,6 +27,32 @@ namespace Mini_Wp_Gdpr;
 defined( 'ABSPATH' ) || die();
 
 /**
+ * Output a preconnect hint for clarity.ms in <head> at the earliest priority.
+ *
+ * Allows the browser to pre-establish a DNS/TCP/TLS connection to clarity.ms before
+ * the user consents, reducing latency when loadMicrosoftClarity() injects the SDK.
+ *
+ * The preconnect itself transmits no user data — it only resolves DNS and opens a
+ * TCP/TLS socket. The actual clarity.ms request (and all data transmission) still
+ * only happens after explicit user consent via loadMicrosoftClarity().
+ *
+ * @since 2.0.0
+ * @return void
+ */
+add_action(
+	'wp_head',
+	function () {
+		$settings   = get_settings_controller();
+		$is_enabled = $settings->get_bool( OPT_IS_MS_CLARITY_TRACKING_ENABLED );
+
+		if ( $is_enabled ) {
+			echo "<link rel=\"preconnect\" href=\"https://www.clarity.ms\">\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static string with no user input.
+		}
+	},
+	1
+);
+
+/**
  * Register Microsoft Clarity as a blockable script handle.
  *
  * @since 2.0.0
@@ -90,7 +116,11 @@ add_action(
 		if ( $is_enabled ) {
 			$raw_id = $settings->get_string( OPT_MS_CLARITY_ID );
 
-			if ( ! empty( $raw_id ) ) {
+			if ( empty( $raw_id ) ) {
+				error_log( __FUNCTION__ . ' Missing Microsoft Clarity project ID' ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+			} elseif ( ! preg_match( '/^[a-zA-Z0-9_-]{1,32}$/', $raw_id ) ) {
+				error_log( __FUNCTION__ . ' Invalid Microsoft Clarity project ID' ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+			} else {
 				$tracker_id         = sanitize_text_field( $raw_id );
 				$should_output_stub = ! empty( $tracker_id );
 			}

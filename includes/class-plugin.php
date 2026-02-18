@@ -131,7 +131,6 @@ class Plugin extends Component {
 
 			if ( ! is_admin() ) {
 				add_action( 'wp_enqueue_scripts', array( $this->public_hooks, 'inject_configured_trackers' ) );
-				add_filter( 'script_loader_tag', array( $this->public_hooks, 'adjust_injected_tracker_tags' ), 90, 3 );
 
 				$script_blocker = $this->get_script_blocker();
 				if ( $this->settings->get_bool( OPT_IS_COOKIE_CONSENT_POPUP_ENABLED ) ) {

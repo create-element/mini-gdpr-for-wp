@@ -355,10 +355,19 @@
 		/**
 		 * Dynamically load Microsoft Clarity (clarity.ms/tag/<ID>) after the user has consented.
 		 *
-		 * The clarity stub (window.clarity queue) is already present on the page (output by
-		 * the PHP tracker stub on every page load). Loading the Clarity script here causes
-		 * the Clarity SDK to process the queued calls (window.clarity.q), completing
-		 * initialisation without losing any events.
+		 * The clarity stub (window.clarity queue function) is already present on the page
+		 * (output by the PHP tracker stub on every page load). Loading the Clarity SDK here
+		 * causes it to discover window.clarity.q and replay any queued calls, completing
+		 * initialisation without losing any events that were queued before consent.
+		 *
+		 * Microsoft Clarity does not have a consent API comparable to Google Consent Mode v2
+		 * or Facebook Pixel's fbq('consent','grant'). The GDPR-compliant approach for Clarity
+		 * is simply to block the clarity.ms SDK from loading until consent is given — which
+		 * is exactly what this method enforces. No pre-consent signals need to be queued.
+		 *
+		 * A <link rel="preconnect"> hint for clarity.ms is output in wp_head (priority 1)
+		 * by the PHP tracker file, pre-establishing the TCP/TLS connection so that the
+		 * clarity.ms request triggered here resolves faster.
 		 *
 		 * This method is a no-op when mgwcsData.clarityId is absent (Clarity not configured,
 		 * Clarity disabled in settings, or current user excluded by role).
