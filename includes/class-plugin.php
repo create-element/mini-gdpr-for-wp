@@ -376,6 +376,10 @@ class Plugin extends Component {
 			die();
 		}
 
+		if ( ! pp_is_within_ajax_rate_limit( ACCEPT_GDPR_ACTION, RATE_LIMIT_CONSENT_MAX, RATE_LIMIT_CONSENT_WINDOW ) ) {
+			wp_send_json( null, 429 );
+		}
+
 		if ( empty( ( $user_id = get_current_user_id() ) ) ) { // phpcs:ignore Generic.CodeAnalysis.AssignmentInCondition.Found, Squiz.PHP.DisallowMultipleAssignments.FoundInControlStructure -- Intentional SESE guard.
 			error_log( __FUNCTION__ . ' : user_id is invalid' ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			die();
@@ -430,6 +434,10 @@ class Plugin extends Component {
 
 		if ( ! is_user_logged_in() ) {
 			die();
+		}
+
+		if ( ! pp_is_within_ajax_rate_limit( REJECT_GDPR_ACTION, RATE_LIMIT_CONSENT_MAX, RATE_LIMIT_CONSENT_WINDOW ) ) {
+			wp_send_json( null, 429 );
 		}
 
 		$response      = null;
@@ -509,6 +517,10 @@ class Plugin extends Component {
 	 */
 	public function reset_all_privacy_consents() {
 		pp_die_if_bad_nonce_or_cap( RESET_PRIVACY_POLICY_CONSENTS, 'administrator' );
+
+		if ( ! pp_is_within_ajax_rate_limit( RESET_PRIVACY_POLICY_CONSENTS, RATE_LIMIT_RESET_MAX, RATE_LIMIT_RESET_WINDOW ) ) {
+			wp_send_json( null, 429 );
+		}
 
 		$response      = null;
 		$response_code = 400;

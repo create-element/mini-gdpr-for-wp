@@ -76,6 +76,34 @@ function pp_die_if_bad_nonce_or_cap( string $action, string $required_cap, strin
 	}
 }
 
+/**
+ * Check whether the current request is within the AJAX rate limit for an action.
+ *
+ * Counts per-user requests using a WordPress transient. Returns true (proceed)
+ * when the request count is below $max_requests, and false (block) once the
+ * limit is reached. Increments the counter only on allowed requests so the
+ * window does not reset on blocked calls.
+ *
+ * Transient keys are scoped per user ID and action key, so limits are
+ * independent across users and across different AJAX actions.
+ *
+ * @param string $action_key     Short identifier for the action (alphanumeric + hyphens).
+ * @param int    $max_requests   Maximum requests allowed within the window.
+ * @param int    $window_seconds Duration of the rate-limit window in seconds.
+ * @return bool True when within limit (OK to proceed), false when rate-limited.
+ */
+function pp_is_within_ajax_rate_limit( string $action_key, int $max_requests, int $window_seconds ): bool {
+	$transient_key = 'mwg_rl_' . get_current_user_id() . '_' . $action_key;
+	$current_count = (int) get_transient( $transient_key );
+	$within_limit  = $current_count < $max_requests;
+
+	if ( $within_limit ) {
+		set_transient( $transient_key, $current_count + 1, $window_seconds );
+	}
+
+	return $within_limit;
+}
+
 // ---------------------------------------------------------------------------
 // Asset enqueueing
 // ---------------------------------------------------------------------------

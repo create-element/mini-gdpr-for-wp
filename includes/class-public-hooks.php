@@ -77,6 +77,7 @@ class Public_Hooks extends Component {
 	 * @return void
 	 */
 	public function inject_into_wc_myaccount_endpoint() {
-		echo mwg_get_mini_accept_terms_form_for_current_user(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted HTML from plugin helper.
+		// mwg_get_mini_accept_terms_form_for_current_user() outputs via include — no return value.
+		mwg_get_mini_accept_terms_form_for_current_user();
 	}
 }

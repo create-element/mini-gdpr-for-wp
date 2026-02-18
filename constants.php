@@ -72,3 +72,14 @@ const EXTERNAL_GA_TRACKER_PLUGINS = [ 'woocommerce-google-analytics-integration/
 const MS_CLARITY_SCRIPT_HANDLE           = 'msft-clarity';
 const OPT_MS_CLARITY_ID                  = 'mwg_msft_clarity_id';
 const OPT_IS_MS_CLARITY_TRACKING_ENABLED = 'mwg_is_msft_clarity_enabled';
+
+// Rate limiting for AJAX endpoints (transient-based, per user).
+// Consent actions (accept / reject) are user-facing and low-risk;
+// a generous window prevents abuse without frustrating legitimate users.
+// The reset-all-consents action is destructive and admin-only; a tight
+// window here limits the blast radius of a misconfigured or compromised
+// admin session.
+const RATE_LIMIT_CONSENT_MAX    = 10;  // Max accept/reject requests per window.
+const RATE_LIMIT_CONSENT_WINDOW = 3600; // Window length: 1 hour (seconds).
+const RATE_LIMIT_RESET_MAX      = 3;   // Max reset-all-consents requests per window.
+const RATE_LIMIT_RESET_WINDOW   = 300; // Window length: 5 minutes (seconds).
