@@ -1,6 +1,6 @@
 # Mini WP GDPR
 
-**Version:** 1.4.3  
+**Version:** 2.0.0  
 **Requires:** WordPress 6.4+  
 **Tested up to:** WordPress 6.9  
 **License:** GPLv2 or later  
@@ -13,28 +13,33 @@ A lightweight and easy-to-use GDPR compliance plugin for WordPress with cookie c
 ## 🚀 Features
 
 ### Cookie Consent Management
-- **Smart Cookie Popup** - Displays a consent popup for visitors before loading tracking scripts
+- **Smart Cookie Popup** - Displays a consent popup with Accept, Reject, and Info buttons
+- **Explicit Rejection** - Users can reject tracking with a dedicated "Reject" button (GDPR requirement)
 - **Script Blocking** - Automatically detects and blocks tracking scripts until user consent
 - **Local Storage** - Stores consent preferences in browser localStorage with configurable duration
+- **Manage Preferences** - Floating 🍪 button lets users change their decision at any time
 - **Respects DNT** - Optionally respect Do Not Track browser settings
 
 ### Tracking Integrations
-- **Google Analytics** - Built-in GA4/Universal Analytics support
-- **Facebook Pixel** - Full Facebook Pixel integration
-- **Microsoft Clarity** - Microsoft Clarity tracking support
-- **Third-Party Scripts** - Detects and blocks common third-party tracking scripts
+- **Google Analytics** - Built-in GA4/Universal Analytics support with delay-loading after consent
+- **Google Consent Mode v2** - Signals consent intent to Google before the GA SDK loads
+- **Facebook Pixel** - Full Facebook Pixel integration with FB Consent API (revoke/grant)
+- **Microsoft Clarity** - Microsoft Clarity tracking with delay-loading after consent
+- **Third-Party Scripts** - Pattern-based detection and blocking of third-party tracking scripts
+- **Custom Trackers** - Register any third-party tracker via the `mwg_register_tracker` filter
 
 ### WordPress Integration
 - **WooCommerce** - Tracks T&C consent on checkout, optional MyAccount integration
 - **Contact Form 7** - Automatically adds GDPR consent checkboxes to CF7 forms
-- **User Tracking** - Records when users accept privacy policy (first & most recent)
-- **Admin Dashboard** - View user consent status in WordPress Users table
+- **User Tracking** - Records when users accept or reject privacy policy
+- **Consent Dashboard** - View accepted/rejected/undecided statistics in admin
 
 ### Developer Features
 - **Extensible Hooks** - Filters and actions for custom tracking scripts
 - **Script Detection** - Pattern-based detection system for blocking scripts
 - **Role-Based Control** - Exclude admin/specific roles from tracking
-- **Modern Codebase** - Namespaced PHP, modern JavaScript patterns
+- **Modern Codebase** - Namespaced PHP, ES6+ JavaScript (no jQuery), Terser-minified assets
+- **Accessible** - ARIA roles, keyboard Tab trapping, focus management in consent popup
 
 ---
 
@@ -115,60 +120,81 @@ Add custom CSS via **Appearance → Customize → Additional CSS**
 
 ### Hooks & Filters
 
-#### Filters
+For the complete hook/filter reference with examples, see [`dev-notes/hooks-and-filters.md`](dev-notes/hooks-and-filters.md).
+
+#### Register a Custom Tracker (v2.0+)
+
+The recommended way to add a third-party tracker:
 
 ```php
-// Modify blockable script handles
-add_filter('mwg_blockable_script_handles', function($handles) {
-    $handles[] = 'my-custom-tracker';
-    return $handles;
-});
-
-// Define custom tracker pattern
-add_filter('mwg_tracker_my-custom-tracker', function() {
-    return [
-        'pattern' => '/example\\.com\\/tracker\\.js/',
-        'field' => 'src',
-        'description' => 'My Custom Tracker',
-        'can-defer' => true
+add_filter( 'mwg_register_tracker', function ( array $trackers ) : array {
+    $trackers['hotjar'] = [
+        'handle'      => 'hotjar-analytics',
+        'description' => 'Hotjar',
+        'sdk_url'     => 'https://static.hotjar.com/c/hotjar-12345.js?sv=6',
+        'pattern'     => '/hotjar-[0-9]+\.js/',
+        'can_defer'   => true,
     ];
-});
+    return $trackers;
+} );
+```
 
-// Disable tracking for specific pages
-add_filter('mwg_is_tracker_enabled', function($enabled, $handle) {
-    if (is_front_page() && $handle === 'mgw-facebook-pixel') {
-        return false; // Disable FB Pixel on homepage
+#### Key Filters
+
+```php
+// Control whether a tracker fires on this request
+add_filter( 'mwg_is_tracker_enabled', function ( bool $enabled, string $handle ) : bool {
+    if ( is_front_page() && 'mgw-facebook-pixel' === $handle ) {
+        return false;
     }
     return $enabled;
-}, 10, 2);
+}, 10, 2 );
 
-// Customize roles excluded from tracking
-add_filter('mwg_dont_track_roles', function($roles) {
+// Exclude extra roles from tracking
+add_filter( 'mwg_dont_track_roles', function ( array $roles ) : array {
     $roles[] = 'editor';
     return $roles;
-});
+} );
+
+// Add CSS classes to the consent popup
+add_filter( 'mwg_consent_box_classes', function ( array $classes ) : array {
+    $classes[] = 'my-theme-popup';
+    return $classes;
+} );
 ```
 
-#### Actions
+#### Key Actions
 
 ```php
-// Inject custom tracker
-add_action('mwg_inject_tracker_my-custom-tracker', function() {
-    wp_enqueue_script('my-tracker', 'https://example.com/tracker.js');
-});
+// React to a logged-in user accepting consent
+add_action( 'mwg_consent_accepted', function ( int $user_id ) {
+    // e.g. log to your own analytics
+} );
 
-// Run code after consent
-add_action('wp_footer', function() {
-    ?>
-    <script>
-    if (localStorage.getItem('<?php echo COOKIE_NAME_BASE; ?>')) {
-        // User has consented
-        console.log('User consented to tracking');
-    }
-    </script>
-    <?php
-});
+// React to a logged-in user rejecting consent
+add_action( 'mwg_consent_rejected', function ( int $user_id ) {
+    // e.g. update CRM
+} );
 ```
+
+#### JavaScript Public API
+
+```js
+// Programmatically reject consent
+window.mgwRejectScripts();
+
+// Re-open the consent popup (e.g. from a footer link)
+window.mgwShowCookiePreferences();
+```
+
+---
+
+## ⬆️ Migrating from v1.x
+
+All existing settings and `wp_options` keys are preserved — no data migration needed. Deactivate, upload v2.0.0, and activate.
+
+For developers with custom hooks or JavaScript integrations, see the full migration guide:
+→ [`dev-notes/migration-guide.md`](dev-notes/migration-guide.md)
 
 ---
 
@@ -178,8 +204,9 @@ add_action('wp_footer', function() {
 
 - PHP 8.0+
 - WordPress 6.4+
+- Node.js 18+ (for JavaScript build only)
 - PHPCS with WPCS installed globally (for development only)
-- No runtime dependencies - plugin is fully self-contained
+- No runtime dependencies — plugin is fully self-contained
 
 ### Setup Development Environment
 
@@ -188,8 +215,11 @@ add_action('wp_footer', function() {
 git clone git@github.com:create-element/mini-gdpr-for-wp.git
 cd mini-gdpr-for-wp
 
-# Install PHPCS globally (one-time setup)
-# See dev-notes/workflows/code-standards.md for installation guide
+# Install JS dev dependencies (Terser for minification)
+npm install
+
+# Build minified JS assets
+node bin/build.js
 
 # Run code standards check
 phpcs
@@ -212,6 +242,8 @@ phpcbf
 # Verify fixes
 phpcs
 ```
+
+Full workflow: [`dev-notes/workflows/development-workflow.md`](dev-notes/workflows/development-workflow.md)
 
 ### Project Structure
 
