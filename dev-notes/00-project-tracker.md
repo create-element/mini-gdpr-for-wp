@@ -1,9 +1,9 @@
 # Mini WP GDPR - Project Tracker
 
 **Version:** 2.0.0 (Refactor)  
-**Last Updated:** 17 February 2026 (14:30)  
-**Current Phase:** Milestone 5 (Enhanced Consent Management)  
-**Overall Progress:** 87%
+**Last Updated:** 18 February 2026 (06:52)  
+**Current Phase:** Milestone 6 (Advanced Tracker Delay-Loading)  
+**Overall Progress:** 90%
 
 ---
 
@@ -357,13 +357,13 @@
 - [x] Test pixel functionality with delayed loading ✅ (2026-02-17)
 - [x] Document Facebook Pixel delay-loading approach — dev-notes/tracker-delay-loading.md
 
-##### Phase 6.2: Google Analytics Enhancement
-- [ ] Review current GA implementation
-- [ ] Implement gtag.js delay-loading
-- [ ] Queue analytics events before consent
-- [ ] Optimize gtag.js loading strategy
-- [ ] Test with GA4 and Universal Analytics
-- [ ] Ensure accurate event tracking
+##### Phase 6.2: Google Analytics Enhancement ✅ Complete (2026-02-18)
+- [x] Review current GA implementation
+- [x] Implement gtag.js delay-loading — loadGoogleAnalytics() dynamically injects gtag.js after consent
+- [x] Queue analytics events before consent — dataLayer + gtag stub in <head>; gtag('js')+gtag('config') in inline script; GA Consent Mode default=denied
+- [x] Optimize gtag.js loading strategy — preconnect hint added; JS-driven injection after consent; no blocking
+- [x] Test with GA4 and Universal Analytics — G-260YT895XT confirmed in mgwcsData + page output
+- [x] Ensure accurate event tracking — gtag('consent','update',granted) fires inside loadGoogleAnalytics() for both new consent AND returning visitors
 
 ##### Phase 6.3: Microsoft Clarity Enhancement
 - [ ] Implement delayed Clarity injection
@@ -751,7 +751,7 @@
 | 3. Remove pp-core.php | Mar 16, 2026 | 🟢 Complete | 100% |
 | 4. JavaScript Modernization | Mar 23, 2026 | 🟢 Complete | 100% |
 | 5. Enhanced Consent Management | Apr 6, 2026 | 🟢 Complete | 95% |
-| 6. Advanced Tracker Delay-Loading | Apr 20, 2026 | 🟡 In Progress | 25% |
+| 6. Advanced Tracker Delay-Loading | Apr 20, 2026 | 🟡 In Progress | 50% |
 | 7. Security Audit & Best Practices | Apr 27, 2026 | ⚪ Not Started | 0% |
 | 8. PHPStan, Testing & QA | May 11, 2026 | ⚪ Not Started | 0% |
 | 9. Documentation | May 18, 2026 | ⚪ Not Started | 0% |
@@ -806,9 +806,11 @@
 | 2026-02-17 | M5 Phase 5.4 admin consent stats dashboard — testing sprint passed | consent-stats.php template (live $wpdb COUNT queries for total users, accepted, rejected, undecided); stat card CSS (mwg-stat-cards, mwg-stat--accepted/rejected/undecided) in mwg-admin.css; render_settings_page() includes template below form; PHPCS clean on all 3 files; plugin active, error log clean, front-end 200, no debug.log; Phase 5.4 admin stats task complete ✅ |
 | 2026-02-17 | M6 Phase 6.1 coding sprint — FB Pixel Consent API revoke/grant signals | tracker-facebook-pixel.php: fbq('consent','revoke') added before fbq('init') in stub (defensive GDPR guard — if fbevents.js loads unexpectedly it starts in revoked state); mini-gdpr-cookie-popup.js + .min.js: fbq('consent','grant') added in loadFacebookPixel() before fbevents.js loads; queue order: revoke→grant→init→PageView; pixel initialises in fully-granted mode; PHPCS clean; minified assets rebuilt |
 | 2026-02-17 | M6 Phase 6.1 testing sprint passed — Phase 6.1 Complete | Plugin active, error log clean, front-end 200, no debug.log; fbq('consent','revoke') confirmed in PHP stub (line 122); fbq('consent','grant') confirmed in .min.js loadFacebookPixel(); minified assets verified; all Phase 6.1 tasks marked complete |
+| 2026-02-18 | M6 Phase 6.2 coding sprint — GA delay-loading + consent fix for returning visitors | loadGoogleAnalytics() method added to JS; gtag('consent','update',granted) moved inside loadGoogleAnalytics() so it fires for both new consent and returning visitors; preconnect hint for googletagmanager.com added; PHP stub refactored: stub always outputs when GA enabled, consent.default=denied only when Consent Mode enabled; mwg_inject_tracker_ uses empty-src inline script with esc_js(); tracker pattern changed to outerhtml match; can-defer:false added |
+| 2026-02-18 | M6 Phase 6.2 testing sprint passed — Phase 6.2 Complete | Plugin active, error log clean, front-end 200, wp-admin 200; preconnect hint confirmed in page <head>; GA stub (dataLayer+gtag+consent defaults) confirmed; gtag('js')+gtag('config') config inline confirmed; gaId=G-260YT895XT in mgwcsData; can-defer:false + is-captured:true; loadGoogleAnalytics 3× in .min.js (def + consentToScripts + init); all Phase 6.2 tasks marked complete |
 
 ---
 
-**Last Updated:** 17 February 2026 (15:10)  
+**Last Updated:** 18 February 2026 (06:52)  
 **Next Review:** 23 February 2026  
-**Next Action:** Coding sprint — M6 Phase 6.2: Google Analytics Enhancement (review current GA impl, implement gtag.js delay-loading, queue analytics events before consent, test with GA4)
+**Next Action:** Coding sprint — M6 Phase 6.3: Microsoft Clarity Enhancement (implement delayed Clarity injection, test session recording, ensure heatmap data accuracy)
