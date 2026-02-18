@@ -415,9 +415,9 @@
 #### Sub-Tasks
 
 ##### Phase 7.1: Input Sanitization Audit
-- [ ] Review all $_POST, $_GET, $_REQUEST usage
-- [ ] Ensure proper sanitization functions used
-- [ ] Verify wp_unslash() where needed
+- [x] Review all $_POST, $_GET, $_REQUEST usage ✅ — save_settings() was missing OPT_CONSENT_ACCEPT/REJECT/INFO_BTN_TEXT (Phase 5.1 regression); all 3 now saved with sanitize_text_field(wp_unslash())
+- [x] Ensure proper sanitization functions used ✅ — install_cf7_form() formId: intval→absint(wp_unslash())
+- [x] Verify wp_unslash() where needed ✅ — fixed in install_cf7_form() formId
 - [ ] Check file upload handling (if any)
 - [ ] Test with malicious input
 
@@ -425,7 +425,7 @@
 - [ ] Review all echo/print statements
 - [ ] Ensure proper escaping (esc_html, esc_attr, esc_url)
 - [ ] Check template files for proper escaping
-- [ ] Verify JavaScript variable output
+- [x] Verify JavaScript variable output ✅ — consent message: esc_html()→wp_kses_post() in Script_Blocker; preserves admin-configured HTML tags (<strong>, <em>) injected via innerHTML
 - [ ] Test for XSS vulnerabilities
 
 ##### Phase 7.3: AJAX & Nonce Security
@@ -810,9 +810,10 @@
 | 2026-02-18 | M6 Phase 6.2 testing sprint passed — Phase 6.2 Complete | Plugin active, error log clean, front-end 200, wp-admin 200; preconnect hint confirmed in page <head>; GA stub (dataLayer+gtag+consent defaults) confirmed; gtag('js')+gtag('config') config inline confirmed; gaId=G-260YT895XT in mgwcsData; can-defer:false + is-captured:true; loadGoogleAnalytics 3× in .min.js (def + consentToScripts + init); all Phase 6.2 tasks marked complete |
 | 2026-02-18 | M6 Phase 6.4 — generic tracker registration API — testing sprint passed — Phase 6.4 Complete | new Tracker_Registry class with mwg_register_tracker filter; Script_Blocker passes mgwcsData.trackers to JS; loadCustomTrackers() delay-loads custom SDK URLs after consent; dev-notes/tracker-registration-api.md developer guide; M6 fully complete |
 | 2026-02-18 | M6 Phase 6.3 enhancements — testing sprint passed — Phase 6.3 Complete | Preconnect hint for clarity.ms in wp_head (priority 1, conditional on option); Clarity project ID format validation regex + error_log on empty/invalid ID; loadMicrosoftClarity() docblock updated with no-consent-API rationale and preconnect note; tracker-delay-loading.md Clarity section with data flow diagram; missed Phase 6.2 includes changes committed (remove adjust_injected_tracker_tags, add gaId+clarityId to mgwcsData); plugin active, error log clean, front-end 200, no debug.log; Phase 6.3 tasks marked complete |
+| 2026-02-18 | M7 Phase 7.1/7.2 security audit fixes — testing sprint passed | (1) save_settings(): OPT_CONSENT_ACCEPT/REJECT/INFO_BTN_TEXT were registered and displayed but never saved — Phase 5.1 regression fixed; all 3 now saved with sanitize_text_field(wp_unslash()); (2) Script_Blocker: consent message esc_html()→wp_kses_post() to preserve admin-configured HTML in JS innerHTML; (3) install_cf7_form(): formId intval→absint(wp_unslash()); plugin active, error log clean, front-end 200, no debug.log; Phase 7.1/7.2 partial tasks marked complete |
 
 ---
 
-**Last Updated:** 18 February 2026 (07:31)  
+**Last Updated:** 18 February 2026 (07:52)  
 **Next Review:** 23 February 2026  
-**Next Action:** Coding sprint — M7: Security Audit & Best Practices (Phase 7.1: Input Sanitization Audit)
+**Next Action:** Coding sprint — M7: Security Audit & Best Practices (continue Phase 7.1 file upload check + Phase 7.2 full output escaping audit + Phase 7.3 AJAX & Nonce Security)
