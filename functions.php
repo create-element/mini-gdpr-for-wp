@@ -21,6 +21,19 @@ defined( 'ABSPATH' ) || die();
  *
  * @param int $user_id WordPress user ID. Defaults to the current user (0).
  * @return bool True if the user has accepted the privacy policy.
+ *
+ * @example
+ * // Check consent for the currently logged-in user.
+ * if ( mwg_has_user_accepted_privacy_policy() ) {
+ *     echo 'Thank you for accepting our privacy policy.';
+ * }
+ *
+ * @example
+ * // Check consent for a specific user (e.g. in a WP-CLI script or admin notice).
+ * $user_id = 42;
+ * if ( mwg_has_user_accepted_privacy_policy( $user_id ) ) {
+ *     // User has consented — safe to send marketing email.
+ * }
  */
 function mwg_has_user_accepted_privacy_policy( int $user_id = 0 ) {
 	if ( $user_id <= 0 ) {
@@ -40,6 +53,21 @@ function mwg_has_user_accepted_privacy_policy( int $user_id = 0 ) {
  * @param int    $user_id WordPress user ID. Defaults to the current user (0).
  * @param string $format  PHP date format string. Defaults to the site's date format option.
  * @return string|null Formatted date string, or null if the user has not accepted.
+ *
+ * @example
+ * // Display the acceptance date for the current user using the site's date format.
+ * $date = mwg_when_did_user_accept_privacy_policy();
+ * if ( $date ) {
+ *     printf( 'You accepted our privacy policy on %s.', esc_html( $date ) );
+ * }
+ *
+ * @example
+ * // Display the acceptance date for a specific user with a custom format.
+ * $date = mwg_when_did_user_accept_privacy_policy( get_current_user_id(), 'F j, Y \a\t g:i a' );
+ * if ( $date ) {
+ *     // e.g. "February 18, 2026 at 10:30 am"
+ *     echo esc_html( $date );
+ * }
  */
 function mwg_when_did_user_accept_privacy_policy( int $user_id = 0, string $format = '' ) {
 	if ( $user_id <= 0 ) {
@@ -60,10 +88,28 @@ function mwg_when_did_user_accept_privacy_policy( int $user_id = 0, string $form
  *
  * Outputs the mini accept-terms form template directly. Use inside themes or
  * other plugins to show the GDPR checkbox for the currently logged-in user.
+ * The checkbox submits via JavaScript/AJAX — no page reload required.
  *
  * @since 1.0.0
  *
  * @return void
+ *
+ * @example
+ * // Embed the consent checkbox inside a WooCommerce My Account template override.
+ * if ( is_user_logged_in() && ! mwg_has_user_accepted_privacy_policy() ) {
+ *     mwg_get_mini_accept_terms_form_for_current_user();
+ * }
+ *
+ * @example
+ * // Add the form to a WordPress shortcode.
+ * add_shortcode( 'gdpr_consent_form', function () {
+ *     if ( ! is_user_logged_in() ) {
+ *         return '';
+ *     }
+ *     ob_start();
+ *     mwg_get_mini_accept_terms_form_for_current_user();
+ *     return ob_get_clean();
+ * } );
  */
 function mwg_get_mini_accept_terms_form_for_current_user() {
 	include PP_MWG_PUBLIC_TEMPLATES_DIR . 'mini-accept-form.php';

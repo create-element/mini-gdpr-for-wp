@@ -243,3 +243,4 @@ Use this checklist when upgrading a production site:
 - **GitHub Issues:** Report bugs or compatibility questions on [GitHub](https://github.com/create-element/mini-gdpr-for-wp/issues)
 - **Email:** [hello@power-plugins.com](mailto:hello@power-plugins.com)
 - **Developer reference:** [hooks-and-filters.md](hooks-and-filters.md)
+- **Upgrade FAQ:** [faq-upgrading.md](faq-upgrading.md) — common questions and edge cases

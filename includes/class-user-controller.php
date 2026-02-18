@@ -38,6 +38,7 @@ class User_Controller extends Component {
 	 * updates META_ACCEPTED_GDPR_WHEN_RECENT. Defaults to the current user when
 	 * $user_id is not provided or is invalid.
 	 *
+	 * @since 1.0.0
 	 * @param int $user_id WordPress user ID (0 = current user).
 	 * @return void
 	 */
@@ -64,6 +65,7 @@ class User_Controller extends Component {
 	 * the client-side localStorage/cookie set by rejectConsent() in JS.
 	 * Only the most recent rejection is stored — no first-rejection audit trail.
 	 *
+	 * @since 2.0.0
 	 * @param int $user_id WordPress user ID (0 = current user).
 	 * @return void
 	 */
@@ -82,6 +84,7 @@ class User_Controller extends Component {
 	/**
 	 * Check whether a user has rejected GDPR cookie consent.
 	 *
+	 * @since 2.0.0
 	 * @param int $user_id WordPress user ID.
 	 * @return bool True when a valid rejection timestamp exists.
 	 */
@@ -95,6 +98,7 @@ class User_Controller extends Component {
 	 * Returns null when no rejection record exists, the stored value is not a
 	 * valid date, or the year predates EARLIEST_GDPR_YEAR.
 	 *
+	 * @since 2.0.0
 	 * @param int    $user_id WordPress user ID.
 	 * @param string $format  PHP date() format string (default 'Y-m-d H:i:s T').
 	 * @return string|null Formatted date string, or null on failure.
@@ -129,8 +133,10 @@ class User_Controller extends Component {
 	/**
 	 * Delete all GDPR consent records for a user.
 	 *
+	 * Removes acceptance (first + most-recent) and rejection meta keys.
 	 * Defaults to the current user when $user_id is not provided or is invalid.
 	 *
+	 * @since 1.0.0
 	 * @param int $user_id WordPress user ID (0 = current user).
 	 * @return void
 	 */
@@ -147,6 +153,7 @@ class User_Controller extends Component {
 	/**
 	 * Check whether a user has accepted GDPR.
 	 *
+	 * @since 1.0.0
 	 * @param int $user_id WordPress user ID.
 	 * @return bool True when a valid acceptance timestamp exists.
 	 */
@@ -160,6 +167,7 @@ class User_Controller extends Component {
 	 * Returns null when no acceptance record exists, the stored value is not a
 	 * valid date, or the year predates EARLIEST_GDPR_YEAR.
 	 *
+	 * @since 1.0.0
 	 * @param int    $user_id WordPress user ID.
 	 * @param string $format  PHP date() format string (default 'Y-m-d H:i:s T').
 	 * @return string|null Formatted date string, or null on failure.
