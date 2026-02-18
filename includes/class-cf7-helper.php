@@ -35,6 +35,7 @@ class CF7_Helper extends Component {
 	/**
 	 * Check whether Contact Form 7 is installed and active.
 	 *
+	 * @since 1.0.0
 	 * @return bool
 	 */
 	public function is_cf7_installed() {
@@ -45,6 +46,7 @@ class CF7_Helper extends Component {
 	 * Check whether the GDPR consent checkbox is installed in both the form content
 	 * and the email body for the given CF7 form.
 	 *
+	 * @since 1.0.0
 	 * @param int $form_id CF7 form post ID.
 	 * @return bool
 	 */
@@ -55,6 +57,7 @@ class CF7_Helper extends Component {
 	/**
 	 * Check whether the GDPR consent checkbox tag is present in the CF7 form content.
 	 *
+	 * @since 1.0.0
 	 * @param int $form_id CF7 form post ID.
 	 * @return bool
 	 */
@@ -82,6 +85,7 @@ class CF7_Helper extends Component {
 	/**
 	 * Check whether the GDPR consent field placeholder is present in the CF7 email body.
 	 *
+	 * @since 1.0.0
 	 * @param int $form_id CF7 form post ID.
 	 * @return bool
 	 */
@@ -112,6 +116,7 @@ class CF7_Helper extends Component {
 	 * Idempotent: each insertion is skipped if the consent box is already present.
 	 * Throws an exception if CF7 is not installed or the form is not found.
 	 *
+	 * @since 1.0.0
 	 * @param int $form_id CF7 form post ID.
 	 * @return void
 	 */
@@ -168,6 +173,7 @@ class CF7_Helper extends Component {
 	/**
 	 * Check whether a given post ID refers to a Contact Form 7 form.
 	 *
+	 * @since 1.0.0
 	 * @param int $post_id WordPress post ID.
 	 * @return bool
 	 */
@@ -178,6 +184,7 @@ class CF7_Helper extends Component {
 	/**
 	 * Return metadata for all published CF7 forms, including consent installation status.
 	 *
+	 * @since 1.0.0
 	 * @return array Associative array keyed by 'form_{id}', each value containing
 	 *               'title', 'isConsentInstalled', and 'formId'.
 	 */

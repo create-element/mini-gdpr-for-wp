@@ -54,6 +54,7 @@ class Settings extends Settings_Core {
 	 * via the WP Options API directly; the settings form uses the custom nonce
 	 * approach from Settings_Core which calls save_settings() directly.
 	 *
+	 * @since 2.0.0
 	 * @return void
 	 */
 	public function register_settings() {
@@ -192,6 +193,7 @@ class Settings extends Settings_Core {
 	 * Hooked to `admin_menu` by Plugin::run(). The page appears at
 	 * Settings → Mini WP GDPR.
 	 *
+	 * @since 1.0.0
 	 * @return void
 	 */
 	public function initialise_admin_menu() {
@@ -216,6 +218,7 @@ class Settings extends Settings_Core {
 	 * - A prompt to create a Privacy Policy page if none is configured.
 	 * - The full settings form with all admin template sections.
 	 *
+	 * @since 1.0.0
 	 * @return void
 	 */
 	public function render_settings_page() {
@@ -304,6 +307,7 @@ class Settings extends Settings_Core {
 	 * The phpcs:disable comment below suppresses the resulting false-positive
 	 * NonceVerification warnings throughout this method.
 	 *
+	 * @since 1.0.0
 	 * @return void
 	 */
 	public function save_settings() {
@@ -387,6 +391,7 @@ class Settings extends Settings_Core {
 	 * Called by Settings_Core::get_string() / get_int() when no value has
 	 * been stored yet. Overrides the base class no-op.
 	 *
+	 * @since 1.0.0
 	 * @param string $option_name wp_options key.
 	 * @return mixed Default value, or null if no default is defined for this option.
 	 */
@@ -412,6 +417,7 @@ class Settings extends Settings_Core {
 	 * tracking is disabled when a conflicting third-party GA injector plugin
 	 * is active.
 	 *
+	 * @since 1.0.0
 	 * @param string $option_name wp_options key.
 	 * @param mixed  $value       Raw value retrieved from get_option().
 	 * @return mixed Sanitised value.

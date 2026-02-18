@@ -92,6 +92,7 @@ class Plugin extends Component {
 	 *
 	 * Called immediately after instantiation by pp_mwg_plugin_run().
 	 *
+	 * @since 1.0.0
 	 * @return void
 	 */
 	public function run() {
@@ -107,6 +108,7 @@ class Plugin extends Component {
 	/**
 	 * Loads the plugin text domain for translations.
 	 *
+	 * @since 1.0.0
 	 * @return void
 	 */
 	public function load_plugin_textdomain() {
@@ -123,6 +125,7 @@ class Plugin extends Component {
 	 * Registers public hooks, script blocker, WooCommerce hooks, and AJAX
 	 * handlers — but only when the plugin is enabled.
 	 *
+	 * @since 1.0.0
 	 * @return void
 	 */
 	public function init() {
@@ -185,6 +188,7 @@ class Plugin extends Component {
 	 * which options this plugin owns, regardless of whether a Privacy Policy page
 	 * has been configured yet.
 	 *
+	 * @since 1.0.0
 	 * @return void
 	 */
 	public function admin_init() {
@@ -209,6 +213,7 @@ class Plugin extends Component {
 	/**
 	 * Returns (and lazily creates) the Script_Blocker instance.
 	 *
+	 * @since 2.0.0
 	 * @return Script_Blocker
 	 */
 	public function get_script_blocker() {
@@ -222,6 +227,7 @@ class Plugin extends Component {
 	/**
 	 * Returns (and lazily creates) the User_Controller instance.
 	 *
+	 * @since 2.0.0
 	 * @return User_Controller
 	 */
 	public function get_user_controller() {
@@ -235,6 +241,7 @@ class Plugin extends Component {
 	/**
 	 * Returns (and lazily creates) the CF7_Helper instance.
 	 *
+	 * @since 2.0.0
 	 * @return CF7_Helper
 	 */
 	public function get_cf7_helper() {
@@ -248,6 +255,7 @@ class Plugin extends Component {
 	/**
 	 * Returns the Settings controller.
 	 *
+	 * @since 2.0.0
 	 * @return Settings
 	 */
 	public function get_settings_controller() {
@@ -261,8 +269,9 @@ class Plugin extends Component {
 	/**
 	 * Validates that the GDPR checkbox was accepted during WooCommerce registration.
 	 *
-	 * @param string   $username          The username.
-	 * @param string   $email             The user email.
+	 * @since 1.0.0
+	 * @param string    $username          The username.
+	 * @param string    $email             The user email.
 	 * @param \WP_Error $validation_errors WooCommerce validation errors object.
 	 * @return void
 	 */
@@ -283,6 +292,7 @@ class Plugin extends Component {
 	/**
 	 * Saves the new customer's GDPR acceptance status after WooCommerce registration.
 	 *
+	 * @since 1.0.0
 	 * @param int $customer_id Newly created WooCommerce customer user ID.
 	 * @return void
 	 */
@@ -305,6 +315,7 @@ class Plugin extends Component {
 	/**
 	 * Records GDPR acceptance when a WooCommerce order is placed.
 	 *
+	 * @since 1.0.0
 	 * @param int       $order_id The WooCommerce order ID.
 	 * @param \WC_Order $order    The WooCommerce order object.
 	 * @return void
@@ -332,6 +343,7 @@ class Plugin extends Component {
 	/**
 	 * Records GDPR acceptance after a Contact Form 7 email is sent.
 	 *
+	 * @since 1.0.0
 	 * @param \WPCF7_ContactForm $contact_form The CF7 contact form object.
 	 * @return void
 	 */
@@ -365,6 +377,7 @@ class Plugin extends Component {
 	/**
 	 * AJAX handler: accept GDPR terms for the current logged-in user.
 	 *
+	 * @since 1.0.0
 	 * @return void
 	 */
 	public function accept_via_ajax() {
@@ -425,6 +438,7 @@ class Plugin extends Component {
 	 * Fires the 'mwg_consent_rejected' action so third-party integrations can
 	 * react to rejection events (e.g. clear WooCommerce tracking, log analytics).
 	 *
+	 * @since 2.0.0
 	 * @return void
 	 */
 	public function reject_via_ajax() {
@@ -470,6 +484,7 @@ class Plugin extends Component {
 	/**
 	 * AJAX handler: install a GDPR consent checkbox into a Contact Form 7 form.
 	 *
+	 * @since 1.0.0
 	 * @return void
 	 */
 	public function install_cf7_form() {
@@ -513,6 +528,7 @@ class Plugin extends Component {
 	 *
 	 * Requires administrator capability.
 	 *
+	 * @since 1.0.0
 	 * @return void
 	 */
 	public function reset_all_privacy_consents() {

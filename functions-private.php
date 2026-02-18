@@ -16,6 +16,7 @@ defined( 'ABSPATH' ) || die();
 /**
  * Returns the global User_Controller instance.
  *
+ * @since 2.0.0
  * @return User_Controller
  */
 function get_user_controller() {
@@ -26,6 +27,7 @@ function get_user_controller() {
 /**
  * Returns the global Settings controller instance.
  *
+ * @since 2.0.0
  * @return Settings
  */
 function get_settings_controller() {
@@ -36,6 +38,7 @@ function get_settings_controller() {
 /**
  * Returns the global Script_Blocker instance.
  *
+ * @since 2.0.0
  * @return Script_Blocker
  */
 function get_script_blocker() {
@@ -46,6 +49,7 @@ function get_script_blocker() {
 /**
  * Returns the global CF7_Helper instance.
  *
+ * @since 2.0.0
  * @return CF7_Helper
  */
 function get_cf7_helper() {
@@ -56,6 +60,7 @@ function get_cf7_helper() {
 /**
  * Returns whether Contact Form 7 is installed and active.
  *
+ * @since 1.0.0
  * @return bool
  */
 function is_cf7_installed() {
@@ -69,6 +74,7 @@ function is_cf7_installed() {
  * The result is cached in a global so multiple calls within the same request
  * return the same instant.
  *
+ * @since 1.0.0
  * @return \DateTime
  */
 function get_date_time_now() {
@@ -86,6 +92,7 @@ function get_date_time_now() {
  *
  * Example: "2026-02-17 07:00:00 GMT"
  *
+ * @since 1.0.0
  * @return string|null Formatted date string, or null if get_date_time_now() fails.
  */
 function get_date_time_now_h() {
@@ -110,6 +117,7 @@ function get_date_time_now_h() {
  * The plugin is considered enabled when the site has a Privacy Policy URL
  * configured in Settings → Privacy.
  *
+ * @since 1.0.0
  * @return bool
  */
 function is_mini_gdpr_enabled() {
@@ -136,6 +144,7 @@ function is_mini_gdpr_enabled() {
  * Loads minified assets in production and source assets when SCRIPT_DEBUG is
  * enabled, following the standard WordPress plugin convention.
  *
+ * @since 1.0.0
  * @return void
  */
 function enqueue_frontend_assets() {
@@ -168,6 +177,7 @@ function enqueue_frontend_assets() {
 /**
  * Returns the thank-you text displayed after a user accepts GDPR terms.
  *
+ * @since 1.0.0
  * @return string
  */
 function get_thankyou_text() {
@@ -177,6 +187,7 @@ function get_thankyou_text() {
 /**
  * Returns the full outer HTML for the GDPR acceptance checkbox label.
  *
+ * @since 1.0.0
  * @return string
  */
 function get_accept_gdpr_checkbox_outer_html() {
@@ -203,6 +214,7 @@ function get_accept_gdpr_checkbox_outer_html() {
 /**
  * Returns the label text for the GDPR acceptance checkbox.
  *
+ * @since 1.0.0
  * @return string
  */
 function get_accept_gdpr_checkbox_text() {
@@ -220,6 +232,7 @@ function get_accept_gdpr_checkbox_text() {
  * Checks the plugin consent checkbox, the WooCommerce terms checkbox, and the
  * Contact Form 7 consent tag.
  *
+ * @since 1.0.0
  * @return bool
  */
 function is_gdpr_accepted_in_post_data() {
@@ -253,6 +266,7 @@ function is_gdpr_accepted_in_post_data() {
 /**
  * Returns a regex pattern that matches any URL containing the given domain.
  *
+ * @since 1.0.0
  * @param string $domain Domain name (e.g. "googletagmanager.com").
  * @return string Regex pattern.
  */
@@ -263,6 +277,7 @@ function get_script_block_regex_from_domain( string $domain ) {
 /**
  * Returns the available consent box positions as an array indexed by position integer.
  *
+ * @since 1.0.0
  * @return string[]
  */
 function get_consent_box_positions() {
@@ -282,6 +297,7 @@ function get_consent_box_positions() {
 /**
  * Returns the CSS modifier classes for the given consent box position.
  *
+ * @since 1.0.0
  * @param int $position Position index (0-8). Pass -1 to read from settings.
  * @return string[] Array of CSS class names.
  */
@@ -341,6 +357,7 @@ function get_consent_box_styles( int $position = -1 ) {
 /**
  * Returns whether an external Google Analytics injector plugin is currently active.
  *
+ * @since 1.0.0
  * @return bool
  */
 function is_external_ga_injector_plugin_installed() {

@@ -78,6 +78,8 @@ abstract class Settings_Core extends Component {
 	 *
 	 * Called automatically by maybe_save_settings() after nonce and
 	 * capability checks pass.
+	 *
+	 * @since 2.0.0
 	 */
 	abstract public function save_settings();
 
@@ -88,6 +90,7 @@ abstract class Settings_Core extends Component {
 	/**
 	 * Return the capability required to manage settings.
 	 *
+	 * @since 2.0.0
 	 * @return string
 	 */
 	public function get_settings_cap() {
@@ -97,7 +100,9 @@ abstract class Settings_Core extends Component {
 	/**
 	 * Override the required capability.
 	 *
+	 * @since 2.0.0
 	 * @param string $value WordPress capability string.
+	 * @return void
 	 */
 	public function set_settings_cap( string $value ) {
 		$this->settings_cap = $value;
@@ -106,6 +111,7 @@ abstract class Settings_Core extends Component {
 	/**
 	 * Return the settings page slug.
 	 *
+	 * @since 2.0.0
 	 * @return string
 	 */
 	public function get_settings_page_name() {
@@ -115,6 +121,7 @@ abstract class Settings_Core extends Component {
 	/**
 	 * Return the full admin URL to the settings page.
 	 *
+	 * @since 2.0.0
 	 * @return string
 	 */
 	public function get_settings_page_url() {
@@ -127,6 +134,9 @@ abstract class Settings_Core extends Component {
 
 	/**
 	 * Open the settings page wrapper div.
+	 *
+	 * @since 2.0.0
+	 * @return void
 	 */
 	public function open_wrap() {
 		echo '<div class="wrap pp-wrap">';
@@ -134,6 +144,9 @@ abstract class Settings_Core extends Component {
 
 	/**
 	 * Open the settings form with a nonce field.
+	 *
+	 * @since 2.0.0
+	 * @return void
 	 */
 	public function open_form() {
 		echo '<form method="post">';
@@ -142,6 +155,9 @@ abstract class Settings_Core extends Component {
 
 	/**
 	 * Close the settings form.
+	 *
+	 * @since 2.0.0
+	 * @return void
 	 */
 	public function close_form() {
 		echo '</form>';
@@ -149,6 +165,9 @@ abstract class Settings_Core extends Component {
 
 	/**
 	 * Close the settings page wrapper div.
+	 *
+	 * @since 2.0.0
+	 * @return void
 	 */
 	public function close_wrap() {
 		echo '</div>';
@@ -163,6 +182,9 @@ abstract class Settings_Core extends Component {
 	 *
 	 * Validates: admin context, nonce, and user capability before delegating
 	 * to save_settings().
+	 *
+	 * @since 2.0.0
+	 * @return void
 	 */
 	public function maybe_save_settings() {
 		$is_valid_request = is_admin()
@@ -186,6 +208,7 @@ abstract class Settings_Core extends Component {
 	 *
 	 * Override in subclass to provide option-specific defaults.
 	 *
+	 * @since 2.0.0
 	 * @param string $option_name wp_options key.
 	 * @return mixed
 	 */
@@ -199,6 +222,7 @@ abstract class Settings_Core extends Component {
 	 * Override in subclass to enforce business rules on specific options
 	 * (e.g. lock a setting when a conflicting plugin is active).
 	 *
+	 * @since 2.0.0
 	 * @param string $option_name wp_options key.
 	 * @param mixed  $value       Raw value from get_option().
 	 * @return mixed
@@ -214,6 +238,7 @@ abstract class Settings_Core extends Component {
 	/**
 	 * Get a string option value.
 	 *
+	 * @since 2.0.0
 	 * @param string $option_name wp_options key.
 	 * @param string $fallback    Fallback when the option is absent or empty.
 	 * @return string
@@ -231,9 +256,11 @@ abstract class Settings_Core extends Component {
 	/**
 	 * Persist a string option. Deletes the option when value is empty.
 	 *
+	 * @since 2.0.0
 	 * @param string      $option_name wp_options key.
 	 * @param string      $value       Value to store.
 	 * @param bool|null   $autoload    Optional autoload flag passed to update_option().
+	 * @return void
 	 */
 	public function set_string( string $option_name, string $value = '', $autoload = null ) {
 		if ( ! empty( $value ) ) {
@@ -249,6 +276,7 @@ abstract class Settings_Core extends Component {
 	 * Uses filter_var with FILTER_VALIDATE_BOOLEAN so stored strings like
 	 * 'true', '1', 'yes', 'on' are all treated as true.
 	 *
+	 * @since 2.0.0
 	 * @param string $option_name wp_options key.
 	 * @param bool   $fallback    Fallback when the option is absent.
 	 * @return bool
@@ -260,9 +288,11 @@ abstract class Settings_Core extends Component {
 	/**
 	 * Persist a boolean option. Stores 'true' / deletes the option for false.
 	 *
+	 * @since 2.0.0
 	 * @param string    $option_name wp_options key.
 	 * @param mixed     $value       Value to evaluate as boolean.
 	 * @param bool|null $autoload    Optional autoload flag.
+	 * @return void
 	 */
 	public function set_bool( string $option_name, $value, $autoload = null ) {
 		if ( filter_var( $value, FILTER_VALIDATE_BOOLEAN ) ) {
@@ -275,6 +305,7 @@ abstract class Settings_Core extends Component {
 	/**
 	 * Get an integer option value.
 	 *
+	 * @since 2.0.0
 	 * @param string $option_name wp_options key.
 	 * @param int    $fallback    Fallback when the option is absent or zero.
 	 * @return int
@@ -292,9 +323,11 @@ abstract class Settings_Core extends Component {
 	/**
 	 * Persist an integer option.
 	 *
+	 * @since 2.0.0
 	 * @param string    $option_name wp_options key.
 	 * @param int       $value       Integer value to store.
 	 * @param bool|null $autoload    Optional autoload flag.
+	 * @return void
 	 */
 	public function set_int( string $option_name, int $value, $autoload = null ) {
 		update_option( $option_name, $value, $autoload );
@@ -303,6 +336,7 @@ abstract class Settings_Core extends Component {
 	/**
 	 * Get a float option value.
 	 *
+	 * @since 2.0.0
 	 * @param string $option_name wp_options key.
 	 * @param float  $fallback    Fallback when the option is absent or zero.
 	 * @return float
@@ -320,9 +354,11 @@ abstract class Settings_Core extends Component {
 	/**
 	 * Persist a float option.
 	 *
+	 * @since 2.0.0
 	 * @param string    $option_name wp_options key.
 	 * @param float     $value       Float value to store.
 	 * @param bool|null $autoload    Optional autoload flag.
+	 * @return void
 	 */
 	public function set_float( string $option_name, float $value, $autoload = null ) {
 		update_option( $option_name, $value, $autoload );
@@ -331,6 +367,7 @@ abstract class Settings_Core extends Component {
 	/**
 	 * Get an array option value (stored as a serialised PHP array).
 	 *
+	 * @since 2.0.0
 	 * @param string $option_name wp_options key.
 	 * @param array  $fallback    Fallback when the option is absent.
 	 * @return array
@@ -351,9 +388,11 @@ abstract class Settings_Core extends Component {
 	/**
 	 * Persist an array option. Deletes the option when array is empty.
 	 *
+	 * @since 2.0.0
 	 * @param string    $option_name wp_options key.
 	 * @param array     $value       Array to store.
 	 * @param bool|null $autoload    Optional autoload flag.
+	 * @return void
 	 */
 	public function set_array( string $option_name, array $value = array(), $autoload = null ) {
 		if ( ! empty( $value ) ) {
@@ -366,6 +405,7 @@ abstract class Settings_Core extends Component {
 	/**
 	 * Get a hex colour option value.
 	 *
+	 * @since 2.0.0
 	 * @param string $option_name wp_options key.
 	 * @param string $fallback    Fallback hex colour (e.g. '#000000').
 	 * @return string Sanitised hex colour in #RGB or #RRGGBB format.
@@ -392,9 +432,11 @@ abstract class Settings_Core extends Component {
 	/**
 	 * Persist a hex colour option. Deletes the option for invalid values.
 	 *
+	 * @since 2.0.0
 	 * @param string    $option_name wp_options key.
 	 * @param string    $colour      Hex colour string.
 	 * @param bool|null $autoload    Optional autoload flag.
+	 * @return void
 	 */
 	public function set_colour_hex( string $option_name, string $colour, $autoload = null ) {
 		if ( ! empty( $colour ) ) {

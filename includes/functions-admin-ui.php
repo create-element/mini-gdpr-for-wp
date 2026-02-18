@@ -26,6 +26,7 @@ defined( 'ABSPATH' ) || die();
  * 'ppctx1', 'ppctx2', etc. The prefix matches the original pp-core.php
  * implementation so existing admin CSS and JS selectors continue to work.
  *
+ * @since 2.0.0
  * @return string Unique control ID.
  */
 function get_next_control_id() {
@@ -45,6 +46,7 @@ function get_next_control_id() {
 /**
  * Check whether WooCommerce is active.
  *
+ * @since 2.0.0
  * @return bool
  */
 function is_woocommerce_available() {
@@ -61,9 +63,11 @@ function is_woocommerce_available() {
  * Used in AJAX handlers to enforce nonce verification and capability checks
  * before processing any data.
  *
+ * @since 2.0.0
  * @param string $action       Nonce action string.
  * @param string $required_cap WordPress capability (e.g. 'manage_options').
  * @param string $nonce_field  $_POST key that holds the nonce value.
+ * @return void
  */
 function pp_die_if_bad_nonce_or_cap( string $action, string $required_cap, string $nonce_field = 'nonce' ) {
 	$nonce_present = array_key_exists( $nonce_field, $_POST );
@@ -87,6 +91,7 @@ function pp_die_if_bad_nonce_or_cap( string $action, string $required_cap, strin
  * Transient keys are scoped per user ID and action key, so limits are
  * independent across users and across different AJAX actions.
  *
+ * @since 2.0.0
  * @param string $action_key     Short identifier for the action (alphanumeric + hyphens).
  * @param int    $max_requests   Maximum requests allowed within the window.
  * @param int    $window_seconds Duration of the rate-limit window in seconds.
@@ -113,6 +118,9 @@ function pp_is_within_ajax_rate_limit( string $action_key, int $max_requests, in
  *
  * Loads the plugin-specific admin stylesheet (assets/mwg-admin.css).
  * This replaced the pp-assets/pp-admin.css reference removed in M3.
+ *
+ * @since 2.0.0
+ * @return void
  */
 function pp_enqueue_admin_assets() {
 	global $pp_mwg_admin_assets_enqueued;
@@ -144,6 +152,7 @@ function pp_enqueue_admin_assets() {
  *
  * Uses the plugin's own assets/spinner.svg.
  *
+ * @since 2.0.0
  * @param bool $is_visible Whether the spinner should be visible on load.
  * @return string HTML <img> element.
  */
@@ -161,6 +170,7 @@ function pp_get_spinner_html( bool $is_visible = false ) {
 /**
  * Return a button element paired with a loading spinner.
  *
+ * @since 2.0.0
  * @param string $label         Visible button label text.
  * @param string $button_classes Additional CSS classes for the button.
  * @param string $button_props   Additional HTML attributes for the button.
@@ -186,6 +196,7 @@ function pp_get_button_with_spinner_html( string $label, string $button_classes 
  * Renders a help/support link next to the page <h1>. The PP logo image has
  * been removed as part of the pp-core.php dependency removal in M3.
  *
+ * @since 2.0.0
  * @param string $support_url         URL for the help/support link.
  * @param string $support_link_tooltip Tooltip text for the link.
  * @return string HTML anchor element, or empty string if no URL provided.
@@ -212,6 +223,7 @@ function pp_get_header_logo_html( string $support_url = '', string $support_link
 /**
  * Return an admin checkbox input with an associated label.
  *
+ * @since 2.0.0
  * @param string $field_name          The input name attribute (also used as the option key).
  * @param string $label               Visible label text.
  * @param bool   $is_checked          Whether the checkbox should be pre-checked.

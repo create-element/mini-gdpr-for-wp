@@ -33,6 +33,7 @@ class Admin_Hooks extends Component {
 	/**
 	 * Enqueue admin scripts and styles for the plugin settings pages.
 	 *
+	 * @since 1.0.0
 	 * @param string $current_page The current admin page hook suffix.
 	 * @return void
 	 */
@@ -61,6 +62,7 @@ class Admin_Hooks extends Component {
 	/**
 	 * Add the GDPR consent column to the Users list table.
 	 *
+	 * @since 1.0.0
 	 * @param array $columns Existing columns array.
 	 * @return array Modified columns array with GDPR status column appended.
 	 */
@@ -73,6 +75,7 @@ class Admin_Hooks extends Component {
 	/**
 	 * Render the GDPR consent column value for a given user.
 	 *
+	 * @since 1.0.0
 	 * @param string $val         Current column value.
 	 * @param string $column_name Column identifier.
 	 * @param int    $user_id     WordPress user ID.

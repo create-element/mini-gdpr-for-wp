@@ -90,6 +90,7 @@ class Script_Blocker extends Component {
 	 * 'mwg_blockable_script_handles' filter, then filters each one through
 	 * 'mwg_tracker_{handle}' to obtain its definition.
 	 *
+	 * @since 2.0.0
 	 * @return array Associative array of blockable script definitions, keyed by sanitised handle.
 	 */
 	public function get_blockable_scripts() {
@@ -146,6 +147,7 @@ class Script_Blocker extends Component {
 	 * consent popup CSS/JS when at least one script is captured (or always-show
 	 * is enabled).
 	 *
+	 * @since 1.0.0
 	 * @return void
 	 */
 	public function capture_blocked_script_handles() {
@@ -342,6 +344,7 @@ class Script_Blocker extends Component {
 	 * Reads the admin-configured value from settings; if none is stored, falls
 	 * back to the translatable default string.
 	 *
+	 * @since 2.0.0
 	 * @param string $option_key  Option key (OPT_CONSENT_*_TEXT constant).
 	 * @param string $default_str Default button label (DEF_CONSENT_* constant).
 	 * @return string Escaped button label ready for JS localisation.
@@ -361,6 +364,7 @@ class Script_Blocker extends Component {
 	 * tag when all conditions are met: blocking is enabled, the handle is in the
 	 * blocked-scripts list, and the script is marked as deferrable.
 	 *
+	 * @since 1.0.0
 	 * @param string|null $tag    The full <script> tag HTML, or null if already suppressed.
 	 * @param string      $handle The registered script handle.
 	 * @param string      $src    The script URL.

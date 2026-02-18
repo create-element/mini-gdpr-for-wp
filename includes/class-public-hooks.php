@@ -37,6 +37,7 @@ class Public_Hooks extends Component {
 	 * Hooked to 'wp_enqueue_scripts'. Fires the mwg_inject_tracker_{handle}
 	 * action for each tracker that passes the mwg_is_tracker_enabled filter.
 	 *
+	 * @since 1.0.0
 	 * @return void
 	 */
 	public function inject_configured_trackers() {
@@ -59,6 +60,7 @@ class Public_Hooks extends Component {
 	 *
 	 * Hooked to 'woocommerce_register_form' at priority 30.
 	 *
+	 * @since 1.0.0
 	 * @return void
 	 */
 	public function add_to_woocommerce_form() {
@@ -74,6 +76,7 @@ class Public_Hooks extends Component {
 	 *
 	 * Hooked dynamically to the configured woocommerce_account_*_endpoint action.
 	 *
+	 * @since 1.0.0
 	 * @return void
 	 */
 	public function inject_into_wc_myaccount_endpoint() {
