@@ -173,20 +173,13 @@
 				document.cookie = `${ this.data.cn }=true; expires=${ expiresWhen.toUTCString() }; Secure`;
 			}
 
-			// Google Consent Mode v2: signal granted consent before deferred tracker
-			// scripts are injected. The gtag() stub is initialised in <head> by the
-			// GA tracker when Consent Mode is enabled; this update is queued in
-			// window.dataLayer so GA picks up the granted state when it loads.
-			if ( typeof gtag === 'function' ) {
-				gtag( 'consent', 'update', {
-					analytics_storage: 'granted',
-					ad_storage: 'granted',
-					ad_user_data: 'granted',
-					ad_personalization: 'granted',
-				} );
-			}
-
 			this.insertBlockedScripts();
+
+			// Google Analytics: load gtag.js after consent. loadGoogleAnalytics() fires
+			// gtag('consent','update',{...granted}) before loading the SDK so the full
+			// dataLayer queue (consent.default=denied → consent.update=granted → js →
+			// config) is processed in the correct order.
+			this.loadGoogleAnalytics();
 
 			// Facebook Pixel: load fbevents.js after consent. The fbq stub already
 			// has fbq('init') and fbq('track','PageView') queued; the SDK replays
@@ -298,6 +291,63 @@
 
 			const script = document.createElement( 'script' );
 			script.src   = 'https://connect.facebook.net/en_US/fbevents.js';
+			script.async = true;
+			document.head.appendChild( script );
+		}
+
+		/**
+		 * Dynamically load Google Analytics (gtag.js) after the user has consented.
+		 *
+		 * The dataLayer queue already contains (output by the PHP tracker stubs on every
+		 * page load):
+		 *   - gtag('consent','default',{...denied})  — when Consent Mode v2 is enabled
+		 *   - gtag('js', new Date())                 — page-load timestamp
+		 *   - gtag('config', 'ID')                   — tracker configuration
+		 *
+		 * Before loading gtag.js, this method fires gtag('consent','update',{...granted})
+		 * so the queue contains a granted signal regardless of whether this is a new
+		 * consent (called from consentToScripts()) or a returning visitor (called from
+		 * init()). When gtag.js loads it processes the full queue — consent.default=denied
+		 * → consent.update=granted → js → config — and initialises GA in the
+		 * fully-granted state.
+		 *
+		 * Without this update, returning visitors would have their GA data attributed
+		 * to the denied consent state (because consent.default=denied is always output
+		 * unconditionally in <head> when Consent Mode v2 is enabled, and init() does
+		 * not otherwise signal the previously-stored consent decision to gtag.js).
+		 *
+		 * This mirrors the pattern used by loadFacebookPixel(), which also fires its
+		 * consent signal (fbq('consent','grant')) immediately before loading the SDK.
+		 *
+		 * This method is a no-op when mgwcsData.gaId is absent (GA not configured,
+		 * GA disabled in settings, or current user excluded by role).
+		 *
+		 * @since 2.0.0
+		 * @return {void}
+		 */
+		loadGoogleAnalytics() {
+			if ( ! this.data.gaId ) {
+				return;
+			}
+
+			// Google Consent Mode v2: queue a consent grant BEFORE gtag.js loads so
+			// the SDK initialises in the fully-granted state when it processes the queue.
+			// This fires for both new consents and returning visitors — the consent.default
+			// in <head> is always 'denied', so an explicit update is always required.
+			// Guard: gtag is always defined when gaId is set (stub is in <head>), but
+			// the typeof check makes the intent explicit and prevents errors if the stub
+			// was somehow removed by a third-party script manager.
+			if ( typeof gtag === 'function' ) {
+				gtag( 'consent', 'update', {
+					analytics_storage: 'granted',
+					ad_storage: 'granted',
+					ad_user_data: 'granted',
+					ad_personalization: 'granted',
+				} );
+			}
+
+			const script = document.createElement( 'script' );
+			script.src   = 'https://www.googletagmanager.com/gtag/js?id=' + this.data.gaId;
 			script.async = true;
 			document.head.appendChild( script );
 		}
@@ -568,6 +618,10 @@
 		init() {
 			if ( this.hasConsented() ) {
 				this.insertBlockedScripts();
+				// Google Analytics: load gtag.js for returning visitors who already
+				// consented. The dataLayer queue (gtag('js') + gtag('config')) is
+				// replayed by gtag.js on load, initialising GA tracking normally.
+				this.loadGoogleAnalytics();
 				// Facebook Pixel: load fbevents.js for returning visitors who already
 				// consented. The queued fbq('init') + fbq('track','PageView') events
 				// are replayed automatically when fbevents.js loads.
