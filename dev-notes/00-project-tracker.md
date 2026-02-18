@@ -556,16 +556,16 @@
 ##### Phase 9.1: Code Documentation
 - [ ] Add PHPDoc blocks to all classes
 - [ ] Document all public methods
-- [ ] Add @since tags for version tracking
+- [x] Add @since tags for version tracking ✅ (2026-02-18)
 - [ ] Document parameters and return types
 - [ ] Add usage examples in docblocks
 
 ##### Phase 9.2: Developer Documentation
-- [ ] Create developer guide in dev-notes/
+- [x] Create developer guide in dev-notes/ ✅ (2026-02-18)
 - [x] Document all available hooks/filters ✅ (dev-notes/hooks-and-filters.md — 15 hooks, 3 PHP functions, 2 JS API methods)
 - [x] Create examples for common customizations ✅ (included in hooks-and-filters.md)
 - [x] Document tracker registration API ✅ (dev-notes/tracker-registration-api.md — existing; hooks-and-filters.md cross-references it)
-- [ ] Create troubleshooting guide
+- [x] Create troubleshooting guide ✅ (2026-02-18)
 
 ##### Phase 9.3: Migration Documentation
 - [x] Create v1.x to v2.0 migration guide ✅ (dev-notes/migration-guide.md — 2026-02-18)
@@ -577,7 +577,7 @@
 ##### Phase 9.4: User Documentation
 - [x] Update README.md with v2.0 features ✅ (2026-02-18 — version, features, hooks, dev setup, migration link)
 - [ ] Update settings page help text
-- [ ] Create user guide
+- [x] Create user guide ✅ (2026-02-18)
 - [ ] Create video tutorials (optional)
 - [ ] Update WordPress.org documentation
 
@@ -820,9 +820,10 @@
 | 2026-02-18 | M8 Phase 8.3 + 8.4 coding sprint — browser & performance verification | Phase 8.3: JS code review confirms ES6+ standard APIs (class, fetch, localStorage, classList) with no vendor-specific APIs; CSS uses standard flex/position/transform with no vendor prefixes; localStorage typeof guard + cookie fallback for strict privacy modes; PHP-level Script_Blocker provides JS-disabled graceful degradation (no tracking = correct GDPR safe default); CSS responsive @media (max-width: 18em) confirmed for mobile viewports. Phase 8.4: curl benchmarks — TTFB 78ms / full 78ms / 39KB (well within <100ms target); admin-ajax.php ~60ms response (well within <500ms target); all trackers delay-loaded (no blocking scripts on page load); k6/LoadForge and v1.4.3 comparison deferred to M10 release testing. M8 complete — moving to M9 (Documentation). |
 | 2026-02-18 | M9 Phase 9.2/9.3/9.4 coding sprint — hooks reference, migration guide, README v2.0 | dev-notes/hooks-and-filters.md: full reference for 15 hooks/filters, 3 public PHP functions, 2 JS API methods with code examples; dev-notes/migration-guide.md: v1.4.3→v2.0 guide covering breaking changes (pp-core removal, jQuery, JS function names), new features, upgrade checklist, wp_options key reference; README.md updated to v2.0.0 — features, hooks/filters, dev setup (Node.js build), migration link. |
 | 2026-02-18 | M9 Phase 9.2/9.3/9.4 testing sprint passed | Plugin active; error log clean; front-end 200; wp-admin 302 (normal unauthenticated redirect); no debug.log; PHPCS 0 errors 0 warnings; all 3 artefacts verified (hooks-and-filters.md 13.4KB, migration-guide.md 9.9KB, README.md 12.4KB with correct v2.0.0 content); Phase 9.2/9.3/9.4 tasks marked complete — moving to coding sprint for Phase 9.1 (PHPDoc), Phase 9.2 developer guide + troubleshooting, Phase 9.4 settings help text |
+| 2026-02-18 | M9 Phase 9.1/9.2/9.4 testing sprint passed | Plugin active; error log clean; front-end 200; wp-admin 200; no debug.log; @since tags confirmed in all includes/*.php and trackers/*.php and functions-private.php; developer-guide.md (398 lines), troubleshooting.md (323 lines), user-guide.md (290 lines) all present; Phase 9.1 @since tags, Phase 9.2 developer guide + troubleshooting guide, Phase 9.4 user guide tasks marked complete |
 
 ---
 
-**Last Updated:** 18 February 2026 (10:10)  
+**Last Updated:** 18 February 2026 (10:51)  
 **Next Review:** 23 February 2026  
-**Next Action:** Coding sprint — Phase 9.1 (PHPDoc blocks on all classes + public methods), Phase 9.2 (developer guide, troubleshooting guide), Phase 9.4 (settings page help text, user guide)
+**Next Action:** Coding sprint — Phase 9.1 remaining (PHPDoc blocks, public method docs, param/return types, usage examples); Phase 9.3 FAQ for upgrading; Phase 9.4 settings page help text
