@@ -88,7 +88,7 @@ class CF7_Helper extends Component {
 	public function is_consent_box_in_email_body( int $form_id ) {
 		$is_found = false;
 
-		// phpcs:disable Generic.CodeAnalysis.AssignmentInCondition.Found, Squiz.PHP.DisallowMultipleAssignments.FoundInControlStructure -- Intentional SESE guard pattern.
+		// phpcs:disable Generic.CodeAnalysis.AssignmentInCondition.Found, Squiz.PHP.DisallowMultipleAssignments.FoundInControlStructure, Generic.CodeAnalysis.EmptyStatement -- Intentional SESE guard pattern.
 		if ( ! $this->is_cf7_installed() ) {
 			// CF7 is not installed.
 		} elseif ( empty( ( $contact_form = wpcf7_contact_form( $form_id ) ) ) ) {
@@ -101,7 +101,7 @@ class CF7_Helper extends Component {
 			$body     = strval( $mail['body'] );
 			$is_found = strpos( $body, '[' . CF7_CONSENT_TAG_NAME . ']' ) !== false;
 		}
-		// phpcs:enable Generic.CodeAnalysis.AssignmentInCondition.Found, Squiz.PHP.DisallowMultipleAssignments.FoundInControlStructure
+		// phpcs:enable Generic.CodeAnalysis.AssignmentInCondition.Found, Squiz.PHP.DisallowMultipleAssignments.FoundInControlStructure, Generic.CodeAnalysis.EmptyStatement
 
 		return $is_found;
 	}
@@ -116,7 +116,7 @@ class CF7_Helper extends Component {
 	 * @return void
 	 */
 	public function install_consent_box( int $form_id ) {
-		// phpcs:disable Generic.CodeAnalysis.AssignmentInCondition.Found, Squiz.PHP.DisallowMultipleAssignments.FoundInControlStructure -- Intentional SESE guard pattern.
+		// phpcs:disable Generic.CodeAnalysis.AssignmentInCondition.Found, Squiz.PHP.DisallowMultipleAssignments.FoundInControlStructure, Generic.CodeAnalysis.EmptyStatement -- Intentional SESE guard pattern.
 		if ( ! $this->is_cf7_installed() ) {
 			// CF7 is not installed — nothing to do.
 		} elseif ( empty( ( $contact_form = wpcf7_contact_form( $form_id ) ) ) ) {
@@ -162,7 +162,7 @@ class CF7_Helper extends Component {
 				$contact_form->save();
 			}
 		}
-		// phpcs:enable Generic.CodeAnalysis.AssignmentInCondition.Found, Squiz.PHP.DisallowMultipleAssignments.FoundInControlStructure
+		// phpcs:enable Generic.CodeAnalysis.AssignmentInCondition.Found, Squiz.PHP.DisallowMultipleAssignments.FoundInControlStructure, Generic.CodeAnalysis.EmptyStatement
 	}
 
 	/**
@@ -201,11 +201,11 @@ class CF7_Helper extends Component {
 					$form_title = __( 'Untitled Form', 'mini-wp-gdpr' );
 				}
 
-				$form_name          = 'form_' . $form_id;
+				$form_name           = 'form_' . $form_id;
 				$metas[ $form_name ] = [
-					'title'            => $form_title,
+					'title'              => $form_title,
 					'isConsentInstalled' => $is_installed,
-					'formId'           => $form_id,
+					'formId'             => $form_id,
 				];
 			}
 		}

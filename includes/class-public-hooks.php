@@ -40,16 +40,16 @@ class Public_Hooks extends Component {
 	 * @return void
 	 */
 	public function inject_configured_trackers() {
-		$script_blocker  = get_script_blocker();
+		$script_blocker    = get_script_blocker();
 		$blockable_scripts = $script_blocker->get_blockable_scripts();
 
-		$blockable_scripts = (array) apply_filters( 'mwg_injectable_tracker_metas', $blockable_scripts );
+		$blockable_scripts = (array) apply_filters( 'mwg_injectable_tracker_metas', $blockable_scripts ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- mwg_ is valid but too short for WPCS prefix allowlist.
 
 		foreach ( $blockable_scripts as $handle => $blockable_script ) {
-			$is_enabled = (bool) apply_filters( 'mwg_is_tracker_enabled', true, $handle );
+			$is_enabled = (bool) apply_filters( 'mwg_is_tracker_enabled', true, $handle ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- mwg_ is valid but too short for WPCS prefix allowlist.
 
 			if ( $is_enabled ) {
-				do_action( 'mwg_inject_tracker_' . $handle );
+				do_action( 'mwg_inject_tracker_' . $handle ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- mwg_ is valid but too short for WPCS prefix allowlist.
 			}
 		}
 	}

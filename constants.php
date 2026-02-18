@@ -14,13 +14,8 @@ const ACCEPT_GDPR_ACTION         = 'acceptgdpr';
 const REJECT_GDPR_ACTION         = 'rejectgdpr';
 const INSTALL_CF7_CONSENT_ACTION = 'mwginstcf7';
 
-const IS_RESET_ALL_CONSENT_ENABLED  = true; //false; //true;
+const IS_RESET_ALL_CONSENT_ENABLED  = true;
 const RESET_PRIVACY_POLICY_CONSENTS = 'resetuserprivacyconsents';
-
-// const SETTINGS_PAGE_NAME = 'minigdpr';
-// const SETTINGS_CAP = 'manage_options';
-// const SAVE_SETTINGS_ACTION = 'save_minigdpr_settings';
-// const SAVE_SETTINGS_NONCE = 'save_minigdpr_nnc';
 
 const OPT_IS_WC_MYACCOUNT_INJECT_ENABLED = 'mwg_is_wc_account_inject_enabled';
 const OPT_WHICH_WC_MYACCOUNT_ENDPOINT    = 'mwg_which_account_endpoint';
