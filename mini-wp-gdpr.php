@@ -4,7 +4,7 @@
  * Plugin Name:  Mini WP GDPR
  * Plugin URI:   https://power-plugins.com/plugin/mini-wp-gdpr/
  * description:  Mini GDPR compliance plugin with cookie and tracking-script consent popup.
- * Version:      1.4.3
+ * Version:      2.0.0
  * Author:       Power Plugins
  * Author URI:   https://power-plugins.com/
  * License:      GPLv2 or later
@@ -15,7 +15,7 @@
 defined( 'ABSPATH' ) || die();
 
 const PP_MWG_NAME    = 'mini-wp-gdpr';
-const PP_MWG_VERSION = '1.4.3';
+const PP_MWG_VERSION = '2.0.0';
 
 define( 'PP_MWG_DIR', plugin_dir_path( __FILE__ ) );
 define( 'PP_MWG_URL', plugin_dir_url( __FILE__ ) );

@@ -33,8 +33,8 @@
 	</rule>
 
 	<!-- Check for PHP cross-version compatibility -->
-	<!-- Note: PHPCompatibilityWP requires installation via Composer -->
-	<!-- TODO: Install via composer (dev dependency) phpcompatibility/phpcompatibility-wp -->
+	<!-- Note: PHPCompatibilityWP requires installation via Composer. To enable: -->
+	<!-- composer global require phpcompatibility/phpcompatibility-wp -->
 	<!-- <config name="testVersion" value="7.4-"/> -->
 	<!-- <rule ref="PHPCompatibilityWP"/> -->
 

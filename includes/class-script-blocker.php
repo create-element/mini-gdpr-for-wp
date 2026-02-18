@@ -234,7 +234,7 @@ class Script_Blocker extends Component {
 			$class_names = array_merge( $class_names, get_consent_box_styles() );
 			$class_names = array_filter( apply_filters( 'mwg_consent_box_classes', $class_names ) ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- mwg_ prefix; see note above.
 
-			// TODO: Consider incrementing this when the Privacy Policy post is saved/updated.
+			// Cookie sequence: increment this if the Privacy Policy changes and users need to re-consent.
 			$cookie_sequence = 0;
 			$cookie_name     = sprintf( '%s_%d_', COOKIE_NAME_BASE, $cookie_sequence );
 

@@ -9,14 +9,71 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Planned
-- Complete removal of pp-core.php framework
-- Improved delay-loading for Facebook Pixel
-- Add "Reject" button to consent popup
-- Consent API integration
-- Modern settings page rebuild
-- Enhanced accessibility (WCAG compliance)
-- REST API endpoints for consent management
+---
+
+## [2.0.0] - 2026-02-18
+
+### Major Release — Full Refactor
+
+This release removes the legacy `pp-core.php` framework, modernises all JavaScript to ES6+,
+adds a GDPR-required Reject button, implements Google Consent Mode v2, and delivers a
+comprehensive security audit, PHPStan analysis, and full developer documentation.
+
+### Added
+- **Reject button** in consent popup — users can now explicitly decline tracking (GDPR requirement)
+- **Google Consent Mode v2** — `gtag('consent','default', denied)` in `<head>`; `update=granted` fires on accept
+- **Facebook Pixel Consent API** — `fbq('consent','revoke')` in stub; `fbq('consent','grant')` queued before SDK load
+- **Microsoft Clarity delay-loading** — SDK only loads after explicit user consent
+- **Generic tracker registration API** — PHP `mwg_register_tracker` filter + `Tracker_Registry` class for custom trackers
+- **Server-side rejection tracking** — rejection timestamp stored in user meta for logged-in users (`_pwg_rejected_gdpr_when`)
+- **Admin consent statistics dashboard** — total users accepted / rejected / undecided in settings page
+- **Rate limiting** on AJAX consent endpoints — 10 accept/reject per hour; 3 resets per 5 minutes (HTTP 429 on exceeded)
+- **Customisable button text** — Accept, Reject, Info button labels configurable in settings
+- **Manage preferences button** — persistent 🍪 button lets users revisit their decision at any time
+- **ES6+ JavaScript build pipeline** — `package.json` + `bin/build.js` (Terser); ~52–67% JS size reduction
+- **ARIA accessibility** — `role=dialog`, `aria-modal`, `aria-live`, `aria-describedby`, Tab-trap in popup and overlay
+- **PHPStan level 5** — zero errors; `phpstan.neon` config + `phpstan-bootstrap.php`
+- **Developer action hooks** — `mwg_consent_accepted`, `mwg_consent_rejected` (fired on accept/reject)
+- **15 hooks/filters** — `mwg_consent_box_classes`, `mwg_is_tracker_enabled`, `mwg_register_tracker`, and more
+- **Inline PHPDoc** — all classes, public methods, `@since`, `@param`, `@return`, `@example` on public API functions
+- **Developer guide** (`dev-notes/developer-guide.md`)
+- **Hook/filter reference** (`dev-notes/hooks-and-filters.md`)
+- **Migration guide** (`dev-notes/migration-guide.md`) — upgrading from v1.x to v2.0
+- **Troubleshooting guide** (`dev-notes/troubleshooting.md`)
+- **FAQ for upgrading** (`dev-notes/faq-upgrading.md`)
+- **User guide** (`dev-notes/user-guide.md`)
+- `Tracker_Registry` class — centralises tracker registration and JS data for custom third-party trackers
+- `class-settings.php` — full WordPress Settings API integration (`register_setting` for all 18+ options)
+- `class-component.php` — native base class replacing the pp-core.php `Component` class
+- `class-settings-core.php` — native settings helper replacing pp-core.php `Settings_Core`
+- `functions-admin-ui.php` — admin UI helper functions
+
+### Changed
+- **Removed `pp-core.php` dependency** — 2305-line framework archived to `dev-notes/archive/`
+- **JavaScript** fully rewritten in ES6+ (ES6 classes, `const`/`let`, arrow functions, `fetch` API, `async/await`)
+- **jQuery dependency removed** from all enqueued scripts
+- **Admin scripts** moved to footer (`$in_footer = true`) for performance
+- **`SCRIPT_DEBUG` conditional loading** — `.min.js` in production, source `.js` in debug mode
+- **`wp_kses_post()`** used for consent message output (replaces `esc_html()`) to allow configured HTML tags
+- **`absint(wp_unslash())`** for numeric AJAX input (replaces bare `intval`)
+- **All 18 options** registered via `register_setting()` with sanitise callbacks
+- `clear_gdpr_accepted_status()` now also clears rejection meta on reset
+- Settings page now includes consent statistics section below the options form
+- Consent cookie renamed to include `_0_` sequence suffix for future policy-change invalidation
+
+### Fixed
+- **Phase 5.1 regression** — `OPT_CONSENT_ACCEPT/REJECT/INFO_BTN_TEXT` were registered but never saved; fixed in security audit
+- `inject_into_wc_myaccount_endpoint()` had incorrect `echo` on void return value; removed
+- `install_cf7_form()` AJAX handler used bare `intval` without `wp_unslash()`; fixed
+- `woocommerce_created_customer` hook `accepted_args` was `2` but callback takes `1` parameter; fixed
+- Deprecated `wp_enqueue_script/style` calls passing `null` for `$deps`; fixed to `[]`
+
+### Security
+- Comprehensive input sanitisation audit — all `$_POST`/`$_GET` values use `wp_unslash()` + sanitise functions
+- Full output escaping audit — all echo/print in templates use `esc_html`, `esc_attr`, `esc_url`
+- All AJAX handlers verify nonce before processing, check capabilities, and apply rate limiting
+- All `$wpdb` queries reviewed — no SQL injection vectors; direct queries use `$wpdb->prepare()`
+- No file upload handling (confirmed — no `$_FILES` usage anywhere)
 
 ---
 
@@ -302,6 +359,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Version | Date | Key Feature |
 |---------|------|-------------|
+| 2.0.0 | 2026-02-18 | Full refactor — pp-core removed, Reject button, ES6+ JS, Consent Mode v2 |
 | 1.4.3 | 2026-01-23 | CSP compatibility |
 | 1.4.2 | 2025-12-14 | WordPress 6.9 support |
 | 1.4.1 | 2025-06-09 | PHP 8.4 compatibility |
@@ -316,7 +374,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-[Unreleased]: https://github.com/create-element/mini-gdpr-for-wp/compare/v1.4.3...HEAD
+[Unreleased]: https://github.com/create-element/mini-gdpr-for-wp/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/create-element/mini-gdpr-for-wp/compare/v1.4.3...v2.0.0
 [1.4.3]: https://github.com/create-element/mini-gdpr-for-wp/compare/v1.4.2...v1.4.3
 [1.4.2]: https://github.com/create-element/mini-gdpr-for-wp/compare/v1.4.1...v1.4.2
 [1.4.1]: https://github.com/create-element/mini-gdpr-for-wp/compare/v1.4.0...v1.4.1

@@ -5,7 +5,7 @@ Tags: gdpr, cookie notice, cookie consent, privacy policy, google analytics, mic
 Donate link: https://power-plugins.com/plugins/
 Requires at least: 6.4
 Tested up to: 6.9
-Stable tag: 1.4.3
+Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
@@ -48,6 +48,28 @@ In the WordPress Admin area...
 
 
 == Changelog ==
+
+= 2.0.0 =
+*Released 18th February 2026*
+
+* Major refactor — removes the pp-core.php framework dependency entirely.
+* Added **Reject** button to the consent popup for GDPR-compliant explicit rejection.
+* JavaScript fully rewritten in ES6+ (classes, const/let, fetch API). jQuery dependency removed.
+* Minified JS assets with Terser build pipeline (~52–67% size reduction).
+* Keyboard navigation and ARIA accessibility improvements in consent popup and info overlay.
+* Google Analytics delay-loading with Google Consent Mode v2 (consent defaults denied, granted on accept).
+* Facebook Pixel delay-loading with fbq('consent','revoke/grant') signals.
+* Microsoft Clarity delay-loading (GDPR-compliant: SDK only loads after explicit consent).
+* Generic tracker registration API (PHP `mwg_register_tracker` filter) for custom trackers.
+* Consent and rejection stored in localStorage (cookie fallback for strict privacy modes).
+* Server-side rejection tracking stored in user meta for logged-in users.
+* Admin consent statistics dashboard (total users accepted/rejected/undecided).
+* Rate limiting on AJAX consent endpoints (10/hr for accept/reject; 3/5 min for reset).
+* Customisable Accept, Reject, and Info button text in plugin settings.
+* Comprehensive inline PHPDoc documentation on all classes and public methods.
+* Developer guide, hook/filter reference, migration guide, troubleshooting guide, FAQ.
+* PHPStan level 5 passes with 0 errors.
+* WordPress Coding Standards (PHPCS) passes with 0 errors on all plugin PHP files.
 
 = 1.4.3 =
 *Released 23rd January 2026*
