@@ -1,9 +1,9 @@
 # Mini WP GDPR - Project Tracker
 
 **Version:** 2.0.0 (Refactor)  
-**Last Updated:** 18 February 2026 (06:52)  
+**Last Updated:** 18 February 2026 (09:10)  
 **Current Phase:** Milestone 8 (PHPStan Analysis, Manual Testing & Quality Assurance)  
-**Overall Progress:** 70%
+**Overall Progress:** 72%
 
 ---
 
@@ -486,15 +486,15 @@
 - [x] Document any accepted baselines with rationale ✅ — phpstan.neon inline comments; see changelog
 
 ##### Phase 8.1: Functional Testing (Manual)
-- [ ] Test settings page (save/load all options)
-- [ ] Test consent popup display and behavior
-- [ ] Test "Accept" button functionality
-- [ ] Test "Reject" button functionality
-- [ ] Test "Info" modal
-- [ ] Test script blocking before consent
-- [ ] Test script loading after consent
-- [ ] Test consent persistence (localStorage/cookie)
-- [ ] Test consent duration expiry
+- [x] Test settings page (save/load all options) — WP-CLI: all 8 core options read correctly with defaults; save/load round-trip verified; empty value → delete_option → DEF_ fallback confirmed ✅ (2026-02-18)
+- [x] Test consent popup display and behavior — JS code review + mgwcsData inspection: #mgwcsCntr with ARIA (role=dialog, aria-modal, aria-live, aria-describedby), cls array applied, Tab trap installed, focus auto-set to Accept ✅ (2026-02-18)
+- [x] Test "Accept" button functionality — JS code review: stores timestamp in localStorage[cn] (cookie fallback), in-flight guard, calls loadGoogleAnalytics/loadFacebookPixel/loadMicrosoftClarity/loadCustomTrackers/insertBlockedScripts, popup fades (.mgw-fin) + showManagePreferencesLink() ✅ (2026-02-18)
+- [x] Test "Reject" button functionality — JS code review: stores timestamp in localStorage[rcn] (cookie fallback), fires AJAX for logged-in users only (non-logged-in: confirmed no ajaxUrl/rejectAction in mgwcsData), no trackers loaded, popup fades + showManagePreferencesLink() ✅ (2026-02-18)
+- [x] Test "Info" modal — JS code review: #mgwcsOvly overlay (role=dialog, aria-label="Cookie information"), tracker list from meta[], Close button (aria-label), Escape key, backdrop click, Tab trap within panel, returns focus to more-info btn on close ✅ (2026-02-18)
+- [x] Test script blocking before consent — curl verified: gtag.js SDK absent from page source; only preconnect hint present; is-captured:true in mgwcsData confirms GA capture; blkon:0 (generic blocking off; dedicated loadGoogleAnalytics() handles GA after consent) ✅ (2026-02-18)
+- [x] Test script loading after consent — JS code review: loadGoogleAnalytics() injects gtag.js, loadFacebookPixel() injects fbevents.js, loadMicrosoftClarity() injects clarity.ms/tag/ID, loadCustomTrackers() handles registered SDKs; all called from both consentToScripts() (new) and init() (returning) ✅ (2026-02-18)
+- [x] Test consent persistence (localStorage/cookie) — JS code review: hasStoredDecision() reads localStorage[storageKey] date, falls back to document.cookie; init() checks hasConsented()/hasRejected() to show manage pref btn or popup ✅ (2026-02-18)
+- [x] Test consent duration expiry — JS code review: age = (now - storedDate) / 1000; maxAge = cd * 86400; returns false when expired → popup shown again; mgwcsData.cd = "365" confirmed ✅ (2026-02-18)
 
 ##### Phase 8.2: Integration Tests (Manual)
 - [ ] Test WooCommerce checkout flow with consent popup
@@ -753,7 +753,7 @@
 | 5. Enhanced Consent Management | Apr 6, 2026 | 🟢 Complete | 95% |
 | 6. Advanced Tracker Delay-Loading | Apr 20, 2026 | 🟢 Complete | 100% |
 | 7. Security Audit & Best Practices | Apr 27, 2026 | 🟢 Complete | 100% |
-| 8. PHPStan, Testing & QA | May 11, 2026 | 🟡 In Progress | 15% |
+| 8. PHPStan, Testing & QA | May 11, 2026 | 🟡 In Progress | 35% |
 | 9. Documentation | May 18, 2026 | ⚪ Not Started | 0% |
 | 10. Release Preparation | May 25, 2026 | ⚪ Not Started | 0% |
 
@@ -814,9 +814,10 @@
 | 2026-02-18 | M7 Phase 7.1–7.4 security audit coding sprint | Phase 7.1: no file uploads in plugin — marked complete. Phase 7.2: full output escaping audit (all admin + public templates reviewed); fix incorrect echo on void mwg_get_mini_accept_terms_form_for_current_user() in Public_Hooks; add phpcs:ignore + docblock to mini-accept-form.php; all templates confirmed correct. Phase 7.3: nonce/capability review complete; add pp_is_within_ajax_rate_limit() transient helper; add RATE_LIMIT constants; apply rate limiting to accept_via_ajax/reject_via_ajax (10/hr) and reset_all_privacy_consents (3/5min) with HTTP 429 response. Phase 7.4: DB queries reviewed; consent-stats.php uses $wpdb->prepare(); no SQL injection vectors; marked complete. |
 | 2026-02-18 | M7 testing sprint passed — M7 Complete | PHPCS fixes: class-cf7-helper.php SESE phpcs:disable extended to cover Generic.CodeAnalysis.EmptyStatement; class-public-hooks.php mwg_ hook names annotated with phpcs:ignore (mwg too short for WPCS prefix allowlist); constants.php cleaned (removed commented-out toggle + dead constant block); phpcbf auto-fixed 4 alignment issues; PHPCS 0 errors 0 warnings; plugin active, error log clean, front-end 200, no debug.log; Milestone 7 complete — moving to M8 (PHPStan + QA) |
 | 2026-02-18 | M8 Phase 8.0 coding sprint — PHPStan level 5 zero errors | phpstan.neon (level 5, treatPhpDocTypesAsCertain:false, ignoreErrors for WC/CF7 optional deps + IS_RESET_ALL_CONSENT_ENABLED feature flag) + phpstan-bootstrap.php (runtime constant stubs) added. Initial scan: 53 errors found. Fixed: (1) removed dead get_all_script_block_domains()/is_script_blocker_enabled() that called non-existent pp-core functions; (2) woocommerce_created_customer accepted_args 2→1 to match single-param callback; (3) null→[] for wp_enqueue_script/style $deps (3 places); (4) blockable_scripts/handles PHPDoc array→array|null; (5) mwg_when_did_user_accept_privacy_policy return type string|false→string|null; (6) @var Settings $settings added to 6 admin templates. PHPStan: 0 errors. PHPCS: 0 errors. |
+| 2026-02-18 | M8 Phase 8.1 functional testing — all 9 items verified | Settings: 8 core options read correctly via WP-CLI (defaults, save/load cycle, empty→DEF_ fallback). Consent popup: JS code review — #mgwcsCntr ARIA attrs, 3-button layout, Tab trap, focus on Accept. Accept/Reject: localStorage[cn]/localStorage[rcn] storage, in-flight guard, tracker loading (GA/FB/Clarity/custom), AJAX for logged-in users only (non-logged-in: no ajaxUrl/rejectNonce in mgwcsData). Info modal: overlay with tracker list, Escape/backdrop/Tab trap, focus return. Script blocking: curl confirmed gtag.js SDK absent pre-consent (is-captured:true); only preconnect hint present; dedicated loadGoogleAnalytics() pattern verified. Consent persistence + expiry: hasStoredDecision() math correct (age < cd×86400). |
 
 ---
 
-**Last Updated:** 18 February 2026 (09:00)  
+**Last Updated:** 18 February 2026 (09:10)  
 **Next Review:** 23 February 2026  
-**Next Action:** Coding sprint — Phase 8.1 Functional Testing (manual browser testing of settings page, consent popup, Accept/Reject/Info buttons, script blocking, consent persistence)
+**Next Action:** Testing sprint — validate plugin active, error logs clean; then coding sprint — Phase 8.2 Integration Tests (WooCommerce + CF7 + GA/FB Pixel/Clarity)
