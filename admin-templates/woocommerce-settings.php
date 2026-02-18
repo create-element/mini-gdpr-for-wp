@@ -19,6 +19,11 @@ defined( 'ABSPATH' ) || die();
 
 printf( '<h2>%s</h2>', esc_html__( 'WooCommerce Integration', 'mini-wp-gdpr' ) );
 
+printf(
+	'<p class="pp-help">%s</p>',
+	esc_html__( 'Integrates privacy consent with WooCommerce. Consent is recorded when a customer places an order (via the T&Cs checkbox) or accepts via the My Account area.', 'mini-wp-gdpr' )
+);
+
 echo '<p class="pp-form-row pp-checkbox">';
 $control_id = get_next_control_id();
 printf(

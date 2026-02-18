@@ -17,6 +17,11 @@ defined( 'ABSPATH' ) || die();
 
 printf( '<h2>%s</h2>', esc_html__( 'Contact Form 7 Integration', 'mini-wp-gdpr' ) );
 
+printf(
+	'<p class="pp-help">%s</p>',
+	esc_html__( 'Automatically adds a GDPR consent checkbox to your Contact Form 7 forms. When a user submits the form, their consent is recorded against their WordPress account.', 'mini-wp-gdpr' )
+);
+
 $cf7_helper = get_cf7_helper();
 $forms_data = array(
 	'labels' => array(

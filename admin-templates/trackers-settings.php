@@ -19,6 +19,11 @@ defined( 'ABSPATH' ) || die();
 
 printf( '<h2>%s</h2>', esc_html__( 'Tracking Scripts', 'mini-wp-gdpr' ) );
 
+printf(
+	'<p class="pp-help">%s</p>',
+	esc_html__( 'Configure which analytics and tracking scripts are added to your site. Scripts are only injected after the user gives explicit consent.', 'mini-wp-gdpr' )
+);
+
 echo '<p class="pp-form-row pp-checkbox">';
 $control_id = get_next_control_id();
 printf(

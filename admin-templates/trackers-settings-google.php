@@ -19,6 +19,11 @@ defined( 'ABSPATH' ) || die();
 
 printf( '<h3><span class="dashicons dashicons-google"></span> %s</h3>', esc_html__( 'Google Analytics', 'mini-wp-gdpr' ) );
 
+printf(
+	'<p class="pp-help">%s</p>',
+	esc_html__( 'The gtag.js SDK is delay-loaded and will only fire after the user accepts cookies. Supports GA4 (G-XXXXXXXX) and Universal Analytics (UA-XXXXXX-X) tracking codes.', 'mini-wp-gdpr' )
+);
+
 if ( is_external_ga_injector_plugin_installed() ) {
 	printf( '<p class="ml-3">%s</p>', esc_html__( 'Using a third party plugin to inject Google tracker into the HTML.', 'mini-wp-gdpr' ) );
 } else {

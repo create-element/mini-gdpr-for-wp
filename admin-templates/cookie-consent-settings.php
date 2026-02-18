@@ -19,6 +19,11 @@ defined( 'ABSPATH' ) || die();
 
 printf( '<h2>%s</h2>', esc_html__( 'Cookie Consent', 'mini-wp-gdpr' ) );
 
+printf(
+	'<p class="pp-help">%s</p>',
+	esc_html__( 'Configure the consent popup shown to new visitors. The popup offers Accept, Reject, and More Information buttons, in line with GDPR requirements.', 'mini-wp-gdpr' )
+);
+
 echo '<p class="pp-form-row pp-checkbox">';
 $control_id = get_next_control_id();
 printf(
@@ -30,6 +35,10 @@ printf(
 	esc_html__( 'Enable the cookie consent popup for new visitors (recommended)', 'mini-wp-gdpr' )
 );
 echo '</p>';
+printf(
+	'<span class="pp-help">%s</span>',
+	esc_html__( 'When enabled, new visitors will see a popup asking for consent before any tracking scripts are loaded.', 'mini-wp-gdpr' )
+);
 
 printf(
 	'<section %s class="mt-2">',
@@ -60,6 +69,10 @@ printf(
 	esc_html__( 'Show consent popup even if no tracking scripts are found', 'mini-wp-gdpr' )
 );
 echo '</p>';
+printf(
+	'<span class="pp-help">%s</span>',
+	esc_html__( 'Useful if you collect consent for purposes other than tracking, such as form submissions or personalisation.', 'mini-wp-gdpr' )
+);
 
 echo '<p class="pp-form-row">';
 $value = $settings->get_int( OPT_SCRIPT_CONSENT_DURATION, DEFAULT_SCRIPT_CONSENT_DURATION );

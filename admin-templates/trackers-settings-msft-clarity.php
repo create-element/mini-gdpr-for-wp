@@ -19,6 +19,11 @@ defined( 'ABSPATH' ) || die();
 
 printf( '<h3><span class="dashicons dashicons-database"></span> %s</h3>', esc_html__( 'Microsoft Clarity', 'mini-wp-gdpr' ) );
 
+printf(
+	'<p class="pp-help">%s</p>',
+	esc_html__( 'The Clarity SDK is delay-loaded and will only fire after the user accepts cookies. Your Project ID can be found in your Clarity dashboard under Settings \u2192 Setup.', 'mini-wp-gdpr' )
+);
+
 echo '<p class="pp-form-row pp-checkbox">';
 echo pp_get_admin_checkbox_html( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- pp_get_admin_checkbox_html() returns pre-escaped HTML.
 	OPT_IS_MS_CLARITY_TRACKING_ENABLED,

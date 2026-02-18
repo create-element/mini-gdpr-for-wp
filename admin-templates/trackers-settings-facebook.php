@@ -19,6 +19,11 @@ defined( 'ABSPATH' ) || die();
 
 printf( '<h3><span class="dashicons dashicons-facebook"></span> %s</h3>', esc_html__( 'Facebook Pixel', 'mini-wp-gdpr' ) );
 
+printf(
+	'<p class="pp-help">%s</p>',
+	esc_html__( 'The Pixel SDK is delay-loaded and will only fire after the user accepts cookies. Your Pixel ID can be found in Meta Events Manager.', 'mini-wp-gdpr' )
+);
+
 echo '<p class="pp-form-row pp-checkbox">';
 $control_id = get_next_control_id();
 printf(
