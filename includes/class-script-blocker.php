@@ -245,7 +245,11 @@ class Script_Blocker extends Component {
 				$info_text_3 = __( "Tracking scripts are blocked because you're logged-in as an administrator", 'mini-wp-gdpr' );
 			}
 
-			$consent_message = esc_html( $settings->get_string( OPT_COOKIE_AND_TRACKER_CONSENT_MESSAGE ) );
+			// wp_kses_post() is used (not esc_html()) because the consent message may contain
+			// admin-configured HTML tags like <strong> and <em>. The value is inserted via
+			// innerHTML in the consent popup JS, so allowed HTML must be preserved.
+			// The message is already sanitised with wp_kses_post() on save, so this is safe.
+			$consent_message = wp_kses_post( $settings->get_string( OPT_COOKIE_AND_TRACKER_CONSENT_MESSAGE ) );
 
 			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 			wp_enqueue_script( 'mini-gdpr-cookie-consent', PP_MWG_ASSETS_URL . "mini-gdpr-cookie-popup$suffix.js", null, $this->version, false );

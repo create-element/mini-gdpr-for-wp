@@ -355,6 +355,25 @@ class Settings extends Settings_Core {
 		} else {
 			$this->set_string( OPT_MS_CLARITY_ID, '' );
 		}
+
+		// Consent popup button labels (plain text; empty = use default).
+		if ( array_key_exists( OPT_CONSENT_ACCEPT_TEXT, $_POST ) ) {
+			$this->set_string( OPT_CONSENT_ACCEPT_TEXT, sanitize_text_field( wp_unslash( $_POST[ OPT_CONSENT_ACCEPT_TEXT ] ) ) );
+		} else {
+			$this->set_string( OPT_CONSENT_ACCEPT_TEXT, '' );
+		}
+
+		if ( array_key_exists( OPT_CONSENT_REJECT_TEXT, $_POST ) ) {
+			$this->set_string( OPT_CONSENT_REJECT_TEXT, sanitize_text_field( wp_unslash( $_POST[ OPT_CONSENT_REJECT_TEXT ] ) ) );
+		} else {
+			$this->set_string( OPT_CONSENT_REJECT_TEXT, '' );
+		}
+
+		if ( array_key_exists( OPT_CONSENT_INFO_BTN_TEXT, $_POST ) ) {
+			$this->set_string( OPT_CONSENT_INFO_BTN_TEXT, sanitize_text_field( wp_unslash( $_POST[ OPT_CONSENT_INFO_BTN_TEXT ] ) ) );
+		} else {
+			$this->set_string( OPT_CONSENT_INFO_BTN_TEXT, '' );
+		}
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
 	}
 

@@ -476,7 +476,7 @@ class Plugin extends Component {
 		// phpcs:disable WordPress.Security.NonceVerification.Missing, Generic.CodeAnalysis.EmptyStatement, Generic.CodeAnalysis.AssignmentInCondition, Squiz.PHP.DisallowMultipleAssignments -- Nonce verified above; SESE guard pattern.
 		if ( ! array_key_exists( 'formId', $_POST ) ) {
 			// formId not supplied.
-		} elseif ( ! $cf7_helper->is_a_cf7_form( $form_id = intval( $_POST['formId'] ) ) ) {
+		} elseif ( ! $cf7_helper->is_a_cf7_form( $form_id = absint( wp_unslash( $_POST['formId'] ) ) ) ) {
 			// Supplied formId does not correspond to a CF7 form.
 		// phpcs:enable WordPress.Security.NonceVerification.Missing, Generic.CodeAnalysis.EmptyStatement, Generic.CodeAnalysis.AssignmentInCondition, Squiz.PHP.DisallowMultipleAssignments
 		} else {
