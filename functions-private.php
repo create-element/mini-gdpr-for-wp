@@ -251,15 +251,6 @@ function is_gdpr_accepted_in_post_data() {
 }
 
 /**
- * Returns the combined unique list of all script-block domains (blacklist + whitelist).
- *
- * @return string[]
- */
-function get_all_script_block_domains() {
-	return array_unique( array_merge( get_script_block_lists_blacklist(), get_script_block_lists_whitelist() ) );
-}
-
-/**
  * Returns a regex pattern that matches any URL containing the given domain.
  *
  * @param string $domain Domain name (e.g. "googletagmanager.com").
@@ -267,32 +258,6 @@ function get_all_script_block_domains() {
  */
 function get_script_block_regex_from_domain( string $domain ) {
 	return sprintf( '/%s/', str_replace( '.', '\\.', $domain ) );
-}
-
-/**
- * Returns whether the script blocker feature is currently enabled.
- *
- * Requires: at least one domain on the block lists, and the cookie consent
- * popup option enabled.
- *
- * @return bool
- */
-function is_script_blocker_enabled() {
-	$is_enabled = false;
-
-	$settings = get_settings_controller();
-
-	// phpcs:disable Generic.CodeAnalysis.EmptyStatement -- Intentional SESE guard pattern.
-	if ( empty( get_script_block_lists_blacklist() ) && empty( get_script_block_lists_whitelist() ) ) {
-		// No domains configured — script blocker has nothing to block.
-	} elseif ( ! $settings->get_bool( OPT_IS_COOKIE_CONSENT_POPUP_ENABLED ) ) {
-		// Cookie consent popup is disabled.
-	} else {
-		$is_enabled = true;
-	}
-	// phpcs:enable Generic.CodeAnalysis.EmptyStatement
-
-	return $is_enabled;
 }
 
 /**

@@ -15,6 +15,8 @@ namespace Mini_Wp_Gdpr;
 
 defined( 'ABSPATH' ) || die();
 
+/** @var Settings $settings Settings controller passed in from the including method scope. */
+
 printf( '<h3><span class="dashicons dashicons-google"></span> %s</h3>', esc_html__( 'Google Analytics', 'mini-wp-gdpr' ) );
 
 if ( is_external_ga_injector_plugin_installed() ) {

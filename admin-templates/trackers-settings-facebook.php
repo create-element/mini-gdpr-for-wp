@@ -15,6 +15,8 @@ namespace Mini_Wp_Gdpr;
 
 defined( 'ABSPATH' ) || die();
 
+/** @var Settings $settings Settings controller passed in from the including method scope. */
+
 printf( '<h3><span class="dashicons dashicons-facebook"></span> %s</h3>', esc_html__( 'Facebook Pixel', 'mini-wp-gdpr' ) );
 
 echo '<p class="pp-form-row pp-checkbox">';

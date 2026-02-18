@@ -1,0 +1,15 @@
+{
+    "name": "create-element/mini-gdpr-for-wp",
+    "description": "Mini WP GDPR — dev tooling only",
+    "license": "GPL-2.0-or-later",
+    "require": {},
+    "require-dev": {
+        "szepeviktor/phpstan-wordpress": "^1.3",
+        "phpstan/phpstan": "^1.10"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
+}

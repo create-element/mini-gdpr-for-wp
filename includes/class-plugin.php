@@ -143,7 +143,7 @@ class Plugin extends Component {
 
 			add_action( 'woocommerce_register_form', array( $this->public_hooks, 'add_to_woocommerce_form' ), 30 );
 			add_action( 'woocommerce_register_post', array( $this, 'validate_registration' ), 10, 3 );
-			add_action( 'woocommerce_created_customer', array( $this, 'save_new_customer_gdpr_status' ), 10, 2 );
+			add_action( 'woocommerce_created_customer', array( $this, 'save_new_customer_gdpr_status' ), 10, 1 );
 			add_action( 'woocommerce_new_order', array( $this, 'woocommerce_new_order' ), 10, 2 );
 
 			add_action( 'wp_ajax_' . ACCEPT_GDPR_ACTION, array( $this, 'accept_via_ajax' ) );

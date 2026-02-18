@@ -127,7 +127,7 @@ function pp_enqueue_admin_assets() {
 		wp_enqueue_style(
 			'mwg-admin-base',
 			PP_MWG_ASSETS_URL . 'mwg-admin.css',
-			null,
+			[],
 			PP_MWG_VERSION
 		);
 

@@ -1,0 +1,49 @@
+includes:
+    - vendor/szepeviktor/phpstan-wordpress/extension.neon
+
+parameters:
+    level: 5
+    paths:
+        - mini-wp-gdpr.php
+        - constants.php
+        - functions.php
+        - functions-private.php
+        - includes/
+        - trackers/
+        - admin-templates/
+        - public-templates/
+    excludePaths:
+        - vendor/
+        - node_modules/
+        - dev-notes/
+        - bin/
+    bootstrapFiles:
+        - phpstan-bootstrap.php
+    # Dynamic constants used throughout the plugin.
+    dynamicConstantNames:
+        - SCRIPT_DEBUG
+        - WP_DEBUG
+        - WP_DEBUG_LOG
+        - WP_DEBUG_DISPLAY
+    # PHPDoc-driven type narrowing causes false positives for our SESE patterns
+    # where we defensive-check variables that are typed via docblocks.
+    # Disabling this ensures `empty()`, `is_array()`, and negated-bool checks on
+    # PHPDoc-typed values are not flagged as always-true/false.
+    treatPhpDocTypesAsCertain: false
+    parallel:
+        maximumNumberOfProcesses: 1
+    ignoreErrors:
+        # WooCommerce is an optional integration — classes/functions are not
+        # available during static analysis. Suppressed across all plugin files.
+        - message: '#(WC_Order|WPCF7_ContactForm|wc_get_account_menu_items|wpcf7_contact_form)#'
+          reportUnmatched: false
+        # functions-private.php: include_once ABSPATH path cannot be resolved
+        # during static analysis (ABSPATH is a runtime constant).
+        - message: '#Path in include_once\(\).*wp-admin/includes/plugin\.php.*is not a file#'
+          path: functions-private.php
+          reportUnmatched: false
+        # class-settings.php: IS_RESET_ALL_CONSENT_ENABLED is a feature-flag
+        # constant defined as `true`; the left-side check is intentional.
+        - message: '#Left side of && is always true#'
+          path: includes/class-settings.php
+          reportUnmatched: false

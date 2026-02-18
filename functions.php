@@ -39,7 +39,7 @@ function mwg_has_user_accepted_privacy_policy( int $user_id = 0 ) {
  *
  * @param int    $user_id WordPress user ID. Defaults to the current user (0).
  * @param string $format  PHP date format string. Defaults to the site's date format option.
- * @return string|false Formatted date string, or false if the user has not accepted.
+ * @return string|null Formatted date string, or null if the user has not accepted.
  */
 function mwg_when_did_user_accept_privacy_policy( int $user_id = 0, string $format = '' ) {
 	if ( $user_id <= 0 ) {

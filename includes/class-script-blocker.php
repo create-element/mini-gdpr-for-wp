@@ -32,15 +32,17 @@ class Script_Blocker extends Component {
 
 	/**
 	 * Handles of scripts eligible for blocking, as returned by the filter.
+	 * Null until initialised by get_blockable_scripts().
 	 *
-	 * @var array
+	 * @var array|null
 	 */
 	private $blockable_script_handles;
 
 	/**
 	 * Full metadata for each blockable script, keyed by sanitised handle.
+	 * Null until initialised by get_blockable_scripts().
 	 *
-	 * @var array
+	 * @var array|null
 	 */
 	private $blockable_scripts;
 
@@ -252,7 +254,7 @@ class Script_Blocker extends Component {
 			$consent_message = wp_kses_post( $settings->get_string( OPT_COOKIE_AND_TRACKER_CONSENT_MESSAGE ) );
 
 			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-			wp_enqueue_script( 'mini-gdpr-cookie-consent', PP_MWG_ASSETS_URL . "mini-gdpr-cookie-popup$suffix.js", null, $this->version, false );
+			wp_enqueue_script( 'mini-gdpr-cookie-consent', PP_MWG_ASSETS_URL . "mini-gdpr-cookie-popup$suffix.js", [], $this->version, false );
 			$rejection_cookie_name = sprintf( '%s_rej_%d_', COOKIE_NAME_BASE, $cookie_sequence );
 
 			$localize_data = [
@@ -326,7 +328,7 @@ class Script_Blocker extends Component {
 
 			wp_localize_script( 'mini-gdpr-cookie-consent', 'mgwcsData', $localize_data );
 
-			wp_enqueue_style( 'mini-gdpr-cookie-consent', PP_MWG_ASSETS_URL . 'mini-gdpr-cookie-popup.css', null, $this->version );
+			wp_enqueue_style( 'mini-gdpr-cookie-consent', PP_MWG_ASSETS_URL . 'mini-gdpr-cookie-popup.css', [], $this->version );
 		}
 	}
 
