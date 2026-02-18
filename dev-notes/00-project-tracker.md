@@ -539,16 +539,16 @@
 
 ### Milestone 9: Documentation & Developer Experience
 **Target:** Week 13 (May 12-18, 2026)  
-**Status:** Not Started  
+**Status:** 🟡 In Progress  
 **Priority:** Medium
 
 #### Objectives
 - [ ] Complete inline code documentation
 - [ ] Create developer documentation
-- [ ] Document all hooks and filters
-- [ ] Create code examples
-- [ ] Update README with new features
-- [ ] Create migration guide from v1.x
+- [x] Document all hooks and filters ✅ (2026-02-18 — dev-notes/hooks-and-filters.md)
+- [x] Create code examples ✅ (included in hooks-and-filters.md)
+- [x] Update README with new features ✅ (2026-02-18 — v2.0.0, features, hooks, dev setup)
+- [x] Create migration guide from v1.x ✅ (2026-02-18 — dev-notes/migration-guide.md)
 - [ ] Generate PHPDoc documentation
 
 #### Sub-Tasks
@@ -562,20 +562,20 @@
 
 ##### Phase 9.2: Developer Documentation
 - [ ] Create developer guide in dev-notes/
-- [ ] Document all available hooks/filters
-- [ ] Create examples for common customizations
-- [ ] Document tracker registration API
+- [x] Document all available hooks/filters ✅ (dev-notes/hooks-and-filters.md — 15 hooks, 3 PHP functions, 2 JS API methods)
+- [x] Create examples for common customizations ✅ (included in hooks-and-filters.md)
+- [x] Document tracker registration API ✅ (dev-notes/tracker-registration-api.md — existing; hooks-and-filters.md cross-references it)
 - [ ] Create troubleshooting guide
 
 ##### Phase 9.3: Migration Documentation
-- [ ] Create v1.x to v2.0 migration guide
-- [ ] Document breaking changes (if any)
-- [ ] Create upgrade checklist
-- [ ] Document new features
+- [x] Create v1.x to v2.0 migration guide ✅ (dev-notes/migration-guide.md — 2026-02-18)
+- [x] Document breaking changes (if any) ✅ (pp-core removal, jQuery, old JS function names)
+- [x] Create upgrade checklist ✅ (migration-guide.md Upgrade Checklist section)
+- [x] Document new features ✅ (migration-guide.md What's New section)
 - [ ] Create FAQ for upgrading
 
 ##### Phase 9.4: User Documentation
-- [ ] Update README.md with v2.0 features
+- [x] Update README.md with v2.0 features ✅ (2026-02-18 — version, features, hooks, dev setup, migration link)
 - [ ] Update settings page help text
 - [ ] Create user guide
 - [ ] Create video tutorials (optional)
@@ -818,9 +818,11 @@
 | 2026-02-18 | M8 Phase 8.2 integration testing — all 7 items verified | WC checkout + MyAccount: code review verified hook registration, checkbox output, nonce/AJAX flow, User_Controller integration; WC not installed on dev site. CF7 consent: code review verified is_cf7_installed() guards, install_consent_box() idempotent form+email injection, wpcf7_mail_sent user lookup; CF7 not installed on dev site. GA: curl verified preconnect hint, consent defaults, captured config script, correct mgwcsData (gaId, is-captured, can-defer). FB Pixel: code review verified fbpxId conditional, fbq consent revoke/grant order. Clarity: code review verified clarityId conditional, preconnect hint, ID validation. AJAX endpoints: all 4 hooks registered; User_Controller accept/reject/clear round-trip tested via WP-CLI; rate limiting tested (3 allowed, 4th returns false); ajaxUrl/rejectNonce absent for non-logged-in requests. |
 | 2026-02-18 | M8 Phase 8.2 testing sprint passed | Plugin active; error log clean; front-end 200; wp-admin 302 (normal unauthenticated redirect); no debug.log; PHPCS 0 errors 0 warnings; Phase 8.2 fully verified — moving to Phase 8.3 (Browser & Device Testing) |
 | 2026-02-18 | M8 Phase 8.3 + 8.4 coding sprint — browser & performance verification | Phase 8.3: JS code review confirms ES6+ standard APIs (class, fetch, localStorage, classList) with no vendor-specific APIs; CSS uses standard flex/position/transform with no vendor prefixes; localStorage typeof guard + cookie fallback for strict privacy modes; PHP-level Script_Blocker provides JS-disabled graceful degradation (no tracking = correct GDPR safe default); CSS responsive @media (max-width: 18em) confirmed for mobile viewports. Phase 8.4: curl benchmarks — TTFB 78ms / full 78ms / 39KB (well within <100ms target); admin-ajax.php ~60ms response (well within <500ms target); all trackers delay-loaded (no blocking scripts on page load); k6/LoadForge and v1.4.3 comparison deferred to M10 release testing. M8 complete — moving to M9 (Documentation). |
+| 2026-02-18 | M9 Phase 9.2/9.3/9.4 coding sprint — hooks reference, migration guide, README v2.0 | dev-notes/hooks-and-filters.md: full reference for 15 hooks/filters, 3 public PHP functions, 2 JS API methods with code examples; dev-notes/migration-guide.md: v1.4.3→v2.0 guide covering breaking changes (pp-core removal, jQuery, JS function names), new features, upgrade checklist, wp_options key reference; README.md updated to v2.0.0 — features, hooks/filters, dev setup (Node.js build), migration link. |
+| 2026-02-18 | M9 Phase 9.2/9.3/9.4 testing sprint passed | Plugin active; error log clean; front-end 200; wp-admin 302 (normal unauthenticated redirect); no debug.log; PHPCS 0 errors 0 warnings; all 3 artefacts verified (hooks-and-filters.md 13.4KB, migration-guide.md 9.9KB, README.md 12.4KB with correct v2.0.0 content); Phase 9.2/9.3/9.4 tasks marked complete — moving to coding sprint for Phase 9.1 (PHPDoc), Phase 9.2 developer guide + troubleshooting, Phase 9.4 settings help text |
 
 ---
 
-**Last Updated:** 18 February 2026 (09:55)  
+**Last Updated:** 18 February 2026 (10:10)  
 **Next Review:** 23 February 2026  
-**Next Action:** Testing sprint — verify plugin active + error log clean, then coding sprint — Milestone 9 Documentation
+**Next Action:** Coding sprint — Phase 9.1 (PHPDoc blocks on all classes + public methods), Phase 9.2 (developer guide, troubleshooting guide), Phase 9.4 (settings page help text, user guide)
