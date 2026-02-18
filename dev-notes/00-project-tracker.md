@@ -460,7 +460,7 @@
 
 ### Milestone 8: PHPStan Analysis, Manual Testing & Quality Assurance
 **Target:** Week 11-12 (Apr 28 - May 11, 2026)  
-**Status:** Not Started  
+**Status:** 🟡 In Progress  
 **Priority:** High
 
 > **Note:** PHPStan is run here — after the bulk of refactoring (M3-M6) is complete and the plugin is essentially working. This avoids chasing PHPStan errors on code that's still being rewritten. PHPCS/phpcbf are used throughout earlier milestones.
@@ -477,13 +477,13 @@
 
 #### Sub-Tasks
 
-##### Phase 8.0: PHPStan Static Analysis
-- [ ] Create phpstan.neon configuration file
-- [ ] Run initial PHPStan scan at level 5
-- [ ] Establish baseline for existing issues
-- [ ] Fix critical errors (undefined methods, type mismatches)
-- [ ] Progressively increase level if feasible
-- [ ] Document any accepted baselines with rationale
+##### Phase 8.0: PHPStan Static Analysis ✅ Complete (2026-02-18)
+- [x] Create phpstan.neon configuration file ✅
+- [x] Run initial PHPStan scan at level 5 ✅ — found 53 errors
+- [x] Establish baseline for existing issues ✅ — ignoreErrors for optional WC/CF7 deps; treatPhpDocTypesAsCertain:false for SESE pattern false positives
+- [x] Fix critical errors (undefined methods, type mismatches) ✅ — all 53 resolved
+- [x] Progressively increase level if feasible ✅ — level 5 achieved with 0 errors; sufficient for this codebase
+- [x] Document any accepted baselines with rationale ✅ — phpstan.neon inline comments; see changelog
 
 ##### Phase 8.1: Functional Testing (Manual)
 - [ ] Test settings page (save/load all options)
@@ -753,7 +753,7 @@
 | 5. Enhanced Consent Management | Apr 6, 2026 | 🟢 Complete | 95% |
 | 6. Advanced Tracker Delay-Loading | Apr 20, 2026 | 🟢 Complete | 100% |
 | 7. Security Audit & Best Practices | Apr 27, 2026 | 🟢 Complete | 100% |
-| 8. PHPStan, Testing & QA | May 11, 2026 | ⚪ Not Started | 0% |
+| 8. PHPStan, Testing & QA | May 11, 2026 | 🟡 In Progress | 15% |
 | 9. Documentation | May 18, 2026 | ⚪ Not Started | 0% |
 | 10. Release Preparation | May 25, 2026 | ⚪ Not Started | 0% |
 
@@ -813,9 +813,10 @@
 | 2026-02-18 | M7 Phase 7.1/7.2 security audit fixes — testing sprint passed | (1) save_settings(): OPT_CONSENT_ACCEPT/REJECT/INFO_BTN_TEXT were registered and displayed but never saved — Phase 5.1 regression fixed; all 3 now saved with sanitize_text_field(wp_unslash()); (2) Script_Blocker: consent message esc_html()→wp_kses_post() to preserve admin-configured HTML in JS innerHTML; (3) install_cf7_form(): formId intval→absint(wp_unslash()); plugin active, error log clean, front-end 200, no debug.log; Phase 7.1/7.2 partial tasks marked complete |
 | 2026-02-18 | M7 Phase 7.1–7.4 security audit coding sprint | Phase 7.1: no file uploads in plugin — marked complete. Phase 7.2: full output escaping audit (all admin + public templates reviewed); fix incorrect echo on void mwg_get_mini_accept_terms_form_for_current_user() in Public_Hooks; add phpcs:ignore + docblock to mini-accept-form.php; all templates confirmed correct. Phase 7.3: nonce/capability review complete; add pp_is_within_ajax_rate_limit() transient helper; add RATE_LIMIT constants; apply rate limiting to accept_via_ajax/reject_via_ajax (10/hr) and reset_all_privacy_consents (3/5min) with HTTP 429 response. Phase 7.4: DB queries reviewed; consent-stats.php uses $wpdb->prepare(); no SQL injection vectors; marked complete. |
 | 2026-02-18 | M7 testing sprint passed — M7 Complete | PHPCS fixes: class-cf7-helper.php SESE phpcs:disable extended to cover Generic.CodeAnalysis.EmptyStatement; class-public-hooks.php mwg_ hook names annotated with phpcs:ignore (mwg too short for WPCS prefix allowlist); constants.php cleaned (removed commented-out toggle + dead constant block); phpcbf auto-fixed 4 alignment issues; PHPCS 0 errors 0 warnings; plugin active, error log clean, front-end 200, no debug.log; Milestone 7 complete — moving to M8 (PHPStan + QA) |
+| 2026-02-18 | M8 Phase 8.0 coding sprint — PHPStan level 5 zero errors | phpstan.neon (level 5, treatPhpDocTypesAsCertain:false, ignoreErrors for WC/CF7 optional deps + IS_RESET_ALL_CONSENT_ENABLED feature flag) + phpstan-bootstrap.php (runtime constant stubs) added. Initial scan: 53 errors found. Fixed: (1) removed dead get_all_script_block_domains()/is_script_blocker_enabled() that called non-existent pp-core functions; (2) woocommerce_created_customer accepted_args 2→1 to match single-param callback; (3) null→[] for wp_enqueue_script/style $deps (3 places); (4) blockable_scripts/handles PHPDoc array→array|null; (5) mwg_when_did_user_accept_privacy_policy return type string|false→string|null; (6) @var Settings $settings added to 6 admin templates. PHPStan: 0 errors. PHPCS: 0 errors. |
 
 ---
 
-**Last Updated:** 18 February 2026 (08:30)  
+**Last Updated:** 18 February 2026 (09:00)  
 **Next Review:** 23 February 2026  
-**Next Action:** Coding sprint — M8: PHPStan Analysis, Manual Testing & Quality Assurance (start Phase 8.0: phpstan.neon configuration + initial PHPStan scan)
+**Next Action:** Coding sprint — Phase 8.1 Functional Testing (manual browser testing of settings page, consent popup, Accept/Reject/Info buttons, script blocking, consent persistence)
