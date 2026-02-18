@@ -753,7 +753,7 @@
 | 5. Enhanced Consent Management | Apr 6, 2026 | 🟢 Complete | 95% |
 | 6. Advanced Tracker Delay-Loading | Apr 20, 2026 | 🟢 Complete | 100% |
 | 7. Security Audit & Best Practices | Apr 27, 2026 | 🟢 Complete | 100% |
-| 8. PHPStan, Testing & QA | May 11, 2026 | 🟡 In Progress | 55% |
+| 8. PHPStan, Testing & QA | May 11, 2026 | 🟡 In Progress | 65% |
 | 9. Documentation | May 18, 2026 | ⚪ Not Started | 0% |
 | 10. Release Preparation | May 25, 2026 | ⚪ Not Started | 0% |
 
@@ -816,9 +816,10 @@
 | 2026-02-18 | M8 Phase 8.0 coding sprint — PHPStan level 5 zero errors | phpstan.neon (level 5, treatPhpDocTypesAsCertain:false, ignoreErrors for WC/CF7 optional deps + IS_RESET_ALL_CONSENT_ENABLED feature flag) + phpstan-bootstrap.php (runtime constant stubs) added. Initial scan: 53 errors found. Fixed: (1) removed dead get_all_script_block_domains()/is_script_blocker_enabled() that called non-existent pp-core functions; (2) woocommerce_created_customer accepted_args 2→1 to match single-param callback; (3) null→[] for wp_enqueue_script/style $deps (3 places); (4) blockable_scripts/handles PHPDoc array→array|null; (5) mwg_when_did_user_accept_privacy_policy return type string|false→string|null; (6) @var Settings $settings added to 6 admin templates. PHPStan: 0 errors. PHPCS: 0 errors. |
 | 2026-02-18 | M8 Phase 8.1 functional testing — all 9 items verified | Settings: 8 core options read correctly via WP-CLI (defaults, save/load cycle, empty→DEF_ fallback). Consent popup: JS code review — #mgwcsCntr ARIA attrs, 3-button layout, Tab trap, focus on Accept. Accept/Reject: localStorage[cn]/localStorage[rcn] storage, in-flight guard, tracker loading (GA/FB/Clarity/custom), AJAX for logged-in users only (non-logged-in: no ajaxUrl/rejectNonce in mgwcsData). Info modal: overlay with tracker list, Escape/backdrop/Tab trap, focus return. Script blocking: curl confirmed gtag.js SDK absent pre-consent (is-captured:true); only preconnect hint present; dedicated loadGoogleAnalytics() pattern verified. Consent persistence + expiry: hasStoredDecision() math correct (age < cd×86400). |
 | 2026-02-18 | M8 Phase 8.2 integration testing — all 7 items verified | WC checkout + MyAccount: code review verified hook registration, checkbox output, nonce/AJAX flow, User_Controller integration; WC not installed on dev site. CF7 consent: code review verified is_cf7_installed() guards, install_consent_box() idempotent form+email injection, wpcf7_mail_sent user lookup; CF7 not installed on dev site. GA: curl verified preconnect hint, consent defaults, captured config script, correct mgwcsData (gaId, is-captured, can-defer). FB Pixel: code review verified fbpxId conditional, fbq consent revoke/grant order. Clarity: code review verified clarityId conditional, preconnect hint, ID validation. AJAX endpoints: all 4 hooks registered; User_Controller accept/reject/clear round-trip tested via WP-CLI; rate limiting tested (3 allowed, 4th returns false); ajaxUrl/rejectNonce absent for non-logged-in requests. |
+| 2026-02-18 | M8 Phase 8.2 testing sprint passed | Plugin active; error log clean; front-end 200; wp-admin 302 (normal unauthenticated redirect); no debug.log; PHPCS 0 errors 0 warnings; Phase 8.2 fully verified — moving to Phase 8.3 (Browser & Device Testing) |
 
 ---
 
-**Last Updated:** 18 February 2026 (09:33)  
+**Last Updated:** 18 February 2026 (09:40)  
 **Next Review:** 23 February 2026  
-**Next Action:** Testing sprint — validate plugin active, error logs clean; then coding sprint — Phase 8.3 Browser & Device Testing
+**Next Action:** Coding sprint — Phase 8.3 Browser & Device Testing
