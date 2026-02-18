@@ -311,6 +311,15 @@ class Script_Blocker extends Component {
 				}
 			}
 
+			// Custom registered trackers: pass SDK URLs to JS for generic delay-loading.
+			// Populated from the mwg_register_tracker filter via Tracker_Registry.
+			// Only included when the current user is not excluded from tracking by role.
+			$custom_trackers = Tracker_Registry::get_js_data( $this->are_trackers_blocked_by_role );
+
+			if ( ! empty( $custom_trackers ) ) {
+				$localize_data['trackers'] = $custom_trackers;
+			}
+
 			wp_localize_script( 'mini-gdpr-cookie-consent', 'mgwcsData', $localize_data );
 
 			wp_enqueue_style( 'mini-gdpr-cookie-consent', PP_MWG_ASSETS_URL . 'mini-gdpr-cookie-popup.css', null, $this->version );

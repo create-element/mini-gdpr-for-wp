@@ -35,6 +35,7 @@ require_once PP_MWG_DIR . 'functions-private.php';
 
 require_once PP_MWG_DIR . 'includes/class-settings.php';
 require_once PP_MWG_DIR . 'includes/class-user-controller.php';
+require_once PP_MWG_DIR . 'includes/class-tracker-registry.php';
 require_once PP_MWG_DIR . 'includes/class-script-blocker.php';
 require_once PP_MWG_DIR . 'includes/class-admin-hooks.php';
 require_once PP_MWG_DIR . 'includes/class-public-hooks.php';

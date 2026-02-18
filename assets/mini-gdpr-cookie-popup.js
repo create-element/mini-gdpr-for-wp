@@ -191,6 +191,10 @@
 			// Clarity SDK processes window.clarity.q on load.
 			this.loadMicrosoftClarity();
 
+			// Custom registered trackers: load all SDK URLs registered via the
+			// PHP mwg_register_tracker filter (Tracker_Registry developer API).
+			this.loadCustomTrackers();
+
 			popup.classList.add( 'mgw-fin' );
 			setTimeout( () => {
 				popup.remove();
@@ -384,6 +388,46 @@
 			script.src   = 'https://www.clarity.ms/tag/' + this.data.clarityId;
 			script.async = true;
 			document.head.appendChild( script );
+		}
+
+		/**
+		 * Load all custom registered trackers after consent.
+		 *
+		 * Reads mgwcsData.trackers (populated from the PHP mwg_register_tracker
+		 * filter via Tracker_Registry) and dynamically injects each tracker's SDK
+		 * URL into the document head. This is the JavaScript counterpart to the
+		 * PHP Tracker_Registry developer API.
+		 *
+		 * Called on both new consent (from consentToScripts()) and for returning
+		 * visitors who have already consented (from init()). Custom trackers that
+		 * need pre-consent signals or special initialisation should not use this
+		 * generic path — implement dedicated loadXxx() methods instead.
+		 *
+		 * This method is a no-op when mgwcsData.trackers is absent (no custom
+		 * trackers registered, or current user excluded by role).
+		 *
+		 * @since 2.0.0
+		 * @return {void}
+		 */
+		loadCustomTrackers() {
+			if ( ! this.data.trackers ) {
+				return;
+			}
+
+			for ( const handle in this.data.trackers ) {
+				if ( ! Object.prototype.hasOwnProperty.call( this.data.trackers, handle ) ) {
+					continue;
+				}
+
+				const tracker = this.data.trackers[ handle ];
+
+				if ( tracker.sdkUrl ) {
+					const script = document.createElement( 'script' );
+					script.src   = tracker.sdkUrl;
+					script.async = true;
+					document.head.appendChild( script );
+				}
+			}
 		}
 
 		/**
@@ -638,6 +682,9 @@
 				// Microsoft Clarity: load clarity.ms for returning visitors who already
 				// consented. The clarity stub queue is replayed by the Clarity SDK on load.
 				this.loadMicrosoftClarity();
+				// Custom registered trackers: load all SDK URLs for returning visitors
+				// who already consented (same as the new-consent path).
+				this.loadCustomTrackers();
 				this.showManagePreferencesLink();
 			} else if ( this.hasRejected() ) {
 				this.showManagePreferencesLink();
