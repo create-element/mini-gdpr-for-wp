@@ -2,7 +2,7 @@
 /**
  * Admin template: Cookie Consent settings section.
  *
- * Included by Settings_Core::render_settings_page(). The $settings variable
+ * Included by Settings::render_settings_page(). The $settings variable
  * is available from the including scope.
  *
  * @package Mini_Wp_Gdpr
@@ -20,11 +20,11 @@ defined( 'ABSPATH' ) || die();
 printf( '<h2>%s</h2>', esc_html__( 'Cookie Consent', 'mini-wp-gdpr' ) );
 
 printf(
-	'<p class="pp-help">%s</p>',
+	'<p class="mwg-help">%s</p>',
 	esc_html__( 'Configure the consent popup shown to new visitors. The popup offers Accept, Reject, and More Information buttons, in line with GDPR requirements.', 'mini-wp-gdpr' )
 );
 
-echo '<p class="pp-form-row pp-checkbox">';
+echo '<p class="mwg-form-row mwg-checkbox">';
 $control_id = get_next_control_id();
 printf(
 	'<input id="%s" name="%s" type="checkbox" %s class="cb-section"/><label for="%s">%s</label>',
@@ -36,7 +36,7 @@ printf(
 );
 echo '</p>';
 printf(
-	'<span class="pp-help">%s</span>',
+	'<span class="mwg-help">%s</span>',
 	esc_html__( 'When enabled, new visitors will see a popup asking for consent before any tracking scripts are loaded.', 'mini-wp-gdpr' )
 );
 
@@ -45,10 +45,10 @@ printf(
 	$settings->get_bool( OPT_IS_COOKIE_CONSENT_POPUP_ENABLED ) ? '' : 'style="display:none;"' // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static string, not user input.
 );
 
-echo '<p class="pp-form-row">';
+echo '<p class="mwg-form-row">';
 $control_id = get_next_control_id();
 printf(
-	'<label for="%s">%s</label><span class="pp-help">%s</span><textarea id="%s" name="%s" rows="6" cols="30">%s</textarea>',
+	'<label for="%s">%s</label><span class="mwg-help">%s</span><textarea id="%s" name="%s" rows="6" cols="30">%s</textarea>',
 	esc_attr( $control_id ),
 	esc_html__( 'Popup tracker/cookie consent message', 'mini-wp-gdpr' ),
 	esc_html__( 'Some HTML tags allowed, like &lt;strong&gt; and &lt;em&gt;', 'mini-wp-gdpr' ),
@@ -58,7 +58,7 @@ printf(
 );
 echo '</p>';
 
-echo '<p class="pp-form-row pp-checkbox">';
+echo '<p class="mwg-form-row mwg-checkbox">';
 $control_id = get_next_control_id();
 printf(
 	'<input id="%s" name="%s" type="checkbox" %s /><label for="%s">%s</label>',
@@ -70,18 +70,18 @@ printf(
 );
 echo '</p>';
 printf(
-	'<span class="pp-help">%s</span>',
+	'<span class="mwg-help">%s</span>',
 	esc_html__( 'Useful if you collect consent for purposes other than tracking, such as form submissions or personalisation.', 'mini-wp-gdpr' )
 );
 
-echo '<p class="pp-form-row">';
+echo '<p class="mwg-form-row">';
 $value = $settings->get_int( OPT_SCRIPT_CONSENT_DURATION, DEFAULT_SCRIPT_CONSENT_DURATION );
 if ( $value <= 0 ) {
 	$value = DEFAULT_SCRIPT_CONSENT_DURATION;
 }
 $control_id = get_next_control_id();
 printf(
-	'<label for="%s">%s</label><span class="pp-help">%s</span><input id="%s" name="%s" type="number" min="1" value="%d" />',
+	'<label for="%s">%s</label><span class="mwg-help">%s</span><input id="%s" name="%s" type="number" min="1" value="%d" />',
 	esc_attr( $control_id ),
 	esc_html__( 'How many days is user-consent valid for?', 'mini-wp-gdpr' ),
 	esc_html__( 'Cookie acceptance is stored in the clients\' browser using local storage.', 'mini-wp-gdpr' ),
@@ -91,10 +91,10 @@ printf(
 );
 echo '</p>';
 
-echo '<p class="pp-form-row">';
+echo '<p class="mwg-form-row">';
 $control_id = get_next_control_id();
 printf(
-	'<label for="%s">%s</label><span class="pp-help">%s</span><select id="%s" name="%s">',
+	'<label for="%s">%s</label><span class="mwg-help">%s</span><select id="%s" name="%s">',
 	esc_attr( $control_id ),
 	esc_html__( 'Position of the consent box', 'mini-wp-gdpr' ),
 	esc_html__( 'Put the box in a corner, or directly in the centre of the page.', 'mini-wp-gdpr' ),
@@ -117,11 +117,11 @@ echo '</p>';
 
 printf( '<h3>%s</h3>', esc_html__( 'Button Text', 'mini-wp-gdpr' ) );
 
-echo '<p class="pp-help">';
+echo '<p class="mwg-help">';
 esc_html_e( 'Customise the text on the consent popup buttons. Leave blank to use the default.', 'mini-wp-gdpr' );
 echo '</p>';
 
-echo '<p class="pp-form-row">';
+echo '<p class="mwg-form-row">';
 $control_id = get_next_control_id();
 printf(
 	'<label for="%s">%s</label><input id="%s" name="%s" type="text" value="%s" placeholder="%s" />',
@@ -134,7 +134,7 @@ printf(
 );
 echo '</p>';
 
-echo '<p class="pp-form-row">';
+echo '<p class="mwg-form-row">';
 $control_id = get_next_control_id();
 printf(
 	'<label for="%s">%s</label><input id="%s" name="%s" type="text" value="%s" placeholder="%s" />',
@@ -147,7 +147,7 @@ printf(
 );
 echo '</p>';
 
-echo '<p class="pp-form-row">';
+echo '<p class="mwg-form-row">';
 $control_id = get_next_control_id();
 printf(
 	'<label for="%s">%s</label><input id="%s" name="%s" type="text" value="%s" placeholder="%s" />',

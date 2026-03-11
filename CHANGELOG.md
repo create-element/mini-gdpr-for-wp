@@ -44,9 +44,7 @@ comprehensive security audit, PHPStan analysis, and full developer documentation
 - **User guide** (`dev-notes/user-guide.md`)
 - `Tracker_Registry` class — centralises tracker registration and JS data for custom third-party trackers
 - `class-settings.php` — full WordPress Settings API integration (`register_setting` for all 18+ options)
-- `class-component.php` — native base class replacing the pp-core.php `Component` class
-- `class-settings-core.php` — native settings helper replacing pp-core.php `Settings_Core`
-- `functions-admin-ui.php` — admin UI helper functions
+- Admin UI helper functions in `functions-private.php` — nonce/cap checks, rate limiting, spinner/button HTML helpers
 
 ### Changed
 - **Removed `pp-core.php` dependency** — 2305-line framework archived to `dev-notes/archive/`

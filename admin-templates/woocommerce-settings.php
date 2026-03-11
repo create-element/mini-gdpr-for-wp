@@ -2,7 +2,7 @@
 /**
  * Admin template: WooCommerce Integration settings section.
  *
- * Included by Settings_Core::render_settings_page(). The $settings variable
+ * Included by Settings::render_settings_page(). The $settings variable
  * is available from the including scope.
  *
  * @package Mini_Wp_Gdpr
@@ -20,11 +20,11 @@ defined( 'ABSPATH' ) || die();
 printf( '<h2>%s</h2>', esc_html__( 'WooCommerce Integration', 'mini-wp-gdpr' ) );
 
 printf(
-	'<p class="pp-help">%s</p>',
+	'<p class="mwg-help">%s</p>',
 	esc_html__( 'Integrates privacy consent with WooCommerce. Consent is recorded when a customer places an order (via the T&Cs checkbox) or accepts via the My Account area.', 'mini-wp-gdpr' )
 );
 
-echo '<p class="pp-form-row pp-checkbox">';
+echo '<p class="mwg-form-row mwg-checkbox">';
 $control_id = get_next_control_id();
 printf(
 	'<input id="%s" name="%s" type="checkbox" %s /><label for="%s">%s</label>',
@@ -36,7 +36,7 @@ printf(
 );
 echo '</p>';
 
-echo '<p class="pp-form-row pp-checkbox">';
+echo '<p class="mwg-form-row mwg-checkbox">';
 $control_id = get_next_control_id();
 printf(
 	'<input id="%s" name="%s" type="checkbox" %s class="cb-section" /><label for="%s">%s</label>',
@@ -53,10 +53,10 @@ printf(
 	$settings->get_bool( OPT_IS_WC_MYACCOUNT_INJECT_ENABLED ) ? '' : 'style="display:none;"' // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static string, not user input.
 );
 
-echo '<p class="pp-form-row">';
+echo '<p class="mwg-form-row">';
 $control_id = get_next_control_id();
 printf(
-	'<label for="%s">%s</label><span class="pp-help">%s</span>',
+	'<label for="%s">%s</label><span class="mwg-help">%s</span>',
 	esc_attr( $control_id ),
 	esc_html__( 'Which tab?', 'mini-wp-gdpr' ),
 	esc_html__( 'Choose a tab from the users\' My Account area.', 'mini-wp-gdpr' )

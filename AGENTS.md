@@ -69,11 +69,10 @@ Full workflow: [`dev-notes/workflows/development-workflow.md`](dev-notes/workflo
 
 ```bash
 # Edit code
-bin/fix.sh       # Auto-fix PHPCS issues (phpcbf)
-bin/check.sh     # Run PHPCS + PHPUnit — must pass before committing
+phpcs .          # Run PHPCS linting
+phpcbf .         # Auto-fix PHPCS violations
+phpstan analyse  # Run PHPStan static analysis
 ```
-
-Composer aliases also work: `composer run lint` / `composer run format` / `composer run test`.
 
 ### Commit message format
 
@@ -113,13 +112,12 @@ Consult these before implementing any of the following:
 Run these before every commit — **never commit failing checks**:
 
 ```bash
-bin/check.sh          # Full check: PHPCS + PHPUnit
-bin/fix.sh            # Auto-fix PHPCS violations first
-bin/test.sh           # PHPUnit only
-bin/test.sh --coverage  # With HTML coverage report in coverage/
+phpcs .               # Run PHPCS linting
+phpcbf .              # Auto-fix PHPCS violations
+phpstan analyse       # Run PHPStan static analysis (uses phpstan.neon)
 ```
 
-PHPCS config is in `phpcs.xml`. It excludes `pp-core.php`, `pp-assets/`, `vendor/`, `dev-notes/`.
+PHPCS config is in `phpcs.xml`. PHPStan config is in `phpstan.neon`. Both tools are installed globally.
 
 ---
 

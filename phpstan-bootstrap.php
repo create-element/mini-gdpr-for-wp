@@ -7,6 +7,9 @@
  * This file is NOT loaded by WordPress. It is only used by PHPStan.
  */
 
+const PP_MWG_NAME    = 'mini-wp-gdpr';
+const PP_MWG_VERSION = '2.0.0';
+
 define( 'PP_MWG_DIR', __DIR__ . '/' );
 define( 'PP_MWG_URL', 'https://example.com/wp-content/plugins/mini-gdpr-for-wp/' );
 define( 'PP_MWG_ADMIN_TEMPLATES_DIR', __DIR__ . '/admin-templates/' );

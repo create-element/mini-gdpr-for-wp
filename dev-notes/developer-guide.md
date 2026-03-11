@@ -46,8 +46,7 @@ includes/
 ├── class-user-controller.php   Per-user consent record CRUD
 ├── class-admin-hooks.php     Admin-only hook callbacks
 ├── class-public-hooks.php    Front-end hook callbacks
-├── class-cf7-helper.php      Contact Form 7 integration
-└── functions-admin-ui.php    Admin template rendering helpers
+└── class-cf7-helper.php      Contact Form 7 integration
 
 trackers/
 ├── tracker-facebook-pixel.php   Facebook Pixel delay-loading

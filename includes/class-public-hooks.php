@@ -19,18 +19,7 @@ defined( 'ABSPATH' ) || die();
  *
  * @since 1.0.0
  */
-class Public_Hooks extends Component {
-
-	/**
-	 * Constructor.
-	 *
-	 * @since 1.0.0
-	 * @param string $name    Plugin slug.
-	 * @param string $version Plugin version.
-	 */
-	public function __construct( string $name, string $version ) { // phpcs:ignore Generic.CodeAnalysis.UselessOverridingMethod.Found -- Kept for future extension and docblock clarity.
-		parent::__construct( $name, $version );
-	}
+class Public_Hooks {
 
 	/**
 	 * Inject all configured and enabled tracker scripts.

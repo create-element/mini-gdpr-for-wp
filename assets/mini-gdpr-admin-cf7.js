@@ -27,7 +27,7 @@
 		constructor( container ) {
 			this.container    = container;
 			this.meta         = JSON.parse( container.getAttribute( 'data-mwg-cf7-forms' ) );
-			this.spinner      = container.querySelector( '.pp-spinner' );
+			this.spinner      = container.querySelector( '.mwg-spinner' );
 			this.tbody        = container.querySelector( 'tbody' );
 			this._initTimeout = null;
 		}

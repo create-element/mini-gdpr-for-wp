@@ -20,11 +20,11 @@ defined( 'ABSPATH' ) || die();
 printf( '<h3><span class="dashicons dashicons-facebook"></span> %s</h3>', esc_html__( 'Facebook Pixel', 'mini-wp-gdpr' ) );
 
 printf(
-	'<p class="pp-help">%s</p>',
+	'<p class="mwg-help">%s</p>',
 	esc_html__( 'The Pixel SDK is delay-loaded and will only fire after the user accepts cookies. Your Pixel ID can be found in Meta Events Manager.', 'mini-wp-gdpr' )
 );
 
-echo '<p class="pp-form-row pp-checkbox">';
+echo '<p class="mwg-form-row mwg-checkbox">';
 $control_id = get_next_control_id();
 printf(
 	'<input id="%s" name="%s" type="checkbox" %s class="cb-section"/><label for="%s">%s</label>',
@@ -41,10 +41,10 @@ printf(
 	$settings->get_bool( OPT_IS_FB_PIXEL_TRACKING_ENABLED ) ? '' : 'style="display:none;"' // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static string, not user input.
 );
 
-echo '<p class="pp-form-row">';
+echo '<p class="mwg-form-row">';
 $control_id = get_next_control_id();
 printf(
-	'<label for="%s">%s</label><span class="pp-help">%s</span><input id="%s" name="%s" type="text" value="%s" />',
+	'<label for="%s">%s</label><span class="mwg-help">%s</span><input id="%s" name="%s" type="text" value="%s" />',
 	esc_attr( $control_id ),
 	esc_html__( 'Facebook Pixel ID', 'mini-wp-gdpr' ),
 	esc_html__( 'e.g. "999999999999999"', 'mini-wp-gdpr' ),

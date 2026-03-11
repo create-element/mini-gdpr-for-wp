@@ -20,12 +20,12 @@ defined( 'ABSPATH' ) || die();
 printf( '<h3><span class="dashicons dashicons-database"></span> %s</h3>', esc_html__( 'Microsoft Clarity', 'mini-wp-gdpr' ) );
 
 printf(
-	'<p class="pp-help">%s</p>',
+	'<p class="mwg-help">%s</p>',
 	esc_html__( 'The Clarity SDK is delay-loaded and will only fire after the user accepts cookies. Your Project ID can be found in your Clarity dashboard under Settings \u2192 Setup.', 'mini-wp-gdpr' )
 );
 
-echo '<p class="pp-form-row pp-checkbox">';
-echo pp_get_admin_checkbox_html( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- pp_get_admin_checkbox_html() returns pre-escaped HTML.
+echo '<p class="mwg-form-row mwg-checkbox">';
+echo get_admin_checkbox_html( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_admin_checkbox_html() returns pre-escaped HTML.
 	OPT_IS_MS_CLARITY_TRACKING_ENABLED,
 	esc_html__( 'Add Microsoft Clarity', 'mini-wp-gdpr' ),
 	$settings->get_bool( OPT_IS_MS_CLARITY_TRACKING_ENABLED ),
@@ -38,10 +38,10 @@ printf(
 	$settings->get_bool( OPT_IS_MS_CLARITY_TRACKING_ENABLED ) ? '' : 'style="display:none;"' // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static string, not user input.
 );
 
-echo '<p class="pp-form-row">';
+echo '<p class="mwg-form-row">';
 $control_id = get_next_control_id();
 printf(
-	'<label for="%s">%s</label><span class="pp-help">%s</span><input id="%s" name="%s" type="text" value="%s" />',
+	'<label for="%s">%s</label><span class="mwg-help">%s</span><input id="%s" name="%s" type="text" value="%s" />',
 	esc_attr( $control_id ),
 	esc_html__( 'Microsoft Clarity Project Code', 'mini-wp-gdpr' ),
 	esc_html__( 'e.g. "abcdefg123"', 'mini-wp-gdpr' ),

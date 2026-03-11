@@ -249,8 +249,8 @@ errors, verify your `phpstan.neon` matches the committed version.
 
 ### "Class not found" errors on PHPStan scan
 
-Ensure `vendor/autoload.php` exists (run `composer install`). If PHPStan fails to load
-the bootstrap, run: `vendor/bin/phpstan analyse --generate-baseline`.
+Ensure the `phpstan-bootstrap.php` file exists (it defines constants needed for static
+analysis). If PHPStan fails, run: `phpstan analyse --generate-baseline`.
 
 ---
 

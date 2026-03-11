@@ -16,13 +16,11 @@ sitemap.xml.gz
 
 # Package Managers
 node_modules/
-vendor/
 # bower_components/
 
 # Build Tools & Dependencies
 package-lock.json
 yarn.lock
-# composer.lock is tracked (reproducible dev env)
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -73,7 +71,6 @@ Thumbs.db
 
 # PHP
 phpcs.xml.cache
-composer.phar
 .phpunit.result.cache
 phpunit.xml
 /build/

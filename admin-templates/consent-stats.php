@@ -98,11 +98,11 @@ $stats = array(
 
 printf( '<h2>%s</h2>', esc_html__( 'Consent Statistics', 'mini-wp-gdpr' ) );
 
-echo '<div class="pp-columns pp-inline-flex mwg-stat-cards">';
+echo '<div class="mwg-columns mwg-inline-flex mwg-stat-cards">';
 
 foreach ( $stats as $stat ) {
 	printf(
-		'<div class="pp-panel pp-column mwg-stat-card %s">
+		'<div class="mwg-panel mwg-column mwg-stat-card %s">
 			<p class="mwg-stat-label">%s</p>
 			<p class="mwg-stat-number">%s</p>
 			%s
@@ -116,6 +116,6 @@ foreach ( $stats as $stat ) {
 
 echo '</div>';
 
-echo '<p class="pp-help">';
+echo '<p class="mwg-help">';
 esc_html_e( 'Accepted / Rejected counts reflect registered users who made a decision via the cookie consent popup. Undecided users have not yet interacted with the popup, or their consent has not been recorded (e.g. guest visitors).', 'mini-wp-gdpr' );
 echo '</p>';

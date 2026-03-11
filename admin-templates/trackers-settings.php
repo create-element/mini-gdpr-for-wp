@@ -2,7 +2,7 @@
 /**
  * Admin template: Tracking Scripts settings section.
  *
- * Included by Settings_Core::render_settings_page(). The $settings variable
+ * Included by Settings::render_settings_page(). The $settings variable
  * is available from the including scope.
  *
  * @package Mini_Wp_Gdpr
@@ -20,11 +20,11 @@ defined( 'ABSPATH' ) || die();
 printf( '<h2>%s</h2>', esc_html__( 'Tracking Scripts', 'mini-wp-gdpr' ) );
 
 printf(
-	'<p class="pp-help">%s</p>',
+	'<p class="mwg-help">%s</p>',
 	esc_html__( 'Configure which analytics and tracking scripts are added to your site. Scripts are only injected after the user gives explicit consent.', 'mini-wp-gdpr' )
 );
 
-echo '<p class="pp-form-row pp-checkbox">';
+echo '<p class="mwg-form-row mwg-checkbox">';
 $control_id = get_next_control_id();
 printf(
 	'<input id="%s" name="%s" type="checkbox" %s /><label for="%s">%s</label>',
@@ -36,11 +36,11 @@ printf(
 );
 echo '</p>';
 printf(
-	'<span class="pp-help">%s</span>',
+	'<span class="mwg-help">%s</span>',
 	esc_html__( 'Enabling this is more respectful of users\' privacy, but it will usually lead to your tracker(s) under-reporting site traffic.', 'mini-wp-gdpr' )
 );
 
-echo '<p class="pp-form-row pp-checkbox">';
+echo '<p class="mwg-form-row mwg-checkbox">';
 $control_id = get_next_control_id();
 printf(
 	'<input id="%s" name="%s" type="checkbox" %s /><label for="%s">%s</label>',
@@ -51,7 +51,7 @@ printf(
 	esc_html__( 'Allow tracking scripts to run even when logged-in as administrator?', 'mini-wp-gdpr' )
 );
 echo '</p>';
-printf( '<span class="pp-help">%s</span>', esc_html__( 'By default, tracking scripts won\'t be added for users who are logged-in as administrator.', 'mini-wp-gdpr' ) );
+printf( '<span class="mwg-help">%s</span>', esc_html__( 'By default, tracking scripts won\'t be added for users who are logged-in as administrator.', 'mini-wp-gdpr' ) );
 
 require __DIR__ . '/trackers-settings-facebook.php';
 require __DIR__ . '/trackers-settings-google.php';

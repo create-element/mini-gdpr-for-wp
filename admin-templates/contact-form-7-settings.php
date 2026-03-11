@@ -2,7 +2,7 @@
 /**
  * Admin template: Contact Form 7 Integration settings section.
  *
- * Included by Settings_Core::render_settings_page(). The $settings variable
+ * Included by Settings::render_settings_page(). The $settings variable
  * is available from the including scope.
  *
  * @package Mini_Wp_Gdpr
@@ -18,7 +18,7 @@ defined( 'ABSPATH' ) || die();
 printf( '<h2>%s</h2>', esc_html__( 'Contact Form 7 Integration', 'mini-wp-gdpr' ) );
 
 printf(
-	'<p class="pp-help">%s</p>',
+	'<p class="mwg-help">%s</p>',
 	esc_html__( 'Automatically adds a GDPR consent checkbox to your Contact Form 7 forms. When a user submits the form, their consent is recorded against their WordPress account.', 'mini-wp-gdpr' )
 );
 
@@ -35,12 +35,12 @@ $forms_data = array(
 $control_id = get_next_control_id();
 
 printf(
-	'<div id="%s" class="pp-ajax-table" data-mwg-cf7-forms="%s">',
+	'<div id="%s" class="mwg-ajax-table" data-mwg-cf7-forms="%s">',
 	esc_attr( $control_id ),
 	esc_attr( wp_json_encode( $forms_data ) )
 );
 
-echo pp_get_spinner_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- pp_get_spinner_html() returns pre-escaped HTML.
+echo get_spinner_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_spinner_html() returns pre-escaped HTML.
 
 echo '<table>';
 echo '<thead>';

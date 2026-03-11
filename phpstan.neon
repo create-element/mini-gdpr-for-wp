@@ -1,5 +1,5 @@
 includes:
-    - vendor/szepeviktor/phpstan-wordpress/extension.neon
+    - /home/zee/.config/composer/vendor/szepeviktor/phpstan-wordpress/extension.neon
 
 parameters:
     level: 5
@@ -13,7 +13,6 @@ parameters:
         - admin-templates/
         - public-templates/
     excludePaths:
-        - vendor/
         - node_modules/
         - dev-notes/
         - bin/

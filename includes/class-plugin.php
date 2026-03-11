@@ -21,7 +21,7 @@ defined( 'ABSPATH' ) || die();
  *
  * @since 1.0.0
  */
-class Plugin extends Component {
+class Plugin {
 
 	// -----------------------------------------------------------------------
 	// Properties
@@ -70,21 +70,6 @@ class Plugin extends Component {
 	private $settings;
 
 	// -----------------------------------------------------------------------
-	// Constructor
-	// -----------------------------------------------------------------------
-
-	/**
-	 * Constructor.
-	 *
-	 * @since 1.0.0
-	 * @param string $name    Plugin slug / text domain.
-	 * @param string $version Plugin version string.
-	 */
-	public function __construct( string $name, string $version ) { // phpcs:ignore Generic.CodeAnalysis.UselessOverridingMethod.Found -- Kept for future extension and docblock clarity.
-		parent::__construct( $name, $version );
-	}
-
-	// -----------------------------------------------------------------------
 	// Bootstrap
 	// -----------------------------------------------------------------------
 
@@ -102,7 +87,7 @@ class Plugin extends Component {
 		add_action( 'init', array( $this, 'init' ) );
 		add_action( 'admin_init', array( $this, 'admin_init' ) );
 
-		$this->settings = new Settings( $this->name, $this->version );
+		$this->settings = new Settings();
 		add_action( 'admin_menu', array( $this->settings, 'initialise_admin_menu' ) );
 	}
 
@@ -113,7 +98,7 @@ class Plugin extends Component {
 	 * @return void
 	 */
 	public function load_plugin_textdomain() {
-		load_plugin_textdomain( $this->name, false, $this->name . '/languages' );
+		load_plugin_textdomain( PP_MWG_NAME, false, PP_MWG_NAME . '/languages' );
 	}
 
 	// -----------------------------------------------------------------------
@@ -131,7 +116,7 @@ class Plugin extends Component {
 	 */
 	public function init() {
 		if ( is_mini_gdpr_enabled() ) {
-			$this->public_hooks = new Public_Hooks( $this->name, $this->version );
+			$this->public_hooks = new Public_Hooks();
 
 			if ( ! is_admin() ) {
 				add_action( 'wp_enqueue_scripts', array( $this->public_hooks, 'inject_configured_trackers' ) );
@@ -196,7 +181,7 @@ class Plugin extends Component {
 		$this->settings->register_settings();
 
 		if ( is_mini_gdpr_enabled() ) {
-			$this->admin_hooks = new Admin_Hooks( $this->name, $this->version );
+			$this->admin_hooks = new Admin_Hooks();
 
 			add_action( 'admin_enqueue_scripts', array( $this->admin_hooks, 'admin_enqueue_scripts' ), 10, 1 );
 
@@ -219,7 +204,7 @@ class Plugin extends Component {
 	 */
 	public function get_script_blocker() {
 		if ( is_null( $this->script_blocker ) ) {
-			$this->script_blocker = new Script_Blocker( $this->name, $this->version );
+			$this->script_blocker = new Script_Blocker();
 		}
 
 		return $this->script_blocker;
@@ -233,7 +218,7 @@ class Plugin extends Component {
 	 */
 	public function get_user_controller() {
 		if ( is_null( $this->user_controller ) ) {
-			$this->user_controller = new User_Controller( $this->name, $this->version );
+			$this->user_controller = new User_Controller();
 		}
 
 		return $this->user_controller;
@@ -247,7 +232,7 @@ class Plugin extends Component {
 	 */
 	public function get_cf7_helper() {
 		if ( is_null( $this->cf7_helper ) ) {
-			$this->cf7_helper = new CF7_Helper( $this->name, $this->version );
+			$this->cf7_helper = new CF7_Helper();
 		}
 
 		return $this->cf7_helper;
@@ -390,7 +375,7 @@ class Plugin extends Component {
 			die();
 		}
 
-		if ( ! pp_is_within_ajax_rate_limit( ACCEPT_GDPR_ACTION, RATE_LIMIT_CONSENT_MAX, RATE_LIMIT_CONSENT_WINDOW ) ) {
+		if ( ! is_within_ajax_rate_limit( ACCEPT_GDPR_ACTION, RATE_LIMIT_CONSENT_MAX, RATE_LIMIT_CONSENT_WINDOW ) ) {
 			wp_send_json( null, 429 );
 		}
 
@@ -451,7 +436,7 @@ class Plugin extends Component {
 			die();
 		}
 
-		if ( ! pp_is_within_ajax_rate_limit( REJECT_GDPR_ACTION, RATE_LIMIT_CONSENT_MAX, RATE_LIMIT_CONSENT_WINDOW ) ) {
+		if ( ! is_within_ajax_rate_limit( REJECT_GDPR_ACTION, RATE_LIMIT_CONSENT_MAX, RATE_LIMIT_CONSENT_WINDOW ) ) {
 			wp_send_json( null, 429 );
 		}
 
@@ -489,14 +474,14 @@ class Plugin extends Component {
 	 * @return void
 	 */
 	public function install_cf7_form() {
-		pp_die_if_bad_nonce_or_cap( INSTALL_CF7_CONSENT_ACTION, $this->settings->get_settings_cap() );
+		die_if_bad_nonce_or_cap( INSTALL_CF7_CONSENT_ACTION, $this->settings->get_settings_cap() );
 
 		$response      = null;
 		$response_code = 400;
 
 		$cf7_helper = get_cf7_helper();
 
-		// Nonce verified above by pp_die_if_bad_nonce_or_cap().
+		// Nonce verified above by die_if_bad_nonce_or_cap().
 		// phpcs:disable WordPress.Security.NonceVerification.Missing, Generic.CodeAnalysis.EmptyStatement, Generic.CodeAnalysis.AssignmentInCondition, Squiz.PHP.DisallowMultipleAssignments -- Nonce verified above; SESE guard pattern.
 		if ( ! array_key_exists( 'formId', $_POST ) ) {
 			// formId not supplied.
@@ -533,9 +518,9 @@ class Plugin extends Component {
 	 * @return void
 	 */
 	public function reset_all_privacy_consents() {
-		pp_die_if_bad_nonce_or_cap( RESET_PRIVACY_POLICY_CONSENTS, 'administrator' );
+		die_if_bad_nonce_or_cap( RESET_PRIVACY_POLICY_CONSENTS, 'administrator' );
 
-		if ( ! pp_is_within_ajax_rate_limit( RESET_PRIVACY_POLICY_CONSENTS, RATE_LIMIT_RESET_MAX, RATE_LIMIT_RESET_WINDOW ) ) {
+		if ( ! is_within_ajax_rate_limit( RESET_PRIVACY_POLICY_CONSENTS, RATE_LIMIT_RESET_MAX, RATE_LIMIT_RESET_WINDOW ) ) {
 			wp_send_json( null, 429 );
 		}
 

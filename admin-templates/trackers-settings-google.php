@@ -20,14 +20,14 @@ defined( 'ABSPATH' ) || die();
 printf( '<h3><span class="dashicons dashicons-google"></span> %s</h3>', esc_html__( 'Google Analytics', 'mini-wp-gdpr' ) );
 
 printf(
-	'<p class="pp-help">%s</p>',
+	'<p class="mwg-help">%s</p>',
 	esc_html__( 'The gtag.js SDK is delay-loaded and will only fire after the user accepts cookies. Supports GA4 (G-XXXXXXXX) and Universal Analytics (UA-XXXXXX-X) tracking codes.', 'mini-wp-gdpr' )
 );
 
 if ( is_external_ga_injector_plugin_installed() ) {
 	printf( '<p class="ml-3">%s</p>', esc_html__( 'Using a third party plugin to inject Google tracker into the HTML.', 'mini-wp-gdpr' ) );
 } else {
-	echo '<p class="pp-form-row pp-checkbox">';
+	echo '<p class="mwg-form-row mwg-checkbox">';
 	$control_id = get_next_control_id();
 	printf(
 		'<input id="%s" name="%s" type="checkbox" %s class="cb-section"/><label for="%s">%s</label>',
@@ -44,10 +44,10 @@ if ( is_external_ga_injector_plugin_installed() ) {
 		$settings->get_bool( OPT_IS_GA_TRACKING_ENABLED ) ? '' : 'style="display:none;"' // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static string, not user input.
 	);
 
-	echo '<p class="pp-form-row">';
+	echo '<p class="mwg-form-row">';
 	$control_id = get_next_control_id();
 	printf(
-		'<label for="%s">%s</label><span class="pp-help">%s</span><input id="%s" name="%s" type="text" value="%s" />',
+		'<label for="%s">%s</label><span class="mwg-help">%s</span><input id="%s" name="%s" type="text" value="%s" />',
 		esc_attr( $control_id ),
 		esc_html__( 'Google Analytics Tracking Code', 'mini-wp-gdpr' ),
 		esc_html__( 'e.g. "G-XXXXX" or "UA-XXXXX-X"', 'mini-wp-gdpr' ),
@@ -57,10 +57,10 @@ if ( is_external_ga_injector_plugin_installed() ) {
 	);
 	echo '</p>';
 
-	echo '<p class="pp-form-row pp-checkbox">';
+	echo '<p class="mwg-form-row mwg-checkbox">';
 	$control_id = get_next_control_id();
 	printf(
-		'<input id="%s" name="%s" type="checkbox" %s /><label for="%s">%s</label><span class="pp-help">%s</span>',
+		'<input id="%s" name="%s" type="checkbox" %s /><label for="%s">%s</label><span class="mwg-help">%s</span>',
 		esc_attr( $control_id ),
 		esc_attr( OPT_GA_CONSENT_MODE_ENABLED ),
 		checked( $settings->get_bool( OPT_GA_CONSENT_MODE_ENABLED ), true, false ),

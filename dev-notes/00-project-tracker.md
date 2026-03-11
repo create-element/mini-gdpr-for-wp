@@ -2,8 +2,8 @@
 
 **Version:** 2.0.0 (Refactor)  
 **Last Updated:** 18 February 2026 (12:10)  
-**Current Phase:** Complete (autonomous work done — M10 remaining tasks deferred to Paul)  
-**Overall Progress:** 98%
+**Current Phase:** M11 — Admin Settings Page Standard WP Styling (not started)
+**Overall Progress:** 98% (M1–M10); M11 planned
 
 ---
 
@@ -742,6 +742,89 @@
 
 ---
 
+### Milestone 11: Admin Settings Page — Standard WordPress Styling
+**Target:** Feb 2026
+**Status:** ⚪ Not Started
+**Priority:** Medium
+
+> **Context:** When pp-core.php was removed in M3, the agent preserved the Power Plugins visual branding (purple `#7209b7` buttons, custom form layout, `pp-` prefixed CSS classes). This milestone strips that branding and reskins the settings page to look and feel like a native WordPress admin page.
+
+> **Settings API decision:** A full migration to `add_settings_section()` / `add_settings_field()` / `options.php` was considered and **ruled out**. The plugin stores ~20 individual `wp_options` rows (not a single serialized array), and the "unchecked checkbox" problem with `options.php` would require either breaking backward compatibility or adding workaround callbacks more complex than the current handler. The current custom save handler is nonce-protected, capability-checked, and sanitized — it works correctly. The `register_settings()` calls remain for programmatic access. **Keep the current save approach; fix the cosmetics.**
+
+#### Objectives
+- [ ] Replace Power Plugins purple branding with standard WordPress admin styles
+- [ ] Use native WP admin CSS classes (`form-table`, `regular-text`, `description`)
+- [ ] Remove unused pp-core CSS components carried over from the framework
+- [ ] Rename `pp-` prefixed CSS classes and `pp_` prefixed PHP helper functions to `mwg_`/`mwg-`
+- [ ] Remove the Power Plugins support link from the page header
+- [ ] Ensure the page looks at home alongside other Settings → sub-pages
+
+#### Sub-Tasks
+
+##### Phase 11.1: CSS Overhaul
+- [ ] Remove all `--pp-*` CSS custom properties and the purple colour scheme
+- [ ] Remove the `.button-primary` override (let WP's native blue button show through)
+- [ ] Remove unused CSS components inherited from pp-core (autocomplete `.ui-autocomplete`, image radios `.pp-image-radios`, term/post chooser `[data-pp-term-chooser]`/`[data-pp-post-chooser]`, pill box `.pp-pill-box`, click-to-copy `[data-click-to-copy]`, quick popup `.pp-quick-popup`, toggle switch `.pp-toggle`, utility spacing `.mt-*`/`.ml-*`/`.pt-*` etc.)
+- [ ] Keep and restyle consent stat cards (`.mwg-stat-cards`) — these are plugin-specific and useful
+- [ ] Keep the AJAX table styles for the CF7 integration (`.pp-ajax-table` → rename to `.mwg-ajax-table`)
+- [ ] Keep the button-with-spinner styles for the Reset button (rename to `.mwg-button-with-spinner`)
+- [ ] Rename remaining `pp-` CSS classes to `mwg-` prefix throughout the stylesheet
+- [ ] Verify the resulting CSS file is significantly smaller
+
+##### Phase 11.2: Template Restyling
+- [ ] Replace `pp-form-row` / `pp-checkbox` pattern with `<table class="form-table"><tr><th scope="row"><label>…</label></th><td>…</td></tr></table>` (standard WP settings layout)
+- [ ] Replace `<span class="pp-help">` / `<p class="pp-help">` with `<p class="description">` (standard WP help text)
+- [ ] Update all 7 admin template files: cookie-consent-settings.php, trackers-settings.php, trackers-settings-facebook.php, trackers-settings-google.php, trackers-settings-msft-clarity.php, woocommerce-settings.php, contact-form-7-settings.php
+- [ ] Update consent-stats.php template — replace `pp-columns`/`pp-panel`/`pp-column` with renamed `mwg-` classes
+- [ ] Update `render_settings_page()` in class-settings.php — remove the Power Plugins support link from the `<h1>`, remove `pp-wrap` class (use standard WP `wrap` only), remove `pp-form-row` from the Reset warning
+- [ ] Verify collapsible `cb-section` JS pattern still works (checkbox toggles a `<section>`)
+
+##### Phase 11.3: PHP Helper Function Rename ✅ Complete
+- [x] Dissolved `includes/functions-admin-ui.php` — all 9 functions moved into `functions-private.php`
+- [x] Dropped `pp_` prefix from 7 functions (2 already had no prefix)
+- [x] Renamed `pp_get_header_logo_html()` → `get_settings_header_html()`
+- [x] Updated all 10 call sites across includes/ and admin-templates/
+- [x] Removed `require_once` from `mini-wp-gdpr.php`
+- [x] PHPCS 0 errors, PHPStan 0 errors
+
+##### Phase 11.4: Settings_Core Cleanup ✅ Complete
+- [x] Merged `Settings_Core` into `Settings` (class deleted)
+- [x] Removed `Component` base class (class deleted); replaced with `PP_MWG_NAME`/`PP_MWG_VERSION` constants
+- [x] Removed unused typed helpers (`get_float`, `set_float`, `get_colour_hex`, `set_colour_hex`, `get_array`, `set_array`)
+- [x] Removed unused form scaffolding methods (`open_wrap`, `open_form`, `close_form`, `close_wrap`)
+- [x] PHPCS 0 errors, PHPStan 0 errors
+
+##### Phase 11.5: Testing & Verification
+- [ ] PHPCS scan — 0 errors, 0 warnings on all modified files
+- [ ] PHPStan level 5 — 0 errors
+- [ ] Visual check: settings page looks like a standard WordPress settings page (comparable to Settings → General, Settings → Reading, etc.)
+- [ ] Verify all settings save/load correctly (round-trip test)
+- [ ] Verify collapsible sections still work (checkbox → show/hide)
+- [ ] Verify consent stats cards render correctly
+- [ ] Verify CF7 AJAX table renders and functions correctly
+- [ ] Verify Reset All Consents button and spinner work
+- [ ] Verify no `pp-` or `pp_` references remain in source (excluding dev-notes/archive/ and comments referencing the migration history)
+- [ ] Rebuild .min.js assets if any JS changes were needed
+
+#### Deliverables
+- [ ] Restyled admin settings page using native WordPress admin CSS
+- [ ] Cleaned-up mwg-admin.css (no Power Plugins branding, no dead code)
+- [ ] Renamed PHP helpers (`pp_` → `mwg_`)
+- [ ] Renamed CSS classes (`pp-` → `mwg-`)
+- [ ] Slimmed-down Settings_Core (unused methods removed)
+
+#### Success Criteria
+- Settings page is visually indistinguishable from a standard WordPress settings page
+- No purple (#7209b7) anywhere on the page
+- Standard blue "Save Changes" button
+- `form-table` layout for all field rows
+- `description` class for all help text
+- No `pp-` CSS classes or `pp_` PHP function names remain in active code
+- All existing functionality preserved (save, load, collapsible sections, stats, reset)
+- PHPCS + PHPStan clean
+
+---
+
 ## Progress Tracking
 
 | Milestone | Target Completion | Status | Progress |
@@ -756,6 +839,7 @@
 | 8. PHPStan, Testing & QA | May 11, 2026 | 🟢 Complete | 100% |
 | 9. Documentation | May 18, 2026 | 🟢 Complete | 100% |
 | 10. Release Preparation | May 25, 2026 | 🟢 Complete (autonomous) | 80% — remaining 20% deferred to Paul (beta, WP.org) |
+| 11. Admin Settings Page — Standard WP Styling | Feb 2026 | ⚪ Not Started | 0% |
 
 **Legend:**
 - 🟢 Complete
@@ -832,6 +916,6 @@
 
 ---
 
-**Last Updated:** 18 February 2026 (12:10)  
-**Next Review:** N/A — autonomous coding work complete  
-**Next Action:** Deferred to Paul: Phase 10.4 beta testing, Phase 10.5 WordPress.org submission, fresh WordPress install test, v1.4.3 upgrade test
+**Last Updated:** 18 February 2026
+**Next Review:** When Paul is ready to start M11
+**Next Action:** M11 Phase 11.1 — CSS overhaul (remove Power Plugins purple branding, strip unused pp-core CSS)

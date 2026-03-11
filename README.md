@@ -53,12 +53,6 @@ A lightweight and easy-to-use GDPR compliance plugin for WordPress with cookie c
 4. Activate the plugin
 5. Navigate to **Settings → Mini WP GDPR** to configure
 
-### Via Composer
-
-```bash
-composer require power-plugins/mini-wp-gdpr
-```
-
 ### Manual Installation
 
 1. Upload `mini-wp-gdpr/` directory to `/wp-content/plugins/`

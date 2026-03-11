@@ -39,7 +39,7 @@ If WPCS is not installed, install it globally:
 
 ```bash
 composer global require squizlabs/php_codesniffer wp-coding-standards/wpcs
-phpcs --config-set installed_paths ~/.composer/vendor/wp-coding-standards/wpcs
+phpcs --config-set installed_paths ~/.config/composer/vendor/wp-coding-standards/wpcs
 ```
 
 ### JavaScript Build Tools
@@ -58,9 +58,9 @@ This runs `bin/build.js` which uses Terser to produce `.min.js` files in `assets
 The `.min.js` files are committed to the repository (plugin users do not need Node.js).
 Source maps (`*.min.js.map`) are excluded from git (see `.gitignore`).
 
-### Note: No composer.json in This Plugin
+### Note: Global Tools Only
 
-This plugin does not use Composer or a `vendor/` directory. Shell scripts (bin/) were removed as a security risk — they have no place in a WordPress plugin. Use the globally-installed `phpcs` and `phpcbf` commands directly.
+This plugin does not use Composer or a `vendor/` directory. All code quality tools (`phpcs`, `phpcbf`, `phpstan`) are installed globally. Use them directly from the plugin root.
 
 ---
 
@@ -141,7 +141,6 @@ phpcs --standard=phpcs.xml includes/class-settings.php
 The PHPCS configuration lives in `phpcs.xml`. It excludes:
 
 - `dev-notes/` (development documentation, not plugin code)
-- `vendor/` (not present in this plugin)
 - `languages/` (translation files)
 - `tests/` (if added)
 - `*.js`, `*.css` (JavaScript and CSS handled separately in M4+)
@@ -193,11 +192,10 @@ PHPStan static analysis is scheduled for M8, after the bulk of refactoring in
 M3–M6 is complete. Running PHPStan on code that is still being rewritten creates
 noise without value.
 
-When M8 arrives, set up PHPStan:
+PHPStan is installed globally. Run from the plugin root:
 
 ```bash
-composer global require phpstan/phpstan
-phpstan analyse --configuration phpstan.neon
+phpstan analyse
 ```
 
 ---
@@ -227,7 +225,6 @@ Full commit guide: [`commit-to-git.md`](commit-to-git.md)
 - Configuration files (`phpcs.xml`, `.editorconfig`, `.gitignore`)
 
 **Do NOT commit:**
-- `vendor/` (not used — no composer.json)
 - `node_modules/` (local build tools — excluded by `.gitignore`)
 - `*.min.js.map` (source maps — excluded by `.gitignore`)
 - IDE-specific files (`.idea/`, `.vscode/` unless shared config)
@@ -264,14 +261,7 @@ Before committing:
 
 ### "phpcs: command not found"
 
-Install PHPCS globally:
-
-```bash
-composer global require squizlabs/php_codesniffer wp-coding-standards/wpcs
-phpcs --config-set installed_paths ~/.composer/vendor/wp-coding-standards/wpcs
-```
-
-Or check if it's installed elsewhere:
+PHPCS should be installed globally via `composer global require`. Check if it's available:
 
 ```bash
 which phpcs
@@ -299,9 +289,9 @@ Check the error log for PHP parse errors:
 tail -50 /var/www/westfield.local/log/error.log
 ```
 
-### "PHPCS shows errors in dev-notes/ or vendor/"
+### "PHPCS shows errors in dev-notes/"
 
-These directories are excluded in `phpcs.xml`. If PHPCS scans them anyway:
+This directory is excluded in `phpcs.xml`. If PHPCS scans it anyway:
 
 ```bash
 phpcs --standard=phpcs.xml --report=summary .

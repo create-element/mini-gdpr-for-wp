@@ -18,18 +18,7 @@ defined( 'ABSPATH' ) || die();
  *
  * @since 1.0.0
  */
-class Admin_Hooks extends Component {
-
-	/**
-	 * Constructor.
-	 *
-	 * @since 1.0.0
-	 * @param string $name    Plugin slug.
-	 * @param string $version Plugin version.
-	 */
-	public function __construct( string $name, string $version ) { // phpcs:ignore Generic.CodeAnalysis.UselessOverridingMethod.Found -- Kept for future extension and docblock clarity.
-		parent::__construct( $name, $version );
-	}
+class Admin_Hooks {
 
 	/**
 	 * Enqueue admin scripts and styles for the plugin settings pages.
@@ -48,14 +37,14 @@ class Admin_Hooks extends Component {
 		}
 
 		if ( $are_assets_required ) {
-			pp_enqueue_admin_assets();
+			enqueue_admin_assets();
 
 			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
-			wp_enqueue_script( $this->name, PP_MWG_ASSETS_URL . "mini-gdpr-admin$suffix.js", [], $this->version, true );
+			wp_enqueue_script( PP_MWG_NAME, PP_MWG_ASSETS_URL . "mini-gdpr-admin$suffix.js", [], PP_MWG_VERSION, true );
 
 			if ( is_cf7_installed() ) {
-				wp_enqueue_script( $this->name . '-cf7', PP_MWG_ASSETS_URL . "mini-gdpr-admin-cf7$suffix.js", [], $this->version, true );
+				wp_enqueue_script( PP_MWG_NAME . '-cf7', PP_MWG_ASSETS_URL . "mini-gdpr-admin-cf7$suffix.js", [], PP_MWG_VERSION, true );
 			}
 		}
 	}

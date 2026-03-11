@@ -24,11 +24,7 @@ define( 'PP_MWG_PUBLIC_TEMPLATES_DIR', trailingslashit( PP_MWG_DIR . 'public-tem
 define( 'PP_MWG_ASSETS_DIR', trailingslashit( PP_MWG_DIR . 'assets' ) );
 define( 'PP_MWG_ASSETS_URL', trailingslashit( PP_MWG_URL . 'assets' ) );
 
-// Plugin base classes (replaces pp-core.php — removed in M3).
-require_once PP_MWG_DIR . 'includes/class-component.php';
-require_once PP_MWG_DIR . 'includes/class-settings-core.php';
-require_once PP_MWG_DIR . 'includes/functions-admin-ui.php';
-
+// Plugin base includes.
 require_once PP_MWG_DIR . 'constants.php';
 require_once PP_MWG_DIR . 'functions.php';
 require_once PP_MWG_DIR . 'functions-private.php';
@@ -56,7 +52,7 @@ register_activation_hook( __FILE__, 'pp_mwg_plugin_activate' );
 function pp_mwg_plugin_run() {
 	global $pp_mwg_plugin;
 
-	$pp_mwg_plugin = new Mini_Wp_Gdpr\Plugin( PP_MWG_NAME, PP_MWG_VERSION );
+	$pp_mwg_plugin = new Mini_Wp_Gdpr\Plugin();
 	$pp_mwg_plugin->run();
 }
 pp_mwg_plugin_run();
