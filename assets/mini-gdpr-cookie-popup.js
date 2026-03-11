@@ -29,7 +29,6 @@
 		 */
 		constructor( data ) {
 			this.data            = data;
-			this.data.blkon      = data.blkon  === '1';
 			this.data.always     = data.always === '1';
 			this._accepting      = false;       // In-flight guard: prevents accept double-fire.
 			this._overlayKeydown = null;        // Stored keyboard handler for the overlay.
@@ -433,17 +432,13 @@
 		/**
 		 * Inject deferred tracker scripts into the document head.
 		 *
-		 * Only runs when script blocking is enabled. Iterates over mgwcsData.meta
-		 * and creates <script> elements for each deferrable tracker.
+		 * Iterates over mgwcsData.meta and creates <script> elements for each
+		 * deferrable tracker that was suppressed from the HTML output.
 		 *
 		 * @since 2.0.0
 		 * @return {void}
 		 */
 		insertBlockedScripts() {
-			if ( ! this.data.blkon ) {
-				return;
-			}
-
 			for ( const handle in this.data.meta ) {
 				if ( ! Object.prototype.hasOwnProperty.call( this.data.meta, handle ) ) {
 					continue;

@@ -18,9 +18,17 @@
 const fs   = require( 'fs' );
 const path = require( 'path' );
 
-// Terser is a local dev dependency — resolve from the package root.
-const terserPath = path.resolve( __dirname, '..', 'node_modules', 'terser' );
-const { minify } = require( terserPath );
+// Terser is installed globally via npm/nvm. Resolve from the global
+// node_modules when NODE_PATH is not already set.
+let terserModule;
+try {
+	terserModule = require( 'terser' );
+} catch ( e ) {
+	const { execSync } = require( 'child_process' );
+	const globalRoot   = execSync( 'npm root -g', { encoding: 'utf8' } ).trim();
+	terserModule       = require( path.join( globalRoot, 'terser' ) );
+}
+const { minify } = terserModule;
 
 // ---------------------------------------------------------------------------
 // Files to minify

@@ -150,7 +150,7 @@ class Plugin {
 			} elseif ( mwg_has_user_accepted_privacy_policy() ) {
 				// User already accepted — no need to show the form again.
 			} else {
-				$priority = intval( apply_filters( 'pp_mwg_myaccount_priority', DEFAULT_MYACCOUNT_INJECT_PRIORITY ) );
+				$priority = intval( apply_deprecated_filter( 'mwg_myaccount_priority', 'pp_mwg_myaccount_priority', DEFAULT_MYACCOUNT_INJECT_PRIORITY ) );
 				if ( 'dashboard' === $endpoint ) {
 					$action = 'woocommerce_account_' . $endpoint;
 				} else {
@@ -268,7 +268,7 @@ class Plugin {
 			$tcs_and_cs_post_id                 = wc_terms_and_conditions_page_id();
 			$is_registration_validation_enabled = $tcs_and_cs_post_id > 0;
 		}
-		$is_registration_validation_enabled = (bool) apply_filters( 'pp_mwg_enable_gdpr_registration_validation', $is_registration_validation_enabled );
+		$is_registration_validation_enabled = (bool) apply_deprecated_filter( 'mwg_enable_gdpr_registration_validation', 'pp_mwg_enable_gdpr_registration_validation', $is_registration_validation_enabled );
 
 		if ( $is_registration_validation_enabled && ! is_gdpr_accepted_in_post_data() ) {
 			$validation_errors->add( 'accept_gdpr_error', __( 'Privacy Policy not accepted for GDPR', 'mini-wp-gdpr' ) );
@@ -334,7 +334,7 @@ class Plugin {
 	 * @return void
 	 */
 	public function wpcf7_mail_sent( $contact_form ) {
-		$cf7_tag_name = apply_filters( 'pp_mwg_your_email_tag_name', CF7_YOUR_EMAIL_TAG_NAME );
+		$cf7_tag_name = apply_deprecated_filter( 'mwg_your_email_tag_name', 'pp_mwg_your_email_tag_name', CF7_YOUR_EMAIL_TAG_NAME );
 
 		// CF7 nonce verification is handled by CF7 itself before this hook fires.
 		// phpcs:disable WordPress.Security.NonceVerification.Missing, Generic.CodeAnalysis.EmptyStatement, Generic.CodeAnalysis.AssignmentInCondition, Squiz.PHP.DisallowMultipleAssignments -- Nonce is CF7-verified; SESE guard pattern.

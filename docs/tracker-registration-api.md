@@ -1,6 +1,6 @@
 # Tracker Registration API
 
-**Since:** 2.0.0  
+**Since:** 2.0.0
 **File:** `includes/class-tracker-registry.php`
 
 The Tracker Registry provides a filter-based developer API for registering custom third-party trackers without modifying Mini WP GDPR's core code.
@@ -26,7 +26,7 @@ add_filter( 'mwg_register_tracker', function ( $trackers ) {
 } );
 ```
 
-This is all you need. After consent, the JS will dynamically inject `hotjar-analytics`'s SDK URL into `<head>`.
+This is all you need. After consent, the JS will dynamically inject the SDK URL into `<head>`.
 
 ---
 
@@ -34,12 +34,12 @@ This is all you need. After consent, the JS will dynamically inject `hotjar-anal
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `handle` | string | ✅ | WordPress script handle to register as blockable (e.g. `hotjar-analytics`) |
-| `description` | string | ✅ | Human-readable tracker name shown in the "More info" overlay |
-| `sdk_url` | string | ✅ | Full URL of the tracker SDK to inject after consent |
-| `pattern` | string | ✅ | Regex (with delimiters) to match the tracker in registered scripts, e.g. `/hotjar-[0-9]+\.js/` |
-| `field` | string | ❌ | What to match against: `'src'` (default) or `'outerhtml'` |
-| `can_defer` | bool | ❌ | `true` = suppress the script tag from HTML output until consent. Default `false` |
+| `handle` | string | Yes | WordPress script handle to register as blockable (e.g. `hotjar-analytics`) |
+| `description` | string | Yes | Human-readable tracker name shown in the "More info" overlay |
+| `sdk_url` | string | Yes | Full URL of the tracker SDK to inject after consent |
+| `pattern` | string | Yes | Regex (with delimiters) to match the tracker in registered scripts, e.g. `/hotjar-[0-9]+\.js/` |
+| `field` | string | No | What to match against: `'src'` (default) or `'outerhtml'` |
+| `can_defer` | bool | No | `true` = suppress the script tag from HTML output until consent. Default `false` |
 
 ---
 
@@ -51,7 +51,7 @@ For trackers with no stub or queue (most analytics tools), the registration hand
 
 ### Execution flow
 
-1. **PHP load time:** `mwg_register_tracker` filter fires → tracker registered in `Tracker_Registry`
+1. **PHP load time:** `mwg_register_tracker` filter fires, tracker registered in `Tracker_Registry`
 2. **`wp_enqueue_scripts`:** Script_Blocker runs, detects tracker handles, reads metadata
 3. **`mgwcsData.trackers`:** SDK URLs for registered trackers passed to consent popup JS
 4. **User accepts:** `loadCustomTrackers()` injects each `sdkUrl` as an async `<script>` tag
@@ -126,7 +126,7 @@ For trackers that require special handling, implement a dedicated tracker file i
 | Google Analytics | Requires `gtag('consent','update',{...granted})` before SDK load + Consent Mode v2 |
 | Microsoft Clarity | No consent API, but requires a PHP stub for the `window.clarity` queue |
 
-These are already implemented in `trackers/` and use their own `loadFacebookPixel()`, `loadGoogleAnalytics()`, and `loadMicrosoftClarity()` methods in the consent popup JS.
+These are already implemented in `trackers/` and use their own dedicated load methods in the consent popup JS.
 
 ---
 
@@ -148,7 +148,3 @@ For trackers needing a pre-consent stub or consent API signals:
 5. Call it in `consentToScripts()` and the `hasConsented()` branch of `init()`
 
 See the existing tracker files as reference implementations.
-
----
-
-**Last Updated:** 18 February 2026

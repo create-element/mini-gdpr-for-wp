@@ -29,22 +29,6 @@ $control_id = get_next_control_id();
 printf(
 	'<input id="%s" name="%s" type="checkbox" %s /><label for="%s">%s</label>',
 	esc_attr( $control_id ),
-	esc_attr( OPT_BLOCK_SCRIPTS_UNTIL_USER_CONSENTS ),
-	checked( $settings->get_bool( OPT_BLOCK_SCRIPTS_UNTIL_USER_CONSENTS ), true, false ),
-	esc_attr( $control_id ),
-	esc_html__( 'Block tracking scripts until the user consents (if possible)?', 'mini-wp-gdpr' )
-);
-echo '</p>';
-printf(
-	'<span class="mwg-help">%s</span>',
-	esc_html__( 'Enabling this is more respectful of users\' privacy, but it will usually lead to your tracker(s) under-reporting site traffic.', 'mini-wp-gdpr' )
-);
-
-echo '<p class="mwg-form-row mwg-checkbox">';
-$control_id = get_next_control_id();
-printf(
-	'<input id="%s" name="%s" type="checkbox" %s /><label for="%s">%s</label>',
-	esc_attr( $control_id ),
 	esc_attr( OPT_IS_ADMIN_TRACKING_ENABLED ),
 	checked( $settings->get_bool( OPT_IS_ADMIN_TRACKING_ENABLED ), true, false ),
 	esc_attr( $control_id ),

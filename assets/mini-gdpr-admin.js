@@ -1,9 +1,8 @@
 /**
  * Mini WP GDPR - Admin settings page handler.
  *
- * Handles the Reset All Consents button interaction on the plugin settings page.
- * Reads action/nonce data from the button's data attribute, optionally shows
- * a confirmation dialog, then fires an AJAX request to reset stored consent records.
+ * Handles tabbed navigation and the Reset All Consents button interaction
+ * on the plugin settings page.
  *
  * @since 2.0.0
  */
@@ -18,24 +17,72 @@
 	class MiniGdprAdmin {
 
 		/**
-		 * Constructor — bind event listeners to admin action buttons.
+		 * Constructor — bind event listeners.
 		 *
 		 * @since 2.0.0
 		 */
 		constructor() {
+			this.tabs   = document.querySelectorAll( '.nav-tab[data-tab]' );
+			this.panels = document.querySelectorAll( '.mwg-tab-panel' );
 			this.init();
 		}
 
 		/**
-		 * Bind click handlers to all reset-consents buttons on the page.
+		 * Initialise tab navigation and reset-consents handlers.
 		 *
 		 * @since 2.0.0
 		 * @return {void}
 		 */
 		init() {
+			// Tab navigation.
+			if ( this.tabs.length > 0 ) {
+				const activeTab = window.location.hash.substring( 1 ) || 'consent';
+				this.activateTab( activeTab );
+
+				this.tabs.forEach( ( tab ) => {
+					tab.addEventListener( 'click', ( e ) => {
+						e.preventDefault();
+						const tabName = tab.dataset.tab;
+						window.location.hash = tabName;
+						this.activateTab( tabName );
+					} );
+				} );
+
+				window.addEventListener( 'hashchange', () => {
+					const tabName = window.location.hash.substring( 1 ) || 'consent';
+					this.activateTab( tabName );
+				} );
+			}
+
+			// Reset all consents button.
 			document.querySelectorAll( '[data-reset-all-consents]' ).forEach( ( button ) => {
 				button.addEventListener( 'click', ( e ) => this.handleResetAllConsents( e, button ) );
 			} );
+		}
+
+		/**
+		 * Activate a tab by name, showing its panel and hiding others.
+		 *
+		 * @since 2.0.0
+		 * @param {string} tabName The tab identifier (matches data-tab attribute).
+		 * @return {void}
+		 */
+		activateTab( tabName ) {
+			this.tabs.forEach( ( t ) => t.classList.remove( 'nav-tab-active' ) );
+
+			const activeNavTab = document.querySelector( `[data-tab="${ tabName }"]` );
+			if ( activeNavTab ) {
+				activeNavTab.classList.add( 'nav-tab-active' );
+			}
+
+			this.panels.forEach( ( panel ) => {
+				panel.classList.remove( 'mwg-tab-panel--active' );
+			} );
+
+			const activePanel = document.getElementById( `${ tabName }-panel` );
+			if ( activePanel ) {
+				activePanel.classList.add( 'mwg-tab-panel--active' );
+			}
 		}
 
 		/**

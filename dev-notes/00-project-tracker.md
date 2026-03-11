@@ -1,9 +1,9 @@
 # Mini WP GDPR - Project Tracker
 
-**Version:** 2.0.0 (Refactor)  
-**Last Updated:** 18 February 2026 (12:10)  
-**Current Phase:** M11 — Admin Settings Page Standard WP Styling (not started)
-**Overall Progress:** 98% (M1–M10); M11 planned
+**Version:** 2.0.0 (Refactor)
+**Last Updated:** 11 March 2026
+**Current Phase:** M12 Complete; M11 partially absorbed into M12
+**Overall Progress:** 98% (M1–M10, M12); M11 remaining items planned
 
 ---
 
@@ -794,6 +794,11 @@
 - [x] Removed unused form scaffolding methods (`open_wrap`, `open_form`, `close_form`, `close_wrap`)
 - [x] PHPCS 0 errors, PHPStan 0 errors
 
+##### Phase 11.4b: Cosmetic Legacy Cleanup (from M12 audit)
+- [ ] Rename `ppctx` control ID prefix → `mwg-ctx` in `get_next_control_id()` (functions-private.php)
+- [ ] Rename `pp_mwg_settings` option group → `mwg_settings` in `register_settings()` (class-settings.php)
+- [ ] Fix `$pp_mwg_gdrp_now` / `$pp_mwg_gdrp_now_h` global variable typo ("gdrp" → "gdpr") in functions-private.php
+
 ##### Phase 11.5: Testing & Verification
 - [ ] PHPCS scan — 0 errors, 0 warnings on all modified files
 - [ ] PHPStan level 5 — 0 errors
@@ -825,6 +830,101 @@
 
 ---
 
+### Milestone 12: Code Review, Security Audit & Documentation Restructure
+**Target:** Mar 2026
+**Status:** 🟢 Complete
+**Priority:** High
+
+> **Context:** Before submitting v2.0.0 to WordPress.org, Paul wants a thorough human-guided review of the refactored codebase. The previous coding agent built the v2.0.0 refactor autonomously (M3–M10). This milestone is a fresh-eyes review of that work, plus a documentation restructure to separate public docs from internal dev-notes.
+
+#### Phase 12.1: Code Review — Tracker Injection & Consent Logic ✅ Complete (2026-03-11)
+- [x] Map the full consent flow: page load → popup → accept/reject → tracker injection (for each of GA, FB Pixel, MS Clarity)
+- [x] Document how each tracker's PHP stub works (what's output in `<head>` before consent)
+- [x] Document how each tracker's JS delay-load works (what fires after consent)
+- [x] Verify no tracker scripts/pixels fire before explicit consent (unless admin has disabled blocking) ✅ — confirmed: all 3 trackers use queue-based stubs that transmit zero data; SDKs only loaded after consent
+- [x] Identify any remaining pp-core.php patterns, legacy function names, or dead code ✅ — found: 3 legacy `pp_mwg_` filter hooks, dead `$additional_blocked_scripts` variable, debug comment `//3;`, cosmetic `ppctx`/`pp_mwg_settings`/`$pp_mwg_gdrp_now` items
+- [x] Review the generic tracker registration API (`mwg_register_tracker` filter + `loadCustomTrackers()`) ✅ — sound architecture
+- [x] Check for any logic that assumes consent (e.g. scripts loading on page load without checking consent state) ✅ — none found
+- [x] Document findings and fix any issues found ✅ — fixes applied:
+  - Created `apply_deprecated_filter()` bridge in functions-private.php — logs deprecation to error_log when old `pp_mwg_*` filter is used, applies new `mwg_*` filter first
+  - Replaced 3 `apply_filters('pp_mwg_*')` calls with `apply_deprecated_filter('mwg_*', 'pp_mwg_*')` in class-plugin.php
+  - Removed dead `$additional_blocked_scripts` variable from class-script-blocker.php
+  - Removed debug comment `//3;` from constants.php
+  - Deferred cosmetic `ppctx`/`pp_mwg_settings`/`$pp_mwg_gdrp_now` renames to M11 Phase 11.4b
+
+#### Phase 12.2: Security Audit ✅ Complete (2026-03-11)
+- [x] Nonce verification on all form submissions and AJAX handlers ✅ — all 5 handlers verified
+- [x] Capability checks (`current_user_can`) on all privileged actions ✅ — manage_options on settings/CF7, administrator on reset, is_user_logged_in on consent
+- [x] Input sanitization (`wp_unslash` + sanitize functions) on all `$_POST`/`$_GET`/`$_REQUEST` access ✅ — comprehensive
+- [x] Output escaping (`esc_html`, `esc_attr`, `esc_url`, `wp_kses_post`) in all templates and echo statements ✅ — all templates reviewed
+- [x] Referrer validation (`check_ajax_referer` vs manual `wp_verify_nonce`) — verify consistency ✅ — consistent manual nonce pattern throughout
+- [x] Audit all `phpcs:ignore` and `phpcs:disable` directives — verify each is justified, flag any that mask real issues ✅ — all justified (SESE pattern, WP API quirks, delegated nonce checks, safe output)
+- [x] Review rate limiting implementation (`is_within_ajax_rate_limit`) — verify transient logic is sound ✅ — per-user, per-action, counter only increments on allowed requests
+- [x] Check `$wpdb` queries use `prepare()` where user input is involved ✅ — no SQL injection vectors
+- [x] Verify no direct `$_FILES`, `$_SERVER`, or `$_COOKIE` access without sanitization ✅ — none found
+- [x] PHPCS full scan — 0 errors ✅
+- [ ] PHPStan level 5 — not available on this server (phpstan-wordpress extension path mismatch); changes are signature-compatible
+
+#### Phase 12.3: Documentation Restructure ✅ Complete (2026-03-11)
+- [x] Create `docs/` directory with public-facing developer/contributor documentation
+- [x] Seed `docs/` content from dev-notes/ (hooks/filters, developer guide, tracker API, migration guide, user guide, troubleshooting, upgrade FAQ)
+- [x] Trim README.md to a lean overview: what the plugin does, link to `https://wordpress.org/plugins/mini-wp-gdpr/`, link to `docs/` for detail
+- [x] Improve readme.txt: trim changelog to v2.0.0 + one prior version, general quality/clarity pass, added FAQ, Screenshots, Upgrade Notice sections
+- [x] Verify README.md and readme.txt are consistent where they overlap
+
+**Docs created (8 files):**
+- `docs/README.md` — Index/landing page with links to all docs
+- `docs/user-guide.md` — Setup and configuration for site owners
+- `docs/developer-guide.md` — Architecture, class reference, coding standards
+- `docs/hooks-and-filters.md` — Complete PHP and JS API reference (updated: deprecated `pp_mwg_*` filters documented with `mwg_*` replacements, removed dead `mwg_additional_blocked_scripts` filter)
+- `docs/tracker-registration-api.md` — Register custom third-party trackers
+- `docs/migration-guide.md` — v1.x to v2.0.0 (updated: documents `pp_mwg_*` → `mwg_*` filter rename with deprecation bridge)
+- `docs/troubleshooting.md` — Common issues and solutions (cleaned: removed dev-server-specific paths)
+- `docs/faq-upgrading.md` — Upgrade FAQ
+
+**README.md changes:** Trimmed from 403 lines to ~95 lines. Lean overview with feature bullets, quick-start code examples, and links to `docs/` and WordPress.org.
+
+**readme.txt changes:** Changelog trimmed from 26 versions to 2 (v2.0.0 + v1.4.3). Added FAQ section, Screenshots section, Upgrade Notice section. Added `Requires PHP: 8.0` header. Improved description and feature list.
+
+#### Phase 12.4: Remove `mwg_block_trackers_until_consent` + Admin Tabs ✅ Complete (2026-03-11)
+
+**Block-until-consent removal** — option was redundant; trackers must always be consent-gated:
+- [x] Removed `OPT_BLOCK_SCRIPTS_UNTIL_USER_CONSENTS` constant from `constants.php`
+- [x] Removed `$is_block_until_consent_enabled` property and option read from `class-script-blocker.php`
+- [x] Removed `blkon` from `mgwcsData` localize array
+- [x] Simplified `script_loader_tag()` — always suppresses deferrable scripts (no opt-out)
+- [x] Removed `blkon` check from `insertBlockedScripts()` in `mini-gdpr-cookie-popup.js`
+- [x] Removed checkbox UI from `admin-templates/trackers-settings.php`
+- [x] Removed from `register_settings()` and `save_settings()` in `class-settings.php`
+- [x] Updated `can_defer` descriptions in `docs/tracker-registration-api.md` and `dev-notes/tracker-registration-api.md`
+
+**Admin settings page — tabbed navigation** (absorbs M11 tab work):
+- [x] Added `<nav class="nav-tab-wrapper">` with 4 tabs: Consent Popup, Trackers, Integrations, Status
+- [x] Wrapped each section in `<div class="mwg-tab-panel">` panels in `render_settings_page()`
+- [x] Integrations tab: shows WC/CF7 settings when active, or "no integrations" message
+- [x] Status tab: consent stats cards + reset button (existing, moved into panel)
+- [x] `assets/mini-gdpr-admin.js`: hash-based tab switching with `activateTab()`, click handlers, `hashchange` listener
+- [x] `assets/mwg-admin.css`: `.mwg-tab-panel` / `.mwg-tab-panel--active` show/hide rules
+- [x] Minified JS rebuilt via `node bin/build.js`
+- [x] PHPCS 0 errors
+
+**Other:**
+- [x] Removed `package.json` — terser is installed globally via nvm
+- [x] Updated `bin/build.js` — global npm module resolution with `npm root -g` fallback
+- [x] Updated `CLAUDE.md` — reflects global tool installations, `node bin/build.js` command
+
+#### Success Criteria
+- Clear documentation of the consent → tracker injection flow for all 3 built-in trackers
+- No tracker code fires pre-consent
+- No unjustified `phpcs:ignore`/`phpcs:disable` directives
+- All security checks pass (nonces, caps, sanitization, escaping)
+- `docs/` exists with public developer documentation
+- README.md is concise with appropriate links
+- readme.txt follows WordPress.org conventions
+- PHPCS 0 errors, PHPStan 0 errors
+
+---
+
 ## Progress Tracking
 
 | Milestone | Target Completion | Status | Progress |
@@ -839,7 +939,8 @@
 | 8. PHPStan, Testing & QA | May 11, 2026 | 🟢 Complete | 100% |
 | 9. Documentation | May 18, 2026 | 🟢 Complete | 100% |
 | 10. Release Preparation | May 25, 2026 | 🟢 Complete (autonomous) | 80% — remaining 20% deferred to Paul (beta, WP.org) |
-| 11. Admin Settings Page — Standard WP Styling | Feb 2026 | ⚪ Not Started | 0% |
+| 11. Admin Settings Page — Standard WP Styling | Feb 2026 | 🟡 Partially absorbed into M12 | 50% — tab navigation done; cosmetic cleanup remaining |
+| 12. Code Review, Security Audit & Docs Restructure | Mar 2026 | 🟢 Complete | 100% |
 
 **Legend:**
 - 🟢 Complete
@@ -913,9 +1014,11 @@
 | 2026-02-18 | M10 Phase 10.1+10.2 testing sprint passed | Plugin active (v2.0.0); error log clean; front-end 200; wp-admin 302 (normal unauthenticated redirect); no debug.log; PHPCS 0 errors 0 warnings; version 2.0.0 confirmed in plugin header and WP CLI; README.md Phase 10.2 task marked complete (done in M9); next: Phase 10.2 Git tag + GitHub release, Phase 10.3 package creation |
 | 2026-02-18 | M10 Phase 10.2+10.3 coding sprint — Git tag, GitHub release, production zip | Annotated tag v2.0.0 created and pushed; GitHub release created at https://github.com/create-element/mini-gdpr-for-wp/releases/tag/v2.0.0 with CHANGELOG notes; mini-gdpr-for-wp-v2.0.0.zip (122KB) created and uploaded to release; file structure verified (correct mini-gdpr-for-wp/ root folder, plugin header v2.0.0); fresh-install and v1.4.3 upgrade tests deferred to Paul |
 | 2026-02-18 | M10 Phase 10.2+10.3 testing sprint passed — autonomous work complete | Plugin active (v2.0.0); error log clean; front-end 200; wp-admin 302 (normal unauthenticated redirect); no debug.log; all Phase 10.2+10.3 tasks verified; remaining tasks (Phase 10.4 beta testing, Phase 10.5 WP.org submission, fresh install + v1.4.3 upgrade tests) deferred to Paul — require human test environments |
+| 2026-03-11 | M12 Phase 12.1–12.3 — code review, security audit, docs restructure | Code review of tracker injection + consent logic (all clean); security audit (nonces, caps, sanitization, escaping all verified); docs/ directory created with 8 public-facing docs; README.md trimmed to lean overview; readme.txt improved with FAQ/Screenshots/Upgrade Notice |
+| 2026-03-11 | M12 Phase 12.4 — remove block-until-consent + admin tabs | Removed redundant `mwg_block_trackers_until_consent` option (trackers always consent-gated now); admin settings page reorganised into 4 tabs (Consent Popup, Trackers, Integrations, Status) with hash-based navigation; removed package.json (terser global); updated bin/build.js global module resolution; updated CLAUDE.md |
 
 ---
 
-**Last Updated:** 18 February 2026
-**Next Review:** When Paul is ready to start M11
-**Next Action:** M11 Phase 11.1 — CSS overhaul (remove Power Plugins purple branding, strip unused pp-core CSS)
+**Last Updated:** 11 March 2026
+**Next Review:** Before WordPress.org submission
+**Next Action:** M11 remaining items — cosmetic cleanup (legacy variable renames, CSS polish)

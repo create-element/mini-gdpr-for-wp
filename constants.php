@@ -40,12 +40,10 @@ const DEFAULT_DONT_TRACK_ADMIN_ROLES = [ 'administrator' ];
 
 const COOKIE_NAME_BASE                = 'mgwcs';
 const OPT_SCRIPT_CONSENT_DURATION     = 'mwg_consent_duration';
-const DEFAULT_SCRIPT_CONSENT_DURATION = 365; //3;
+const DEFAULT_SCRIPT_CONSENT_DURATION = 365;
 
 const OPT_CONSENT_BOX_POSITION     = 'mwg_consent_box_position';
 const DEFAULT_CONSENT_BOX_POSITION = 1;
-
-const OPT_BLOCK_SCRIPTS_UNTIL_USER_CONSENTS = 'mwg_block_trackers_until_consent';
 
 const OPT_COOKIE_AND_TRACKER_CONSENT_MESSAGE = 'mwg_tracker_consent_message';
 

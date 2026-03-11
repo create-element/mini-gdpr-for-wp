@@ -7,7 +7,20 @@
 
 ## Installation
 
-### 1. Install PHP_CodeSniffer (globally)
+### 1. Install PHP_CodeSniffer
+
+```bash
+# Via Composer (recommended)
+composer require --dev squizlabs/php_codesniffer
+composer require --dev wp-coding-standards/wpcs
+composer require --dev phpcsstandards/phpcsextra
+composer require --dev phpcsstandards/phpcsutils
+
+# Configure installed paths
+./vendor/bin/phpcs --config-set installed_paths vendor/wp-coding-standards/wpcs,vendor/phpcsstandards/phpcsextra
+```
+
+**Or install globally:**
 
 ```bash
 composer global require squizlabs/php_codesniffer
@@ -16,7 +29,7 @@ composer global require phpcsstandards/phpcsextra
 composer global require phpcsstandards/phpcsutils
 
 # Configure installed paths
-phpcs --config-set installed_paths ~/.config/composer/vendor/wp-coding-standards/wpcs,~/.config/composer/vendor/phpcsstandards/phpcsextra
+phpcs --config-set installed_paths ~/.composer/vendor/wp-coding-standards/wpcs,~/.composer/vendor/phpcsstandards/phpcsextra
 ```
 
 ### 2. Verify Installation
@@ -42,6 +55,7 @@ Create `phpcs.xml` in your plugin root:
 	<file>.</file>
 	
 	<!-- Exclude patterns -->
+	<exclude-pattern>*/vendor/*</exclude-pattern>
 	<exclude-pattern>*/node_modules/*</exclude-pattern>
 	<exclude-pattern>*/assets/*</exclude-pattern>
 	<exclude-pattern>*/.git/*</exclude-pattern>
@@ -213,11 +227,11 @@ See [`commit-to-git.md`](commit-to-git.md#optional-git-pre-commit-hook) for auto
 # Check installed standards
 phpcs -i
 
-# If WordPress is missing, reinstall WPCS globally
-composer global require wp-coding-standards/wpcs
+# If WordPress is missing, reinstall WPCS
+composer require --dev wp-coding-standards/wpcs
 
 # Configure path
-phpcs --config-set installed_paths ~/.config/composer/vendor/wp-coding-standards/wpcs
+phpcs --config-set installed_paths vendor/wp-coding-standards/wpcs
 ```
 
 ### PHPCS is slow

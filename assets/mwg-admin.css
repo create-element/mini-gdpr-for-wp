@@ -257,3 +257,16 @@
 .mwg-stat-card.mwg-stat--accepted .mwg-stat-number { color: #1a7a1a; }
 .mwg-stat-card.mwg-stat--rejected .mwg-stat-number { color: #b00020; }
 .mwg-stat-card.mwg-stat--undecided .mwg-stat-number { color: #888; }
+
+/* ---------------------------------------------------------------------------
+ * Tab panels
+ * ----------------------------------------------------------------------- */
+
+.mwg-tab-panel {
+  display: none;
+  margin-top: 20px;
+}
+
+.mwg-tab-panel--active {
+  display: block;
+}

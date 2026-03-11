@@ -12,8 +12,9 @@ namespace Mini_Wp_Gdpr;
 defined( 'ABSPATH' ) || die();
 
 /**
- * Intercepts registered tracker scripts, injects the consent popup, and
- * optionally suppresses script output until the visitor accepts.
+ * Intercepts registered tracker scripts, suppresses them from the HTML
+ * output, and injects the consent popup so scripts load client-side only
+ * after the visitor accepts.
  *
  * @since 1.0.0
  */
@@ -45,15 +46,6 @@ class Script_Blocker {
 	 * @var array|null
 	 */
 	private $blockable_scripts;
-
-	/**
-	 * Whether the "block scripts until consent" option is enabled.
-	 *
-	 * Set during capture_blocked_script_handles().
-	 *
-	 * @var bool
-	 */
-	private $is_block_until_consent_enabled;
 
 	/**
 	 * Whether tracker scripts should be blocked due to the current user's role.
@@ -160,8 +152,6 @@ class Script_Blocker {
 		}
 		// phpcs:enable Generic.CodeAnalysis.AssignmentInCondition.Found, Squiz.PHP.DisallowMultipleAssignments.FoundInControlStructure, Generic.CodeAnalysis.EmptyStatement.DetectedIf, Generic.CodeAnalysis.EmptyStatement.DetectedElseif
 
-		$additional_blocked_scripts = apply_filters( 'mwg_additional_blocked_scripts', [] ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- mwg_ prefix; see note above.
-
 		$scripts = wp_scripts();
 
 		foreach ( $scripts->registered as $script ) {
@@ -228,8 +218,6 @@ class Script_Blocker {
 				$consent_duration = DEFAULT_SCRIPT_CONSENT_DURATION;
 			}
 
-			$this->is_block_until_consent_enabled = $settings->get_bool( OPT_BLOCK_SCRIPTS_UNTIL_USER_CONSENTS, false );
-
 			$info_text_3 = '';
 			if ( $this->are_trackers_blocked_by_role ) {
 				$info_text_3 = __( "Tracking scripts are blocked because you're logged-in as an administrator", 'mini-wp-gdpr' );
@@ -259,7 +247,6 @@ class Script_Blocker {
 				'nfo3'   => $info_text_3,
 				'meta'   => $this->blocked_scripts,
 				'always' => $is_always_show_enabled ? 1 : 0,
-				'blkon'  => $this->is_block_until_consent_enabled ? 1 : 0,
 			];
 
 			// For logged-in users, pass AJAX credentials so rejections can be recorded server-side.
@@ -344,11 +331,12 @@ class Script_Blocker {
 	}
 
 	/**
-	 * Suppress a script tag when blocking is active and the script is captured.
+	 * Suppress a script tag when the script is captured and deferrable.
 	 *
 	 * Hooked to 'script_loader_tag' at priority 99. Returns null to suppress the
-	 * tag when all conditions are met: blocking is enabled, the handle is in the
-	 * blocked-scripts list, and the script is marked as deferrable.
+	 * tag when the handle is in the blocked-scripts list and the script is marked
+	 * as deferrable. Tracker scripts are always blocked from the HTML output and
+	 * injected client-side after the user consents.
 	 *
 	 * @since 1.0.0
 	 * @param string|null $tag    The full <script> tag HTML, or null if already suppressed.
@@ -358,9 +346,7 @@ class Script_Blocker {
 	 */
 	public function script_loader_tag( $tag, $handle, $src ) {
 		// phpcs:disable Generic.CodeAnalysis.EmptyStatement.DetectedIf, Generic.CodeAnalysis.EmptyStatement.DetectedElseif -- Intentional SESE guard; empty bodies mean pass through unchanged.
-		if ( ! $this->is_block_until_consent_enabled && ! $this->are_trackers_blocked_by_role ) {
-			// Blocking is not active — pass through unchanged.
-		} elseif ( empty( $handle ) ) {
+		if ( empty( $handle ) ) {
 			// Empty handle — cannot match — pass through.
 		} elseif ( ! array_key_exists( $handle, $this->blocked_scripts ) ) {
 			// Handle is not in the captured list — pass through.

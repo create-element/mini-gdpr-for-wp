@@ -143,7 +143,6 @@ class Settings {
 		$bool_options = array(
 			OPT_IS_COOKIE_CONSENT_POPUP_ENABLED,
 			OPT_SHOW_CONSENT_POPUP_EVEN_IF_NO_SCRIPTS_FOUND,
-			OPT_BLOCK_SCRIPTS_UNTIL_USER_CONSENTS,
 			OPT_IS_GA_TRACKING_ENABLED,
 			OPT_GA_CONSENT_MODE_ENABLED,
 			OPT_IS_ADMIN_TRACKING_ENABLED,
@@ -319,32 +318,59 @@ class Settings {
 				get_settings_header_html( 'https://power-plugins.com/plugin/mini-wp-gdpr/' ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_settings_header_html() returns pre-escaped HTML.
 			);
 
+			// --- Tab navigation ---------------------------------------------------
+			echo '<nav class="nav-tab-wrapper wp-clearfix">';
+			printf( '<a href="#consent" class="nav-tab nav-tab-active" data-tab="consent">%s</a>', esc_html__( 'Consent Popup', 'mini-wp-gdpr' ) );
+			printf( '<a href="#trackers" class="nav-tab" data-tab="trackers">%s</a>', esc_html__( 'Trackers', 'mini-wp-gdpr' ) );
+			printf( '<a href="#integrations" class="nav-tab" data-tab="integrations">%s</a>', esc_html__( 'Integrations', 'mini-wp-gdpr' ) );
+			printf( '<a href="#status" class="nav-tab" data-tab="status">%s</a>', esc_html__( 'Status', 'mini-wp-gdpr' ) );
+			echo '</nav>';
+
 			echo '<form method="post">';
 			wp_nonce_field( $this->settings_action, $this->settings_nonce );
 
 			// $settings is referenced by the included admin templates.
 			$settings = $this; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- local variable, not a global override.
 
+			// --- Tab: Consent Popup -----------------------------------------------
+			echo '<div id="consent-panel" class="mwg-tab-panel mwg-tab-panel--active">';
 			include PP_MWG_ADMIN_TEMPLATES_DIR . 'cookie-consent-settings.php';
+			echo '</div>';
 
-			if ( is_woocommerce_available() ) {
-				echo '<hr />';
+			// --- Tab: Trackers ----------------------------------------------------
+			echo '<div id="trackers-panel" class="mwg-tab-panel">';
+			include PP_MWG_ADMIN_TEMPLATES_DIR . 'trackers-settings.php';
+			echo '</div>';
+
+			// --- Tab: Integrations ------------------------------------------------
+			echo '<div id="integrations-panel" class="mwg-tab-panel">';
+
+			$has_wc  = is_woocommerce_available();
+			$has_cf7 = is_cf7_installed();
+
+			if ( $has_wc ) {
 				include PP_MWG_ADMIN_TEMPLATES_DIR . 'woocommerce-settings.php';
 			}
 
-			if ( is_cf7_installed() ) {
+			if ( $has_wc && $has_cf7 ) {
 				echo '<hr />';
+			}
+
+			if ( $has_cf7 ) {
 				include PP_MWG_ADMIN_TEMPLATES_DIR . 'contact-form-7-settings.php';
 			}
 
-			echo '<hr />';
-			include PP_MWG_ADMIN_TEMPLATES_DIR . 'trackers-settings.php';
+			if ( ! $has_wc && ! $has_cf7 ) {
+				printf(
+					'<p class="mwg-help">%s</p>',
+					esc_html__( 'No supported integrations are currently active. Install WooCommerce or Contact Form 7 to see integration options here.', 'mini-wp-gdpr' )
+				);
+			}
 
-			submit_button( esc_html__( 'Save Changes', 'mini-wp-gdpr' ) );
+			echo '</div>';
 
-			echo '</form>';
-
-			echo '<hr />';
+			// --- Tab: Status ------------------------------------------------------
+			echo '<div id="status-panel" class="mwg-tab-panel">';
 			include PP_MWG_ADMIN_TEMPLATES_DIR . 'consent-stats.php';
 
 			if ( IS_RESET_ALL_CONSENT_ENABLED && current_user_can( 'manage_options' ) ) {
@@ -367,6 +393,12 @@ class Settings {
 
 				echo get_button_with_spinner_html( __( 'Reset Now', 'mini-wp-gdpr' ), '', $reset_props ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_button_with_spinner_html() returns pre-escaped HTML.
 			}
+
+			echo '</div>';
+
+			submit_button( esc_html__( 'Save Changes', 'mini-wp-gdpr' ) );
+
+			echo '</form>';
 
 			echo '</div>';
 		}
@@ -423,8 +455,6 @@ class Settings {
 		$this->set_bool( OPT_IS_FB_PIXEL_TRACKING_ENABLED, array_key_exists( OPT_IS_FB_PIXEL_TRACKING_ENABLED, $_POST ) );
 		$this->set_bool( OPT_IS_FB_PIXEL_NOSCRIPT_ENABLED, array_key_exists( OPT_IS_FB_PIXEL_NOSCRIPT_ENABLED, $_POST ) );
 		$this->set_bool( OPT_IS_MS_CLARITY_TRACKING_ENABLED, array_key_exists( OPT_IS_MS_CLARITY_TRACKING_ENABLED, $_POST ) );
-		$this->set_bool( OPT_BLOCK_SCRIPTS_UNTIL_USER_CONSENTS, array_key_exists( OPT_BLOCK_SCRIPTS_UNTIL_USER_CONSENTS, $_POST ) );
-
 		if ( array_key_exists( OPT_WHICH_WC_MYACCOUNT_ENDPOINT, $_POST ) ) {
 			$this->set_string( OPT_WHICH_WC_MYACCOUNT_ENDPOINT, sanitize_title( wp_unslash( $_POST[ OPT_WHICH_WC_MYACCOUNT_ENDPOINT ] ) ) );
 		}

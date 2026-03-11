@@ -379,6 +379,44 @@ function is_external_ga_injector_plugin_installed() {
 }
 
 // ---------------------------------------------------------------------------
+// Deprecated filter bridge.
+// ---------------------------------------------------------------------------
+
+/**
+ * Apply a filter using its new name, with backward-compatible support for a
+ * deprecated old name.
+ *
+ * If any callback is registered on the old (deprecated) filter name, a
+ * deprecation notice is logged via error_log() on the first occurrence per
+ * request, and the old filter is applied so existing integrations continue
+ * to work.
+ *
+ * @since 2.0.0
+ * @param string $new_hook  New filter name (mwg_ prefix).
+ * @param string $old_hook  Deprecated filter name (pp_mwg_ prefix).
+ * @param mixed  $value     Value to filter.
+ * @param mixed  ...$args   Additional arguments passed to apply_filters().
+ * @return mixed Filtered value.
+ */
+function apply_deprecated_filter( string $new_hook, string $old_hook, $value, ...$args ) {
+	$value = apply_filters( $new_hook, $value, ...$args ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- $new_hook is always an mwg_ prefixed string; callers pass literal mwg_* names.
+
+	if ( has_filter( $old_hook ) ) {
+		error_log( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+			sprintf(
+				'Mini WP GDPR: The "%s" filter is deprecated since version 2.0.0. Use "%s" instead.',
+				$old_hook,
+				$new_hook
+			)
+		);
+
+		$value = apply_filters( $old_hook, $value, ...$args ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- $old_hook is the deprecated pp_mwg_ name; backward-compat bridge.
+	}
+
+	return $value;
+}
+
+// ---------------------------------------------------------------------------
 // Admin UI helpers (moved from includes/functions-admin-ui.php)
 // ---------------------------------------------------------------------------
 
